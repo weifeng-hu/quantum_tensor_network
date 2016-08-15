@@ -1,0 +1,101 @@
+#ifndef MAT_STOCH_DIAG_STOCH_SPACE
+#define MAT_STOCH_DIAG_STOCH_SPACE
+
+#include <omp.h>
+#include <vector>
+#include <iostream>
+#include <random>
+#include "stochastic_basis.hpp"
+#include "simple_matrix.hpp"
+
+namespace mat_stoch_diag {
+
+class StochasticSpace {
+public:
+  StochasticSpace() {
+    this->store_.resize(0);
+  }
+  StochasticSpace( size_t nbasis, size_t nrowA ) {
+    this->generate_space( nbasis, nrowA );
+  }
+  ~StochasticSpace() {}
+
+  StochasticSpace( SimpleMatrix& eigenvec ) {
+    for( size_t i = 0; i < eigenvec.ncol(); i++ ) {
+      this->push_back( StochasticBasis( eigenvec.col(i) ) );
+    }
+  }
+
+public:
+  void generate_space( size_t size_of_base, size_t dimension ) {
+    std :: cout << "Generating space ... ";
+    size_t count = 0;
+    while( this->store_.size() < size_of_base ) {
+//    for( size_t i = 0; i < size_of_base; i++ ) {
+      StochasticBasis new_basis( dimension, &(this->generator) );
+      if( new_basis.uniform_deviation() < 1.0e0 ) {
+        this->store_.push_back( new_basis );
+      }
+      count++;
+    }
+    std :: cout << " done" << std :: endl;
+    std :: cout << "Number of basis: " << this->store_.size() << std :: endl;
+    std :: cout << "Time of trial: " << count << std :: endl;
+  }
+
+  /* maybe we don't need this for now*/
+  void orthogonalization() {
+
+    StochasticSpace new_space_final;
+    new_space_final.resize( this->store_.size() );
+
+    // use gram-schmidt orthogonalization
+    for( size_t i_basis = 0; i_basis < this->store_.size(); i_basis++ ) {
+      new_space_final(i_basis) = this->store_.at(i_basis);
+      for( size_t j_basis = 0; j_basis < i_basis; j_basis++ ) {
+        double proj = this->store_.at(i_basis) * new_space_final(j_basis);
+        double norm2 = this->store_.at(i_basis) * new_space_final(i_basis);
+        double proj_factor = proj / norm2;
+        StochasticBasis proj_i_j = proj_factor * new_space_final(j_basis);
+        StochasticBasis minus_proj_i_j = ( -1.0e0) * proj_i_j;
+        new_space_final(i_basis) = this->store_.at(i_basis) + minus_proj_i_j;
+      }
+    }
+
+    *this = new_space_final;
+  }
+
+  void push_back( mat_stoch_diag :: StochasticBasis new_basis ) {
+    this->store_.push_back( new_basis );
+  }
+
+  void resize( size_t size ) {
+    this->store_.resize( size );
+  }
+
+  StochasticBasis& operator() ( size_t ind ) 
+    { return this->store_.at(ind); }
+
+  size_t size() const 
+    { return this->store_.size(); }
+
+  size_t basis_size() const 
+    { return this->store_.at(0).size(); }
+
+  void print() {
+    std :: cout << " Space size: " << this->store_.size() << std :: endl;
+    for( size_t i = 0; i < this->store_.size(); i++ ) {
+      this->store_.at(i).print();
+    }
+    std :: cout << std :: endl;
+  }
+
+private:
+  std :: vector< mat_stoch_diag :: StochasticBasis > store_;
+  std :: default_random_engine generator;
+
+}; // end of class StochasticSpace
+
+} // end of namespace mat_stoch_diag
+
+#endif
