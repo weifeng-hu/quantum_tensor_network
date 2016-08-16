@@ -44,6 +44,8 @@ number_of_basis = read_file( number_of_sets );
 import numpy as np;
 import matplotlib.pyplot as plt;
 
+plt.switch_backend( 'Qt4Agg' );
+
 for i in range( 0, number_of_sets ):
   basis_length = number_of_basis[i];
   space_sizes = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000 ];
