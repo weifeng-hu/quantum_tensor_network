@@ -4,7 +4,7 @@ def read_files( number_of_files, number_of_sets ):
 
   import decimal;
 
-  retval = [[]];
+  retval = [];
 
   for j in range( 0, number_of_files ):
     tail = ( j + 1 ) * 1000;
@@ -37,21 +37,21 @@ number_of_files = 9;
 number_of_sets = 99;
 
 numbers_of_basis = [];
-averaged_distances = [[]];
+averaged_distances = [];
 averaged_distances = read_files( number_of_files, number_of_sets );
 number_of_basis = read_file( number_of_sets );
 
-import numpy as np;
-import matplotlib.pyplot as plt;
+#import numpy as np;
+#import matplotlib.pyplot as plt;
 
-plt.switch_backend( 'Qt4Agg' );
+#plt.switch_backend( 'Qt4Agg' );
 
 for i in range( 0, number_of_sets ):
   basis_length = number_of_basis[i];
-  space_sizes = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000 ];
+  space_sizes = [ 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000 ];
   averaged_distances_of_space_size = [];
   for j in range( 0, 9 ):
     averaged_distances_of_space_size.append( averaged_distances[j][i] );
-  plt.xlabel( "space size at basis length " + str(basis_length) );
-  plt.ylabel( "averaged distance from unity matrix" );
-  plt.scatter( space_sizes, averaged_distances_of_space_size );
+#  plt.xlabel( "space size at basis length " + str(basis_length) );
+#  plt.ylabel( "averaged distance from unity matrix" );
+#  plt.scatter( space_sizes, averaged_distances_of_space_size );
