@@ -1,0 +1,891 @@
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 74740
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 100
+total distance from unity matrix: 2.70627
+averaged distance from unity matrix: 0.000270627
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 35307
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 200
+total distance from unity matrix: 7.65406
+averaged distance from unity matrix: 0.000191352
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 25908
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 300
+total distance from unity matrix: 15.8818
+averaged distance from unity matrix: 0.000176464
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 21626
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 400
+total distance from unity matrix: 27.3843
+averaged distance from unity matrix: 0.000171152
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 19308
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 500
+total distance from unity matrix: 42.1773
+averaged distance from unity matrix: 0.000168709
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 17312
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 600
+total distance from unity matrix: 60.6952
+averaged distance from unity matrix: 0.000168598
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 16043
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 700
+total distance from unity matrix: 82.555
+averaged distance from unity matrix: 0.00016848
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 14775
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 800
+total distance from unity matrix: 106.861
+averaged distance from unity matrix: 0.000166971
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 13787
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 900
+total distance from unity matrix: 135.281
+averaged distance from unity matrix: 0.000167013
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 12985
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 1000
+total distance from unity matrix: 166.926
+averaged distance from unity matrix: 0.000166926
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 12644
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 1100
+total distance from unity matrix: 201.843
+averaged distance from unity matrix: 0.000166812
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 12162
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 1200
+total distance from unity matrix: 241.177
+averaged distance from unity matrix: 0.000167484
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 11651
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 1300
+total distance from unity matrix: 282.445
+averaged distance from unity matrix: 0.000167127
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 11305
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 1400
+total distance from unity matrix: 325.986
+averaged distance from unity matrix: 0.000166319
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 10913
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 1500
+total distance from unity matrix: 374.644
+averaged distance from unity matrix: 0.000166509
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 10765
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 1600
+total distance from unity matrix: 426.971
+averaged distance from unity matrix: 0.000166785
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 10452
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 1700
+total distance from unity matrix: 481.99
+averaged distance from unity matrix: 0.000166778
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 10198
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 1800
+total distance from unity matrix: 540.248
+averaged distance from unity matrix: 0.000166743
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 9992
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 1900
+total distance from unity matrix: 601.666
+averaged distance from unity matrix: 0.000166667
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 9694
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 2000
+total distance from unity matrix: 667.497
+averaged distance from unity matrix: 0.000166874
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 9539
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 2100
+total distance from unity matrix: 734.714
+averaged distance from unity matrix: 0.000166602
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 9479
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 2200
+total distance from unity matrix: 806.591
+averaged distance from unity matrix: 0.000166651
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 9144
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 2300
+total distance from unity matrix: 881.272
+averaged distance from unity matrix: 0.000166592
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 9099
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 2400
+total distance from unity matrix: 959.992
+averaged distance from unity matrix: 0.000166665
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 8870
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 2500
+total distance from unity matrix: 1043.22
+averaged distance from unity matrix: 0.000166914
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 8818
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 2600
+total distance from unity matrix: 1125.47
+averaged distance from unity matrix: 0.000166489
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 8693
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 2700
+total distance from unity matrix: 1215.04
+averaged distance from unity matrix: 0.000166672
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 8569
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 2800
+total distance from unity matrix: 1305.83
+averaged distance from unity matrix: 0.000166559
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 8498
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 2900
+total distance from unity matrix: 1401.29
+averaged distance from unity matrix: 0.000166622
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 8384
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 3000
+total distance from unity matrix: 1497.72
+averaged distance from unity matrix: 0.000166414
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 8207
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 3100
+total distance from unity matrix: 1601.12
+averaged distance from unity matrix: 0.00016661
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 8157
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 3200
+total distance from unity matrix: 1706.35
+averaged distance from unity matrix: 0.000166635
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 8057
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 3300
+total distance from unity matrix: 1815.74
+averaged distance from unity matrix: 0.000166735
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 8020
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 3400
+total distance from unity matrix: 1927.4
+averaged distance from unity matrix: 0.000166731
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 7884
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 3500
+total distance from unity matrix: 2041.18
+averaged distance from unity matrix: 0.000166627
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 7816
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 3600
+total distance from unity matrix: 2159.21
+averaged distance from unity matrix: 0.000166606
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 7721
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 3700
+total distance from unity matrix: 2280.57
+averaged distance from unity matrix: 0.000166587
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 7699
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 3800
+total distance from unity matrix: 2405.93
+averaged distance from unity matrix: 0.000166615
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 7646
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 3900
+total distance from unity matrix: 2536.29
+averaged distance from unity matrix: 0.000166751
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 7606
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 4000
+total distance from unity matrix: 2666.37
+averaged distance from unity matrix: 0.000166648
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 7510
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 4100
+total distance from unity matrix: 2801.55
+averaged distance from unity matrix: 0.000166659
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 7528
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 4200
+total distance from unity matrix: 2938.2
+averaged distance from unity matrix: 0.000166565
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 7420
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 4300
+total distance from unity matrix: 3080.59
+averaged distance from unity matrix: 0.000166609
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 7375
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 4400
+total distance from unity matrix: 3227.01
+averaged distance from unity matrix: 0.000166684
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 7358
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 4500
+total distance from unity matrix: 3373.27
+averaged distance from unity matrix: 0.000166581
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 7318
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 4600
+total distance from unity matrix: 3524.46
+averaged distance from unity matrix: 0.000166562
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 7283
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 4700
+total distance from unity matrix: 3680.88
+averaged distance from unity matrix: 0.000166631
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 7209
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 4800
+total distance from unity matrix: 3835.61
+averaged distance from unity matrix: 0.000166476
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 7190
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 4900
+total distance from unity matrix: 3999.02
+averaged distance from unity matrix: 0.000166556
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 7092
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 5000
+total distance from unity matrix: 4167.31
+averaged distance from unity matrix: 0.000166692
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 7127
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 5100
+total distance from unity matrix: 4335.38
+averaged distance from unity matrix: 0.000166681
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 7033
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 5200
+total distance from unity matrix: 4505.75
+averaged distance from unity matrix: 0.000166633
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 7090
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 5300
+total distance from unity matrix: 4681.99
+averaged distance from unity matrix: 0.000166678
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 7008
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 5400
+total distance from unity matrix: 4858.08
+averaged distance from unity matrix: 0.000166601
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6977
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 5500
+total distance from unity matrix: 5039.6
+averaged distance from unity matrix: 0.000166598
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6930
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 5600
+total distance from unity matrix: 5222.51
+averaged distance from unity matrix: 0.000166534
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6918
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 5700
+total distance from unity matrix: 5413.56
+averaged distance from unity matrix: 0.000166622
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6905
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 5800
+total distance from unity matrix: 5606.06
+averaged distance from unity matrix: 0.000166649
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6902
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 5900
+total distance from unity matrix: 5800.86
+averaged distance from unity matrix: 0.000166644
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6836
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 6000
+total distance from unity matrix: 5998.25
+averaged distance from unity matrix: 0.000166618
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6832
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 6100
+total distance from unity matrix: 6200.11
+averaged distance from unity matrix: 0.000166625
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6823
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 6200
+total distance from unity matrix: 6404.97
+averaged distance from unity matrix: 0.000166622
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6773
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 6300
+total distance from unity matrix: 6611.52
+averaged distance from unity matrix: 0.000166579
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6770
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 6400
+total distance from unity matrix: 6822.48
+averaged distance from unity matrix: 0.000166564
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6748
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 6500
+total distance from unity matrix: 7039.22
+averaged distance from unity matrix: 0.000166609
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6682
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 6600
+total distance from unity matrix: 7256.39
+averaged distance from unity matrix: 0.000166584
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6713
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 6700
+total distance from unity matrix: 7480.67
+averaged distance from unity matrix: 0.000166644
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6665
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 6800
+total distance from unity matrix: 7705.73
+averaged distance from unity matrix: 0.000166646
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6699
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 6900
+total distance from unity matrix: 7936.63
+averaged distance from unity matrix: 0.000166701
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6648
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 7000
+total distance from unity matrix: 8163.7
+averaged distance from unity matrix: 0.000166606
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6620
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 7100
+total distance from unity matrix: 8397.4
+averaged distance from unity matrix: 0.000166582
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6599
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 7200
+total distance from unity matrix: 8640.41
+averaged distance from unity matrix: 0.000166675
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6592
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 7300
+total distance from unity matrix: 8882.89
+averaged distance from unity matrix: 0.00016669
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6570
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 7400
+total distance from unity matrix: 9122.15
+averaged distance from unity matrix: 0.000166584
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6544
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 7500
+total distance from unity matrix: 9373.24
+averaged distance from unity matrix: 0.000166635
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6537
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 7600
+total distance from unity matrix: 9622.19
+averaged distance from unity matrix: 0.000166589
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6508
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 7700
+total distance from unity matrix: 9879.43
+averaged distance from unity matrix: 0.000166629
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6527
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 7800
+total distance from unity matrix: 10141.5
+averaged distance from unity matrix: 0.000166692
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6469
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 7900
+total distance from unity matrix: 10396
+averaged distance from unity matrix: 0.000166576
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6473
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 8000
+total distance from unity matrix: 10667.5
+averaged distance from unity matrix: 0.000166679
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6483
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 8100
+total distance from unity matrix: 10934.7
+averaged distance from unity matrix: 0.000166662
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6462
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 8200
+total distance from unity matrix: 11202.6
+averaged distance from unity matrix: 0.000166606
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6474
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 8300
+total distance from unity matrix: 11476.5
+averaged distance from unity matrix: 0.000166591
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6462
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 8400
+total distance from unity matrix: 11756.3
+averaged distance from unity matrix: 0.000166614
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6429
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 8500
+total distance from unity matrix: 12035.3
+averaged distance from unity matrix: 0.000166579
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6419
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 8600
+total distance from unity matrix: 12323.5
+averaged distance from unity matrix: 0.000166624
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6385
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 8700
+total distance from unity matrix: 12617.2
+averaged distance from unity matrix: 0.000166696
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6391
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 8800
+total distance from unity matrix: 12903.9
+averaged distance from unity matrix: 0.00016663
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6396
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 8900
+total distance from unity matrix: 13200.8
+averaged distance from unity matrix: 0.000166656
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6374
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 9000
+total distance from unity matrix: 13493.7
+averaged distance from unity matrix: 0.000166589
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6362
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 9100
+total distance from unity matrix: 13801.7
+averaged distance from unity matrix: 0.000166667
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6359
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 9200
+total distance from unity matrix: 14103.7
+averaged distance from unity matrix: 0.000166632
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6342
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 9300
+total distance from unity matrix: 14411
+averaged distance from unity matrix: 0.000166621
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6342
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 9400
+total distance from unity matrix: 14726.7
+averaged distance from unity matrix: 0.000166667
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6315
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 9500
+total distance from unity matrix: 15038.1
+averaged distance from unity matrix: 0.000166627
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6319
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 9600
+total distance from unity matrix: 15358.4
+averaged distance from unity matrix: 0.000166649
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6313
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 9700
+total distance from unity matrix: 15678.9
+averaged distance from unity matrix: 0.000166637
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6301
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 9800
+total distance from unity matrix: 16003.4
+averaged distance from unity matrix: 0.000166632
+=================================================
+Generating space ...  done
+Number of basis: 6000
+Time of trial: 6290
+Computing matrix representation of the stochastic identity operator ...  done
+dim of space: 6000
+dim of basis: 9900
+total distance from unity matrix: 16328.5
+averaged distance from unity matrix: 0.0001666
+=================================================

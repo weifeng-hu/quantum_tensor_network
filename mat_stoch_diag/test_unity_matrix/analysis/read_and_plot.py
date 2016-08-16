@@ -1,4 +1,3 @@
-
 def read( file_name, number_of_lines ):
 
   import decimal;
