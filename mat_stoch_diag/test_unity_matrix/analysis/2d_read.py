@@ -41,17 +41,22 @@ averaged_distances = [];
 averaged_distances = read_files( number_of_files, number_of_sets );
 number_of_basis = read_file( number_of_sets );
 
-#import numpy as np;
-#import matplotlib.pyplot as plt;
+import numpy as np;
+import matplotlib.pyplot as plt;
 
-#plt.switch_backend( 'Qt4Agg' );
+plt.switch_backend( 'Qt4Agg' );
 
+ax = plt.figure().add_subplot(111);
+plt.xlim(0, 10000);
+plt.ylim(0, 0.0015);
+plt.xlabel( "space size" );
+plt.ylabel( "averaged distance from unity matrix" );
 for i in range( 0, number_of_sets ):
   basis_length = number_of_basis[i];
   space_sizes = [ 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000 ];
   averaged_distances_of_space_size = [];
   for j in range( 0, 9 ):
     averaged_distances_of_space_size.append( averaged_distances[j][i] );
-#  plt.xlabel( "space size at basis length " + str(basis_length) );
-#  plt.ylabel( "averaged distance from unity matrix" );
-#  plt.scatter( space_sizes, averaged_distances_of_space_size );
+  ax.scatter( space_sizes, averaged_distances_of_space_size );
+
+plt.show();
