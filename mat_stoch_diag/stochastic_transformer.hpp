@@ -53,13 +53,50 @@ private:
 
     for( size_t j = 0; j < new_space_size; j++ ) {
       for( size_t i = 0; i < original_space_size; i++ ) {
-        (this->space_transform_matrix_)(j, i) = (*(original_space_ptr_))(i) * (*( new_space_ptr_))(j);
+        (this->space_transform_matrix_)(i, j) = (*(original_space_ptr_))(i) * (*( new_space_ptr_))(j);
+//        std :: cout << (this->space_transform_matrix_)(j, i) << std :: endl;
       }
     }
 
   }
 
 public:
+  matrix_type transform_by_rotation_matrix( matrix_type& matrixA, size_t n_basis ) {
+
+    if ( n_basis > this->new_space_ptr_->size() ) {
+      std :: cout << "requested number of basis is larger than number of avaiable space size" << std :: endl;
+      exit(1);
+    }
+
+    matrix_type rotation_matrix = this->new_space_ptr_->export_rotmat();
+
+    matrix_type final_matrix;
+    final_matrix.resize( n_basis, n_basis );
+    final_matrix.clear();
+
+    matrix_type mid_matrix;
+    mid_matrix.resize( matrixA.nrow(), n_basis );
+    mid_matrix.clear();
+    for( size_t kov = 0; kov < n_basis; kov++ ){
+     for( size_t imat = 0; imat < matrixA.nrow(); imat++ ) {
+      for( size_t jmat = 0; jmat < matrixA.ncol(); jmat++ ) {
+        mid_matrix( imat, kov ) += matrixA( imat, jmat ) * ( rotation_matrix )( kov, jmat );
+      }
+     }
+    }
+
+    for( size_t kov = 0; kov < n_basis; kov++ ) {
+     for( size_t imat = 0; imat < n_basis; imat++ ) {
+      for( size_t jmat = 0; jmat < rotation_matrix.nrow(); jmat++ ) {
+        final_matrix( imat, kov ) += rotation_matrix( imat, jmat ) * mid_matrix( jmat, kov );
+      }
+     }
+    }
+
+    return final_matrix;
+ 
+  }
+
   matrix_type transform_by_overlap( matrix_type& matrixA, size_t n_basis ) {
 
     if ( n_basis > new_space_ptr_->size() ) {
@@ -89,8 +126,6 @@ public:
       }
      }
     }
-
-
 
     return final_matrix;
   }

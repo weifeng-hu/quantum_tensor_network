@@ -150,10 +150,15 @@ public:
     this->store_.resize( ind );
   }
 
+  std :: vector< double > store() {
+    return this->store_;
+  }
+
 private:
   double determine_sign( int value ) {
     return ( value % 2 ) == 1 ? 1.0e0 : -1.0e0;
   }
+
 
 private:
   std :: vector< double >  store_;

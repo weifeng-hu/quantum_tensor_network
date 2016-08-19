@@ -103,15 +103,18 @@ public:
       }
       double norm = sqrt(norm2);
 
+//      std :: cout << "coefficients:  ";
       for( size_t j = 0; j < coefficients_of_original_space_basis.size(); j++ ) {
         coefficients_of_original_space_basis.at(j) *= 1.0e0/norm;
+//        std :: cout << coefficients_of_original_space_basis.at(j) << " ";
       }
+//      std :: cout << std :: endl;
 
       StochasticBasis new_basis;
       new_basis.resize( eigen_pair.first.col(0).size() );
       new_basis.clear();
       for( size_t j = 0; j < eigen_pair.second.size(); j++ ) {
-        new_basis = new_basis + coefficients_of_original_space_basis.at(i) * StochasticBasis( eigen_pair.first.col( i ) );
+        new_basis = new_basis + coefficients_of_original_space_basis.at(j) * StochasticBasis( eigen_pair.first.col( j ) );
       }
 
       new_space( non_residual_size + i ) = new_basis;

@@ -37,6 +37,14 @@ public:
     { return this->store_.at( irow * ncol_ + icol ); }
   double& operator() ( size_t irow, size_t icol )
     { return this->store_.at( irow * ncol_ + icol ); }
+  SimpleMatrix& operator*= ( double n ) {
+    for( size_t i = 0; i < this->nrow_; i++ ) {
+      for( size_t j = 0; j < this->ncol_; j++ ) {
+        (*this)(i,j) *= n;
+      }
+    }
+    return *this;
+  }
   size_t nrow() const { return this->nrow_; }
   size_t ncol() const { return this->ncol_; }
   size_t& set_nrow() { return this->nrow_; }
@@ -44,9 +52,9 @@ public:
 
   void print() {
     std :: cout << "Matrix:" << std :: endl;
-    for( size_t i = 0; i < this->ncol_; i++ ) {
-      for( size_t j = 0; j < this->nrow_; j++ ) {
-        std :: cout <<  std :: fixed << std :: setprecision(3) << std :: setw(6) << (*this)( i, j ) << " ";
+    for( size_t j = 0; j < this->nrow_; j++ ) {
+      for( size_t i = 0; i < this->ncol_; i++ ) {
+        std :: cout <<  std :: fixed << std :: setprecision(3) << std :: setw(6) << (*this)( j, i ) << " ";
       }
       std :: cout << std :: endl;
     }
@@ -68,6 +76,12 @@ public:
       new_vector.at(i) = (*(this))( i, icol );
     }
     return new_vector;
+  }
+
+  void set_col( std :: vector<double> new_col, size_t icol ) {
+    for( size_t i = 0; i < new_col.size(); i++ ) {
+      (*this)(i, icol) = new_col.at(i);
+    }
   }
 
   const std :: vector< double >& set_store() const 

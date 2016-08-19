@@ -62,6 +62,12 @@ public:
       }
     }
 
+
+    for( size_t i_basis = 0; i_basis < new_space_final.size(); i_basis++ ) {
+      double norm2 = new_space_final(i_basis) * new_space_final(i_basis);
+      new_space_final(i_basis) = (1.0e0/sqrt(norm2)) * new_space_final(i_basis); 
+    }
+
     *this = new_space_final;
   }
 
@@ -88,6 +94,16 @@ public:
       this->store_.at(i).print();
     }
     std :: cout << std :: endl;
+  }
+
+  SimpleMatrix export_rotmat() {
+    SimpleMatrix rotmat;
+    rotmat.resize( this->store_.at(0).size(), this->store_.size() );
+    rotmat.clear();
+    for( size_t i = 0; i < this->store_.size(); i++ ) {
+      rotmat.set_col( this->store_.at(i).store(), i );
+    }
+    return rotmat;
   }
 
 private:

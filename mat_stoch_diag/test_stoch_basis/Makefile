@@ -1,6 +1,6 @@
 shell	= /bin/sh
 cpp	= g++ -std=c++0x -g -fopenmp
-cppopt	= -O0
+cppopt	= -O2
 cppsrcs	= main.cpp
 cppobjs	= $(cppsrcs:.cpp=.o)
 fopt	= -O0

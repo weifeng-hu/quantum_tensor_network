@@ -47,7 +47,7 @@ import matplotlib.pyplot as plt;
 plt.switch_backend( 'Qt4Agg' );
 
 ax = plt.figure().add_subplot(111);
-plt.xlim(0, 10000);
+plt.xlim(0, 10000 );
 plt.ylim(0, 0.0015);
 plt.xlabel( "space size" );
 plt.ylabel( "averaged distance from unity matrix" );

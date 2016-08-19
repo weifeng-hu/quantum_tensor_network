@@ -38,8 +38,6 @@ public:
     int dimension = matrix.nrow();
     symdiag_(new_eigen_pair.first.set_store().data(), new_eigen_pair.second.data(), &dimension );
 
-    std :: cout << &new_eigen_pair <<  std :: endl;
-
     return new_eigen_pair;
 
   }
