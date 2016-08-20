@@ -47,14 +47,14 @@ public:
   }
   size_t nrow() const { return this->nrow_; }
   size_t ncol() const { return this->ncol_; }
-  size_t& set_nrow() { return this->nrow_; }
-  size_t& set_ncol() { return this->ncol_; }
+  size_t& set_nrow()  { return this->nrow_; }
+  size_t& set_ncol()  { return this->ncol_; }
 
   void print() {
     std :: cout << "Matrix:" << std :: endl;
     for( size_t j = 0; j < this->nrow_; j++ ) {
       for( size_t i = 0; i < this->ncol_; i++ ) {
-        std :: cout <<  std :: fixed << std :: setprecision(3) << std :: setw(6) << (*this)( j, i ) << " ";
+        std :: cout <<  std :: fixed << std :: setprecision(7) << std :: setw(10) << (*this)( j, i ) << " ";
       }
       std :: cout << std :: endl;
     }

@@ -41,12 +41,28 @@ int main( int argc, char* argv[] ) {
   mat_stoch_diag :: MatrixInitializer initializer;
   initializer.random_symmetric_tridiagonal( new_matrix );
 
+  for( size_t i = 1; i <= dimension_of_basis; i++ ) {
+    mat_stoch_diag :: SimpleMatrix sub_matrix;
+    sub_matrix.resize( i, i );
+
+    for( size_t j = 0; j < sub_matrix.nrow(); j++ ) {
+      for( size_t k = 0; k < sub_matrix.ncol(); k++ ) {
+        sub_matrix(j,k) = new_matrix(j,k);
+      }
+    }
+
+    mat_stoch_diag :: EigenpairProcessor eigen_processor_i;
+    std :: pair< mat_stoch_diag :: SimpleMatrix, std :: vector< double > > eigen_pair_i = 
+      eigen_processor_i.diagonalise( sub_matrix );
+    std :: cout << eigen_pair_i.second.at(0) << std :: endl;
+  }
+  return 0;
+
   mat_stoch_diag :: EigenpairProcessor eigen_processor;
   std :: pair< mat_stoch_diag :: SimpleMatrix, std :: vector< double > > eigen_pair = 
      eigen_processor.diagonalise( new_matrix );
 
 //  eigen_pair.first *= sqrt(double(dimension_of_basis));
-
 //  eigen_pair.first.print();
 
   for( size_t i = 0; i < target_space_size; i++ ) {
@@ -55,7 +71,7 @@ int main( int argc, char* argv[] ) {
 
   mat_stoch_diag :: StochasticSpace original_space;
   for( size_t i = 0; i < eigen_pair.second.size(); i++ ) {
-    original_space.push_back( mat_stoch_diag :: StochasticBasis( eigen_pair.first.col(i) ) );
+    original_space.push_back( mat_stoch_diag :: StochasticBasis( eigen_pair.first.row(i) ) );
   }
 
   mat_stoch_diag :: StochasticUnityOperator operator_matrix_original( &original_space );
@@ -91,13 +107,16 @@ int main( int argc, char* argv[] ) {
   std :: pair< mat_stoch_diag :: SimpleMatrix, std :: vector< double > > eigen_pair_x = 
      eigen_processor.diagonalise( transformed_matrix );
 
+
+  std :: cout << " ==================================== " << std :: endl;
   double eigval_distance = 0.0e0;
   for( size_t i = 0; i < target_space_size; i++ ) {
     eigval_distance += ( eigen_pair.second.at(i) - eigen_pair_x.second.at(i) ); 
     std :: cout << eigen_pair.second.at(i) << " " << eigen_pair_x.second.at(i) << std :: endl;
   }
-  std :: cout << eigval_distance << std :: endl;
-  std :: cout << eigval_distance/target_space_size << std :: endl;
+
+//  std :: cout << eigval_distance << std :: endl;
+//  std :: cout << eigval_distance/target_space_size << std :: endl;
 
   return 0;
 

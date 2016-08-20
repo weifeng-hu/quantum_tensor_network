@@ -70,6 +70,8 @@ public:
 
     matrix_type rotation_matrix = this->new_space_ptr_->export_rotmat();
 
+//    rotation_matrix.print();
+
     matrix_type final_matrix;
     final_matrix.resize( n_basis, n_basis );
     final_matrix.clear();
@@ -77,10 +79,11 @@ public:
     matrix_type mid_matrix;
     mid_matrix.resize( matrixA.nrow(), n_basis );
     mid_matrix.clear();
+
     for( size_t kov = 0; kov < n_basis; kov++ ){
      for( size_t imat = 0; imat < matrixA.nrow(); imat++ ) {
       for( size_t jmat = 0; jmat < matrixA.ncol(); jmat++ ) {
-        mid_matrix( imat, kov ) += matrixA( imat, jmat ) * ( rotation_matrix )( kov, jmat );
+        mid_matrix( imat, kov ) += matrixA( imat, jmat ) * ( rotation_matrix )( jmat, kov );
       }
      }
     }
@@ -88,7 +91,7 @@ public:
     for( size_t kov = 0; kov < n_basis; kov++ ) {
      for( size_t imat = 0; imat < n_basis; imat++ ) {
       for( size_t jmat = 0; jmat < rotation_matrix.nrow(); jmat++ ) {
-        final_matrix( imat, kov ) += rotation_matrix( imat, jmat ) * mid_matrix( jmat, kov );
+        final_matrix( imat, kov ) += rotation_matrix( jmat, imat ) * mid_matrix( jmat, kov );
       }
      }
     }
