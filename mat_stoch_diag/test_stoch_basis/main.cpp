@@ -21,6 +21,7 @@ int main( int argc, char* argv[] ) {
 
   int dimension_of_basis  = atoi( argv[1] );
   int dimension_of_space  = dimension_of_basis;
+  int dimension_of_sub    = dimension_of_basis/2;
   int non_residual_space_size = atoi( argv[2] );
   int target_space_size = atoi( argv[3] );
 
@@ -45,8 +46,26 @@ int main( int argc, char* argv[] ) {
   std :: pair< mat_stoch_diag :: SimpleMatrix, std :: vector< double > > eigen_pair = 
      eigen_processor.diagonalise( new_matrix );
 
-//  eigen_pair.first *= sqrt(double(dimension_of_basis));
+  // Now take a small portion of the new matrix
+  mat_stoch_diag :: SimpleMatrix sub_matrix;
+  sub_matrix.resize( dimension_of_sub, dimension_of_sub );
+  sub_matrix.clear();
+  for( size_t i = 0; i < dimension_of_sub; i++ ) {
+    for( size_t j = 0; j < dimension_of_sub; j++ ) {
+      sub_matrix(i, j) = new_matrix(i, j);
+    }
+  }
+  std :: pair< mat_stoch_diag :: SimpleMatrix, std :: vector< double > > eigen_pair_sub = 
+    eigen_processor.diagonalise( sub_matrix );
 
+  mat_stoch_diag :: StochasticSpace target_space;
+  StochasticSpace.resize( target_space_size, target_space_size );
+  for( size_t i = 0; i < eigen_pair_sub.second.size(); i++ ) {
+    
+  }
+
+  return 0;
+//  eigen_pair.first *= sqrt(double(dimension_of_basis));
 //  eigen_pair.first.print();
 
   for( size_t i = 0; i < target_space_size; i++ ) {
@@ -100,6 +119,5 @@ int main( int argc, char* argv[] ) {
   std :: cout << eigval_distance/target_space_size << std :: endl;
 
   return 0;
-
 
 } // end of main()

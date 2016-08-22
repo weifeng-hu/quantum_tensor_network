@@ -6,7 +6,7 @@ cppobjs	= $(cppsrcs:.cpp=.o)
 fopt	= -O0
 fsrcs	= symdiag.f
 fobjs	= $(fsrcs:.f=.o)
-libs	= -llapack -lblas -lgfortran
+libs	= -llapack -lblas -lgfortran -lrt
 target	= stoch_eigen_test
 
 $(target): $(cppobjs) $(fobjs)
