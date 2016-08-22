@@ -22,11 +22,17 @@ public:
 
   StochasticSpace( SimpleMatrix& eigenvec ) {
     for( size_t i = 0; i < eigenvec.ncol(); i++ ) {
-      this->push_back( StochasticBasis( eigenvec.col(i) ) );
+      this->push_back( StochasticBasis( eigenvec.row(i) ) );
     }
   }
 
 public:
+  void clear() {
+    for( size_t i = 0; i < this->store_.size(); i++ ) {
+      this->store_.at(i).clear();
+    }
+  }
+
   void generate_space( size_t size_of_base, size_t dimension ) {
     std :: cout << "Generating space ... ";
     size_t count = 0;

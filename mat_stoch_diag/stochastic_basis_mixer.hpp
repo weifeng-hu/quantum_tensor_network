@@ -78,10 +78,11 @@ public:
     // length of each basis
     const size_t length = eigen_pair.first.col(0).size();
     // create new space
-    StochasticSpace new_space( total_size_, length );
+    StochasticSpace new_space( this->total_size_, length );
+    new_space.clear();
     // fill in non-stochastic part
     for( size_t i = 0; i < non_residual_size; i++ ) {
-      new_space(i) = StochasticBasis( eigen_pair.first.col(i) );
+      new_space(i) = StochasticBasis( eigen_pair.first.row(i) );
     }
 
     const size_t residual_size = this->total_size_ - non_residual_size;
@@ -92,8 +93,9 @@ public:
     std :: default_random_engine generator;
     for( size_t i = 0; i < residual_size; i++ ) {
       std :: vector<double> coefficients_of_original_space_basis;
-      coefficients_of_original_space_basis.resize( eigen_pair.second.size() );
-      for( size_t j = 0; j < eigen_pair.second.size(); j++ ) {
+//      coefficients_of_original_space_basis.resize( eigen_pair.second.size() );
+      coefficients_of_original_space_basis.resize( residual_size );
+      for( size_t j = 0; j < coefficients_of_original_space_basis.size(); j++ ) {
         coefficients_of_original_space_basis.at(j) = generator();
       }
 
@@ -113,8 +115,8 @@ public:
       StochasticBasis new_basis;
       new_basis.resize( eigen_pair.first.col(0).size() );
       new_basis.clear();
-      for( size_t j = 0; j < eigen_pair.second.size(); j++ ) {
-        new_basis = new_basis + coefficients_of_original_space_basis.at(j) * StochasticBasis( eigen_pair.first.col( j ) );
+      for( size_t j = 0; j < residual_size; j++ ) {
+        new_basis = new_basis + coefficients_of_original_space_basis.at(j) * StochasticBasis( eigen_pair.first.row( non_residual_size + j ) );
       }
 
       new_space( non_residual_size + i ) = new_basis;
