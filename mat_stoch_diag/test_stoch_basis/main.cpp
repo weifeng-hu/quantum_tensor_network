@@ -57,11 +57,15 @@ int main( int argc, char* argv[] ) {
       eigen_processor_i.diagonalise( sub_matrix );
     std :: cout << eigen_pair_i.second.at(0) << std :: endl;
   }
-  return 0;
 
   mat_stoch_diag :: EigenpairProcessor eigen_processor;
   std :: pair< mat_stoch_diag :: SimpleMatrix, std :: vector< double > > eigen_pair = 
      eigen_processor.diagonalise( new_matrix );
+
+  mat_stoch_diag :: StochasticSpace original_space;
+  for( size_t i = 0; i < eigen_pair.second.size(); i++ ) {
+    original_space.push_back( mat_stoch_diag :: StochasticBasis( eigen_pair.first.row(i) ) );
+  }
 
   // Now take a small portion of the new matrix
   mat_stoch_diag :: SimpleMatrix sub_matrix;
@@ -75,10 +79,29 @@ int main( int argc, char* argv[] ) {
   std :: pair< mat_stoch_diag :: SimpleMatrix, std :: vector< double > > eigen_pair_sub = 
     eigen_processor.diagonalise( sub_matrix );
 
-  mat_stoch_diag :: StochasticSpace target_space;
-  StochasticSpace.resize( target_space_size, target_space_size );
+  mat_stoch_diag :: StochasticSpace target_space( target_space_size, target_space_size );
   for( size_t i = 0; i < eigen_pair_sub.second.size(); i++ ) {
-    
+    mat_stoch_diag :: StochasticBasis new_basis;
+    new_basis.resize( target_space_size );
+    new_basis.clear();
+    std :: vector< double > eigvec_i = eigen_pair.first.row(i);
+    for( size_t j = 0; j < eigvec_i.size(); j++ ) {
+      new_basis(j) = eigvec_i.at(j);
+    }
+    target_space(i) = new_basis;
+  }
+
+  target_space.orthogonalization();
+
+  mat_stoch_diag :: StochasticTransformer transformer_x( &original_space, &target_space );
+  mat_stoch_diag :: SimpleMatrix target_matrix_x 
+   = transformer.transform_by_rotation_matrix( new_matrix, target_space_size );
+
+  std :: pair< mat_stoch_diag :: SimpleMatrix, std :: vector<double> > eigen_pair_target = 
+    eigen_processor.diagonalise();
+
+  for( size_t i = 0; i < eigen_pair_target.size(); i++ ) {
+    std :: cout << eigen_pair_target.second.at(i) << std :: endl;
   }
 
   return 0;
@@ -87,11 +110,6 @@ int main( int argc, char* argv[] ) {
 
   for( size_t i = 0; i < target_space_size; i++ ) {
 //    std :: cout << eigen_pair.second.at(i) << std :: endl;
-  }
-
-  mat_stoch_diag :: StochasticSpace original_space;
-  for( size_t i = 0; i < eigen_pair.second.size(); i++ ) {
-    original_space.push_back( mat_stoch_diag :: StochasticBasis( eigen_pair.first.row(i) ) );
   }
 
   mat_stoch_diag :: StochasticUnityOperator operator_matrix_original( &original_space );

@@ -19,7 +19,7 @@ public:
     this->store_.resize(0);
   }
   StochasticBasis( std :: vector<double> vec ) {
-    this->store_ = vec;
+    this->store_ = vec; 
   }
   StochasticBasis( size_t n, std :: default_random_engine* generator_ptr ) {
     this->store_.resize( n );
