@@ -122,12 +122,43 @@ public:
       new_space( non_residual_size + i ) = new_basis;
     }
 
-
     new_space.orthogonalization();
     return new_space;
 
   }
 
+  StochasticSpace equal_prob_residual_space( eigen_pair_type eigen_pair, size_t non_residual_size ) {
+
+    const size_t full_size = eigen_pair.second.size();
+    const size_t length = eigen_pair.first.col(0).size();
+    StochasticSpace new_space( this->total_size_, length );
+    new_space.clear();
+
+    for( size_t i = 0; i < non_residual_size; i++ ) {
+      new_space(i) = StochasticBasis( eigen_pair.first.row(i) );
+    }
+
+    const size_t residual_size = this->total_size_ - non_residual_size;
+    const size_t sample_size = full_size - non_residual_size;
+
+    StochasticSpace new_coeffs( residual_size, sample_size );
+
+    for( size_t i = 0; i < residual_size; i++ ) {
+      StochasticBasis new_coeff = new_coeffs(i);
+      StochasticBasis new_basis;
+      new_basis.resize( eigen_pair.first.row(0).size() );
+      new_basis.clear();
+      for( size_t j = 0; j < residual_size; j++ ) {
+        new_basis = new_basis + new_coeff(j) * StochasticBasis( eigen_pair.first.row( non_residual_size + j ) );
+      }
+  
+      new_space( non_residual_size + i ) = new_basis;
+    }
+ 
+    new_space.orthogonalization();
+    return new_space;
+
+  }
 
 private:
   size_t total_size_;
