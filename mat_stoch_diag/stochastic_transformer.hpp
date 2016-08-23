@@ -28,7 +28,7 @@ public:
     this->original_space_ptr_ = pointer_to_original_space;
     this->new_space_ptr_ = pointer_to_new_space;
 
-    this->compute_space_transformation_matrix();
+//    this->compute_space_transformation_matrix();
 
   }
   ~StochasticTransformer() {}
@@ -70,8 +70,6 @@ public:
 
     matrix_type rotation_matrix = this->new_space_ptr_->export_rotmat();
 
-//    rotation_matrix.print();
-
     matrix_type final_matrix;
     final_matrix.resize( n_basis, n_basis );
     final_matrix.clear();
@@ -99,6 +97,7 @@ public:
     return final_matrix;
  
   }
+
 
   matrix_type transform_by_overlap( matrix_type& matrixA, size_t n_basis ) {
 

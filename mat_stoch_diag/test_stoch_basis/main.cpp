@@ -23,7 +23,8 @@ int main( int argc, char* argv[] ) {
   int dimension_of_space  = dimension_of_basis;
   int dimension_of_sub    = dimension_of_basis/2;
   int non_residual_space_size = atoi( argv[2] );
-  int target_space_size = atoi( argv[3] );
+  int residual_space_size = non_residual_space_size;
+  int target_space_size = dimension_of_sub + residual_space_size;
 
   if ( dimension_of_basis == 0 ) {
     std :: cout << " dimension of basis must be nonzero " << std :: endl;
@@ -55,8 +56,11 @@ int main( int argc, char* argv[] ) {
     mat_stoch_diag :: EigenpairProcessor eigen_processor_i;
     std :: pair< mat_stoch_diag :: SimpleMatrix, std :: vector< double > > eigen_pair_i = 
       eigen_processor_i.diagonalise( sub_matrix );
-    std :: cout << eigen_pair_i.second.at(0) << std :: endl;
+     std :: cout << eigen_pair_i.second.at(0) << std :: endl;
   }
+
+  std :: cout << " +++++++++++++++++++++++++++++ " << std :: endl;
+
 
   mat_stoch_diag :: EigenpairProcessor eigen_processor;
   std :: pair< mat_stoch_diag :: SimpleMatrix, std :: vector< double > > eigen_pair = 
@@ -79,12 +83,35 @@ int main( int argc, char* argv[] ) {
   std :: pair< mat_stoch_diag :: SimpleMatrix, std :: vector< double > > eigen_pair_sub = 
     eigen_processor.diagonalise( sub_matrix );
 
-  mat_stoch_diag :: StochasticSpace target_space( target_space_size, target_space_size );
+  for( size_t i = 0; i < eigen_pair_sub.second.size(); i++ ) {
+    std :: cout << eigen_pair_sub.second.at(i) << std :: endl;
+  }
+
+  std :: cout << " ====================== " << std :: endl;
+
+  mat_stoch_diag :: SimpleMatrix sub_matrix_plus;
+  sub_matrix_plus.resize( target_space_size, target_space_size );
+  sub_matrix_plus.clear();
+  for( size_t i = 0; i < target_space_size; i++ ) {
+    for( size_t j = 0; j < target_space_size; j++ ) {
+      sub_matrix_plus(i, j) = new_matrix(i, j);
+    }
+  }
+  std :: pair< mat_stoch_diag :: SimpleMatrix, std :: vector< double > > eigen_pair_sub_plus = 
+    eigen_processor.diagonalise( sub_matrix_plus );
+
+  for( size_t i = 0; i < eigen_pair_sub_plus.second.size(); i++ ) {
+    std :: cout << eigen_pair_sub_plus.second.at(i) << std :: endl;
+  }
+
+  std :: cout << " ====================== " << std :: endl;
+
+  mat_stoch_diag :: StochasticSpace target_space( target_space_size, dimension_of_basis );
   for( size_t i = 0; i < eigen_pair_sub.second.size(); i++ ) {
     mat_stoch_diag :: StochasticBasis new_basis;
-    new_basis.resize( target_space_size );
+    new_basis.resize( dimension_of_basis );
     new_basis.clear();
-    std :: vector< double > eigvec_i = eigen_pair.first.row(i);
+    std :: vector< double > eigvec_i = eigen_pair_sub.first.row(i);
     for( size_t j = 0; j < eigvec_i.size(); j++ ) {
       new_basis(j) = eigvec_i.at(j);
     }
@@ -94,13 +121,14 @@ int main( int argc, char* argv[] ) {
   target_space.orthogonalization();
 
   mat_stoch_diag :: StochasticTransformer transformer_x( &original_space, &target_space );
+
   mat_stoch_diag :: SimpleMatrix target_matrix_x 
-   = transformer.transform_by_rotation_matrix( new_matrix, target_space_size );
+   = transformer_x.transform_by_rotation_matrix( new_matrix, target_space_size );
 
   std :: pair< mat_stoch_diag :: SimpleMatrix, std :: vector<double> > eigen_pair_target = 
-    eigen_processor.diagonalise();
+    eigen_processor.diagonalise( target_matrix_x  );
 
-  for( size_t i = 0; i < eigen_pair_target.size(); i++ ) {
+  for( size_t i = 0; i < eigen_pair_target.second.size(); i++ ) {
     std :: cout << eigen_pair_target.second.at(i) << std :: endl;
   }
 
