@@ -23,10 +23,14 @@ public:
   }
   StochasticBasis( size_t n, std :: default_random_engine* generator_ptr ) {
     this->store_.resize( n );
-    this->fill_with_one();
+//    this->fill_with_one();
 //    this->sign_randomize();
-    this->sign_uniform_randomize( generator_ptr );
+//    this->sign_uniform_randomize( generator_ptr );
 //    this->normalise();
+    for( size_t i = 0; i < n; i++ ) {
+      this->store_.at(i) = (*generator_ptr)();
+    }
+    this->normalise();
   }
   StochasticBasis( const SimpleMatrix& vec ) {
     this->store_ = vec.set_store();

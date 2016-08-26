@@ -134,25 +134,31 @@ public:
     StochasticSpace new_space( this->total_size_, length );
     new_space.clear();
 
-    for( size_t i = 0; i < non_residual_size; i++ ) {
-      new_space(i) = StochasticBasis( eigen_pair.first.row(i) );
-    }
+//    for( size_t i = 0; i < non_residual_size; i++ ) {
+//      new_space(i) = StochasticBasis( eigen_pair.first.row(i) );
+//    }
 
     const size_t residual_size = this->total_size_ - non_residual_size;
     const size_t sample_size = full_size - non_residual_size;
 
-    StochasticSpace new_coeffs( residual_size, sample_size );
+//    StochasticSpace new_coeffs( residual_size, sample_size );
+    StochasticSpace new_coeffs( this->total_size_, full_size );
+    new_coeffs.orthogonalization();
 
-    for( size_t i = 0; i < residual_size; i++ ) {
+    for( size_t i = 0; i < this->total_size_; i++ ) {
+//    for( size_t i = 0; i < residual_size; i++ ) {
       StochasticBasis new_coeff = new_coeffs(i);
       StochasticBasis new_basis;
       new_basis.resize( eigen_pair.first.row(0).size() );
       new_basis.clear();
-      for( size_t j = 0; j < residual_size; j++ ) {
-        new_basis = new_basis + new_coeff(j) * StochasticBasis( eigen_pair.first.row( non_residual_size + j ) );
+//      for( size_t j = 0; j < residual_size; j++ ) {
+      for( size_t j = 0; j < full_size; j++ ) {
+//        new_basis = new_basis + new_coeff(j) * StochasticBasis( eigen_pair.first.row( non_residual_size + j ) );
+        new_basis = new_basis + new_coeff(j) * StochasticBasis( eigen_pair.first.row( j ) );
       }
   
-      new_space( non_residual_size + i ) = new_basis;
+//      new_space( non_residual_size + i ) = new_basis;
+      new_space( i ) = new_basis;
     }
  
     new_space.orthogonalization();

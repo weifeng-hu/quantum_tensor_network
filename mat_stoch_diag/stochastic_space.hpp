@@ -33,15 +33,22 @@ public:
     }
   }
 
+  bool no_duplicate( StochasticBasis& basis ) {
+    for( size_t i = 0; i < this->size(); i++ ) {
+      if( fabs(  fabs(basis * (*this)(i))  - (double)( basis.size() ) ) < 1.0e-5 ) return false;
+    }
+    return true;
+  }
+
   void generate_space( size_t size_of_base, size_t dimension ) {
     std :: cout << "Generating space ... ";
     size_t count = 0;
     while( this->store_.size() < size_of_base ) {
 //    for( size_t i = 0; i < size_of_base; i++ ) {
       StochasticBasis new_basis( dimension, &(this->generator) );
-      if( new_basis.uniform_deviation() < 1.0e0 ) {
+//      if( new_basis.uniform_deviation() < 1.0e0 && this->no_duplicate( new_basis ) ) {
         this->store_.push_back( new_basis );
-      }
+//      }
       count++;
     }
     std :: cout << " done" << std :: endl;
@@ -55,23 +62,35 @@ public:
     StochasticSpace new_space_final;
     new_space_final.resize( this->store_.size() );
 
+//    this->export_rotmat().print();
+
     // use gram-schmidt orthogonalization
-    for( size_t i_basis = 0; i_basis < this->store_.size(); i_basis++ ) {
+    for( int i_basis = 0; i_basis < this->store_.size(); i_basis++ ) {
       new_space_final(i_basis) = this->store_.at(i_basis);
-      for( size_t j_basis = 0; j_basis < i_basis; j_basis++ ) {
+      for( int j_basis = 0; j_basis < i_basis; j_basis++ ) {
         double proj = this->store_.at(i_basis) * new_space_final(j_basis);
-        double norm2 = this->store_.at(i_basis) * new_space_final(i_basis);
+        double norm2 = new_space_final(j_basis) * new_space_final(j_basis);
         double proj_factor = proj / norm2;
         StochasticBasis proj_i_j = proj_factor * new_space_final(j_basis);
-        StochasticBasis minus_proj_i_j = ( -1.0e0) * proj_i_j;
-        new_space_final(i_basis) = this->store_.at(i_basis) + minus_proj_i_j;
+        StochasticBasis minus_proj_i_j = ( -1.0e0 ) * proj_i_j;
+        new_space_final(i_basis) = new_space_final(i_basis) + minus_proj_i_j;
       }
     }
 
-
+//    new_space_final.export_rotmat().print();
     for( size_t i_basis = 0; i_basis < new_space_final.size(); i_basis++ ) {
       double norm2 = new_space_final(i_basis) * new_space_final(i_basis);
+      if( fabs(norm2) >1.0e-12 ) {
       new_space_final(i_basis) = (1.0e0/sqrt(norm2)) * new_space_final(i_basis); 
+      }
+    }
+
+//    new_space_final.export_rotmat().print();
+
+    for( size_t i = 0; i < new_space_final.size(); i++ ) {
+      for( size_t j = 0; j < new_space_final.size(); j++ ) {
+//        std :: cout << i << " " << j << " " << new_space_final(i) * new_space_final(j) << std :: endl;
+      }
     }
 
     *this = new_space_final;

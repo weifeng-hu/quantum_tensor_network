@@ -69,6 +69,7 @@ public:
     }
 
     matrix_type rotation_matrix = this->new_space_ptr_->export_rotmat();
+//    rotation_matrix.print();
 
     matrix_type final_matrix;
     final_matrix.resize( n_basis, n_basis );
