@@ -53,10 +53,19 @@ int main( int argc, char* argv[] ) {
   std :: cout << "Obtaining eigenvalues of the matrix " << std :: endl;
   eigen_pair_type eigen_pair = eigen_processor.diagonalise( new_matrix );
 
+// We may need to implement a non-stochastic space class
+// Since stochastic unity has a 1/N prefactor without normalization
+//  eigen_pair.first *= sqrt(double(dimension_of_basis));
+//  eigen_pair.first.print();
+
   mat_stoch_diag :: StochasticSpace original_space;
   for( size_t i = 0; i < eigen_pair.second.size(); i++ ) {
     original_space.push_back( mat_stoch_diag :: StochasticBasis( eigen_pair.first.row(i) ) );
   }
+  mat_stoch_diag :: StochasticUnityOperator operator_matrix_original( &original_space );
+  double distance_from_unity_original = operator_matrix_original.distance_from_pure_unity_matrix();
+  double averaged_distance_from_unity_original 
+               = distance_from_unity_original/( dimension_of_basis * dimension_of_basis );
 
   std :: cout << "Obtaining lowest eigenvalues of sub matrices " << std :: endl;
   std :: vector< double > lowest_sub_eigenvalues;
@@ -115,6 +124,10 @@ int main( int argc, char* argv[] ) {
     = transformer_pure_stoch.transform_by_rotation_matrix( new_matrix, target_space_size );
   eigen_pair_type eigen_pair_pure_stoch = eigen_processor.diagonalise( target_matrix_pure_stoch );
 
+  mat_stoch_diag :: StochasticUnityOperator operator_matrix_pure_stoch( &target_space_pure_stoch );
+  double distance_from_unity_pure_stoch = operator_matrix_pure_stoch.distance_from_pure_unity_matrix();
+  double averaged_distance_from_unity_pure_stoch 
+               = distance_from_unity_pure_stoch/( dimension_of_basis * dimension_of_basis );
 
   std :: cout << "Obtaining residual stochastically transformed matrix eigenvalues " 
               << target_space_size << " x " << target_space_size 
@@ -132,6 +145,12 @@ int main( int argc, char* argv[] ) {
   }
   target_space_mixed.orthogonalization();
 
+
+  mat_stoch_diag :: StochasticUnityOperator operator_matrix_mixed( &target_space_mixed );
+  double distance_from_unity_mixed = operator_matrix_mixed.distance_from_pure_unity_matrix();
+  double averaged_distance_from_unity_mixed 
+               = distance_from_unity_mixed/( dimension_of_basis * dimension_of_basis );
+
   mat_stoch_diag :: StochasticTransformer transformer_mixed( &original_space, &target_space_mixed );
 
   mat_stoch_diag :: SimpleMatrix target_matrix_mixed
@@ -139,6 +158,8 @@ int main( int argc, char* argv[] ) {
   eigen_pair_type eigen_pair_mixed = eigen_processor.diagonalise( target_matrix_mixed );
 
   std :: cout << "original\t\thalf\t\thalf_p\t\tstoch\t\thalf_st" << std :: endl;
+  std :: cout << distance_from_unity_original << "\t\t" << "\t\t" << "\t\t" << "\t\t" << distance_from_unity_pure_stoch << "\t\t" << distance_from_unity_mixed << std :: endl;
+  std :: cout << averaged_distance_from_unity_original << "\t\t" << "\t\t" << "\t\t" << "\t\t" << averaged_distance_from_unity_pure_stoch << "\t\t" << averaged_distance_from_unity_mixed << std :: endl;
   std :: cout << eigen_pair.second.size() << "\t\t" 
               << eigen_pair_non_residual.second.size() << "\t\t" 
               << eigen_pair_sub_plus.second.size() << "\t\t" 
@@ -152,50 +173,6 @@ int main( int argc, char* argv[] ) {
                                 << eigen_pair_mixed.second.at(i)        << "\t\t"
                                 << std :: endl;
   }
-
-  return 0;
-
-//  eigen_pair.first *= sqrt(double(dimension_of_basis));
-//  eigen_pair.first.print();
-
-  mat_stoch_diag :: StochasticUnityOperator operator_matrix_original( &original_space );
-  double distance_from_unity_original = operator_matrix_original.distance_from_pure_unity_matrix();
-  double averaged_distance_from_unity_original 
-               = distance_from_unity_original/( dimension_of_basis * dimension_of_basis );
-//  std :: cout << "dim of space: " << dimension_of_basis << std :: endl;
-//  std :: cout << "dim of basis: " << dimension_of_space << std :: endl;
-  std :: cout << "total distance from unity matrix [original space]: "    << distance_from_unity_original          << std :: endl;
-  std :: cout << "averaged distance from unity matrix [original space]: " << averaged_distance_from_unity_original << std :: endl;
-  std :: cout << " -------------------------------------- " << std :: endl;
-
-  mat_stoch_diag :: StochasticBasisMixer basis_mixer( dimension_of_basis );
-  mat_stoch_diag :: StochasticSpace new_space = 
-    basis_mixer.mix_residual_space( eigen_pair, non_residual_space_size );
-  mat_stoch_diag :: StochasticUnityOperator operator_matrix_new( &new_space );
-
-  double distance_from_unity_new = operator_matrix_new.distance_from_pure_unity_matrix();
-  double averaged_distance_from_unity_new = distance_from_unity_new/(dimension_of_basis * dimension_of_basis);
-  std :: cout << "dim of space: " << dimension_of_space << std :: endl;
-  std :: cout << "dim of basis: " << dimension_of_space << std :: endl;
-  std :: cout << "total distance from unity matrix[new]: " << distance_from_unity_new << std :: endl;
-  std :: cout << "averaged distance from unity matrix[new]: " << averaged_distance_from_unity_new << std :: endl;
-  std :: cout << "=================================================" << std :: endl;
-
-  mat_stoch_diag :: StochasticTransformer transformer( &original_space, &new_space );
-  mat_stoch_diag :: SimpleMatrix transformed_matrix = transformer.transform_by_rotation_matrix( new_matrix, target_space_size );
-
-  std :: pair< mat_stoch_diag :: SimpleMatrix, std :: vector< double > > eigen_pair_x = 
-     eigen_processor.diagonalise( transformed_matrix );
-
-  std :: cout << " ==================================== " << std :: endl;
-  double eigval_distance = 0.0e0;
-  for( size_t i = 0; i < target_space_size; i++ ) {
-    eigval_distance += ( eigen_pair.second.at(i) - eigen_pair_x.second.at(i) ); 
-    std :: cout << eigen_pair.second.at(i) << " " << eigen_pair_x.second.at(i) << std :: endl;
-  }
-
-//  std :: cout << eigval_distance << std :: endl;
-//  std :: cout << eigval_distance/target_space_size << std :: endl;
 
   return 0;
 
