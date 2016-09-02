@@ -1,5 +1,6 @@
-
 #include <stdlib.h>
+#include <chrono>
+#include <ctime>
 #include <map>
 #include <vector>
 #include <iostream>
@@ -23,6 +24,12 @@ int main( int argc, char* argv[] ) {
   int target_size = atoi( argv[2] );
   int sampling_time = atoi( argv[3] );
 
+  std :: cout << "original space size: " << dimension_of_basis << std :: endl;
+  std :: cout << "imcomplete space size: " << target_size << std :: endl;
+  std :: cout << "size of sample: " << sampling_time << std :: endl;
+
+  auto start_time = std :: chrono :: high_resolution_clock :: now();
+
   MatrixInitializer initializer;
   EigenpairProcessor eigen_processor;
   SimpleMatrix new_matrix;
@@ -33,8 +40,8 @@ int main( int argc, char* argv[] ) {
 //  for( size_t i = 0; i < eigen_pair.second.size(); i++ ) {
 //    std :: cout << std :: fixed << std :: setw(10) << std :: setprecision(5) << eigen_pair.second.at(i) << std :: endl;
 //  }
-    std :: cout << std :: fixed << std :: setw(10) << std :: setprecision(5) << eigen_pair.second.at(0) << std :: endl;
-  std :: cout << " =================== " << std :: endl;
+  std :: cout << "standard lowest eigenvalue: ";
+  std :: cout << std :: fixed << std :: setw(10) << std :: setprecision(5) << eigen_pair.second.at(0) << std :: endl;
 
 
   std :: map< double, int > lowest_eigen_map;
@@ -78,7 +85,11 @@ int main( int argc, char* argv[] ) {
   }
 
   std :: map<double, int> :: iterator it = lowest_eigen_map.begin();
+  std :: cout << "incomplete space eigen value: ";
   std :: cout << it->first << std :: endl;
+
+  auto end_time = std :: chrono :: high_resolution_clock :: now();
+  std :: cout << "walltime elasped in seconds: " << std :: chrono :: duration<double> ( end_time - start_time ).count() << std :: endl;
 
   return 0;
 
