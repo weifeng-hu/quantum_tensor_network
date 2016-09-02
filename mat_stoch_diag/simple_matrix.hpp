@@ -45,6 +45,47 @@ public:
     }
     return *this;
   }
+
+  friend
+    SimpleMatrix operator* ( SimpleMatrix& mat_a, SimpleMatrix& mat_b ) {
+      SimpleMatrix retval;
+      size_t ncol_a = mat_a.ncol();
+      size_t nrow_a = mat_a.nrow();
+      size_t ncol_b = mat_b.ncol();
+      size_t nrow_b = mat_b.nrow();
+      retval.resize( nrow_a, ncol_b );
+      retval.clear();
+
+      if( ncol_a != nrow_b ) {
+        std :: cout << "ncol_a != nrow_b " << std :: endl;
+        abort();
+      }
+
+      for( size_t i = 0; i < nrow_a; i++ ) {
+        for( size_t j = 0; j < ncol_b; j++ ) {
+          for( size_t k = 0; k < ncol_a; k++ ) {
+            retval( i, j ) = retval( i, j ) + mat_a( i, k ) * mat_b( k, j );
+          }
+         }
+      }
+
+      return retval;
+
+    }
+
+  SimpleMatrix transpose() {
+    SimpleMatrix retval;
+
+    retval.resize( this->ncol_, this->nrow_ );
+    for( size_t i = 0; i < this->nrow_; i++ ) {
+      for( size_t j = 0; j < this->ncol_; j++ ) {
+        retval( j, i ) = (*this)( i , j );
+      }
+    }
+
+    return retval;
+  }
+
   size_t nrow() const { return this->nrow_; }
   size_t ncol() const { return this->ncol_; }
   size_t& set_nrow()  { return this->nrow_; }

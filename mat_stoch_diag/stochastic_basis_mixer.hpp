@@ -25,6 +25,33 @@ public:
   ~StochasticBasisMixer() {}
 
 public:
+  StochasticSpace equal_prob_stoch_space( StochasticSpace original_space ) {
+
+    StochasticSpace retval;
+
+    size_t length = original_space(0).size();
+    size_t original_size = original_space.size();
+    size_t target_size   = this->total_size_;
+
+    retval.resize( target_size, length );
+
+    StochasticSpace mixing_coeffs( original_size, target_size );
+    for( size_t i = 0; i < target_size; i++ ) {
+      for( size_t j = 0; j < original_size; j++ ) {
+        double coeff = mixing_coeff( i, j );
+        StochasticBasis new_basis( length );
+        new_basis.clear();
+        new_basis = new_basis + coeff * original_space(j);
+        retval(i) = new_basis;
+      }
+    }
+
+    retval.orthogonalization();
+
+    return retval;
+
+  }
+
   // Method 1: Replace the residual space with random vectors
   StochasticSpace replace_residual_space( eigen_pair_type eigen_pair, size_t non_residual_size ) {
 

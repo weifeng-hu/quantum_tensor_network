@@ -27,6 +27,16 @@ public:
   }
 
 public:
+  void generate_simple_orth_space( size_t size_of_basis, size_t dimension ) {
+
+    for( size_t i = 0; i < dimension; i++ ) {
+      StochasticBasis new_basis( dimension );
+      new_basis(i) = 1.0e0;
+    }
+
+  } // end of function void generate_simple_orth_space()
+
+public:
   void clear() {
     for( size_t i = 0; i < this->store_.size(); i++ ) {
       this->store_.at(i).clear();

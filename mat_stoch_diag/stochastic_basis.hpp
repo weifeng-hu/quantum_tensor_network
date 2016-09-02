@@ -21,6 +21,10 @@ public:
   StochasticBasis( std :: vector<double> vec ) {
     this->store_ = vec; 
   }
+  StochasticBasis( size_t n ) {
+    this->store_.resize(n);
+    this->clear();
+  }
   StochasticBasis( size_t n, std :: default_random_engine* generator_ptr ) {
     this->store_.resize( n );
 //    this->fill_with_one();

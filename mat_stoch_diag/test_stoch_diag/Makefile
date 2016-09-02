@@ -1,0 +1,31 @@
+shell	= /bin/sh
+cpp	= g++ -std=c++0x -g -fopenmp
+cppopt	= -O2
+cppsrcs	= main.cpp
+cppobjs	= $(cppsrcs:.cpp=.o)
+fopt	= -O2
+fsrcs	= symdiag.f
+fobjs	= $(fsrcs:.f=.o)
+libs	= -llapack -lblas -lgfortran -lrt
+target	= stoch_mat_diag
+
+$(target): $(cppobjs) $(fobjs)
+	$(cpp) $(cppopt) -o $(target) $(cppobjs) $(fobjs) ${libs}
+
+main.o:	../stochastic_space.hpp\
+	../stochastic_basis.hpp\
+        ../stochastic_unity_operator.hpp\
+	../stochastic_transformer.hpp\
+	../matrix_initializer.hpp\
+	../stochastic_basis_mixer.hpp\
+	../eigenpair_processor.hpp\
+	../simple_matrix.hpp\
+	../sub_matrix_sampler.hpp\
+	main.cpp
+	$(cpp) $(cppopt) -c main.cpp
+
+symdiag.o:	../symdiag.f
+	gfortran $(fopt) -c ../symdiag.f
+
+clean:
+	rm *.o $(target);
