@@ -55,7 +55,7 @@ public:
     return new_matrix;
   }
 
-  std :: vector<int> get_choice_key( size_t n, size_t target_size ) {
+  static std :: vector<int> get_choice_key( size_t n, size_t target_size ) {
 
     std :: vector<int> retval;
     retval.resize(n);
@@ -78,7 +78,7 @@ public:
     return retval;
   }
 
-  bool check_n( std :: vector<int>& vec, int target_size ) {
+  static bool check_n( std :: vector<int>& vec, int target_size ) {
     bool retval = true;
 
     if( vec.size() < target_size ) {

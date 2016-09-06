@@ -73,6 +73,12 @@ public:
 
     }
 
+  SimpleMatrix inverse() {
+    SimpleMatrix retval;
+    retval.resize( this->ncol_, this->nrow_ );
+    // to be implemented
+  }
+
   SimpleMatrix transpose() {
     SimpleMatrix retval;
 

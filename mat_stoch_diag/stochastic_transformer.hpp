@@ -5,6 +5,7 @@
 #include <vector>
 #include <iostream>
 #include "simple_matrix.hpp"
+#include "matrix_operations.hpp"
 #include "stochastic_basis.hpp"
 #include "stochastic_space.hpp"
 #include "stochastic_unity_operator.hpp"
@@ -24,12 +25,10 @@ public:
   typedef std :: pair< matrix_type, std :: vector<double > > eigen_pair_type;
 
 public:
-  StochasticTransformer( space_pointer pointer_to_original_space, space_pointer pointer_to_new_space ) {
+  StochasticTransformer( space_pointer pointer_to_original_space, space_pointer pointer_to_new_space, bool to_compute_transform_matrix = false ) {
     this->original_space_ptr_ = pointer_to_original_space;
     this->new_space_ptr_ = pointer_to_new_space;
-
-//    this->compute_space_transformation_matrix();
-
+    if( to_compute_transform_matrix == true ) this->compute_space_transformation_matrix();
   }
   ~StochasticTransformer() {}
 
@@ -99,7 +98,6 @@ public:
  
   }
 
-
   matrix_type transform_by_overlap( matrix_type& matrixA, size_t n_basis ) {
 
     if ( n_basis > new_space_ptr_->size() ) {
@@ -122,10 +120,12 @@ public:
      }
     }
 
+    SimpleMatrix* inverse_of_transform_matrix_pointer = new Inverse( matrixA ); 
     for( size_t kov = 0; kov < n_basis; kov++ ) {
      for( size_t imat = 0; imat < n_basis; imat++ ) {
       for( size_t jmat = 0; jmat < this->space_transform_matrix_.nrow(); jmat++ ) {
-        final_matrix( imat, kov ) += this->space_transform_matrix_( jmat, imat ) * mid_matrix( jmat, kov );
+//        final_matrix( imat, kov ) += this->space_transform_matrix_( jmat, imat ) * mid_matrix( jmat, kov );
+          final_matrix( imat, kov ) += (*inverse_of_transform_matrix_pointer)( imat, jmat ) * mid_matrix( jmat, kov );
       }
      }
     }

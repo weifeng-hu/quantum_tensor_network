@@ -13,40 +13,62 @@ namespace mat_stoch_diag {
 
 class StochasticBasisMixer {
 public:
-  typedef StochasticSpace space_type;
-  typedef space_type* space_pointer; 
+  typedef StochasticSpace  space_type;
+  typedef space_type*      space_pointer; 
   typedef std :: pair< SimpleMatrix, std :: vector<double> > eigen_pair_type;
   typedef eigen_pair_type* eigen_pair_pointer;
 
 public:
-  StochasticBasisMixer( size_t total_size ) {
-    this->total_size_ = total_size;
-  }
+  StochasticBasisMixer() :
+     total_size_ (0),
+     to_orthogonalize_ (false) {}
+  StochasticBasisMixer( size_t total_size_value,
+                        bool   to_orthogonalize_value ) :
+     total_size_ ( total_size_value ),
+     to_orthogonalize_ ( to_orthogonalize_value ) {}
   ~StochasticBasisMixer() {}
 
 public:
-  StochasticSpace equal_prob_stoch_space( StochasticSpace original_space ) {
+  // method 1:
+  // build complete stochastic space with number of basis (this->total_size_)
+  // by uniformly mixing the original basis
+  // each stochastic basis is built by sampling N_sample original basis,
+  // where N_sample <= original spacce size
+  // the default value of this->total_size_ is N_sample
+  StochasticSpace equal_prob_stoch_space( const StochasticSpace& original_space, const size_t n_sampling = this->total_size_ ) {
 
     StochasticSpace retval;
 
-    size_t length = original_space(0).size();
-    size_t original_size = original_space.size();
-    size_t target_size   = this->total_size_;
+    size_t basis_length        = original_space(0).size();
+    size_t original_space_size = original_space.size();
+    size_t target_size         = this->total_size_;
 
     retval.resize( target_size, length );
 
-    StochasticSpace mixing_coeffs( original_size, target_size );
     for( size_t i = 0; i < target_size; i++ ) {
-      for( size_t j = 0; j < original_size; j++ ) {
-        double coeff = mixing_coeff( i, j );
-        StochasticBasis new_basis( length );
-        new_basis.clear();
-        new_basis = new_basis + coeff * original_space(j);
-        retval(i) = new_basis;
+      StochasticBasis new_basis( length );
+      new_basis.clear();
+      std :: vector<int> keys;
+      keys.resize( original_space_size );
+      keys = SubMatrixSampler :: get_choice_key( original_space_size, target_size );
+      for( size_t j = 0; j < keys.size(); j++ ) {
+        new_basis += (double) key[j] * original_space.at(j);
       }
+      retval(i) = new_basis;
     }
 
-    retval.orthogonalization();
+//    StochasticSpace mixing_coeffs( original_size, target_size );
+//    for( size_t i = 0; i < target_size; i++ ) {
+//      for( size_t j = 0; j < original_size; j++ ) {
+//        double coeff = mixing_coeff( i, j );
+//        StochasticBasis new_basis( length );
+//        new_basis.clear();
+//        new_basis = new_basis + coeff * original_space(j);
+//        retval(i) = new_basis;
+//      }
+//    }
+
+    if( this->to_orthogonalize_ == true ) retval.orthogonalization();
 
     return retval;
 
@@ -149,7 +171,7 @@ public:
       new_space( non_residual_size + i ) = new_basis;
     }
 
-    new_space.orthogonalization();
+    if( this->to_orthogonalize_ == true ) new_space.orthogonalization();
     return new_space;
 
   }
@@ -188,13 +210,14 @@ public:
       new_space( i ) = new_basis;
     }
  
-    new_space.orthogonalization();
-    return new_space;
+    if( this->to_orthogonalize_ == true ) new_space.orthogonalization();
 
-  }
+    return new_space;
+  } // end of 
 
 private:
   size_t total_size_;
+  bool   to_orthogonalize_;
 
 }; // end of class StochasticBasisMixter
 
