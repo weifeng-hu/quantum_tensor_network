@@ -31,7 +31,8 @@ public:
     matrix_type new_matrix;
     new_matrix.resize( target_matrix_size, target_matrix_size );
 
-    std :: vector< int > choice_key = this->get_choice_key( this->original_matrix_ptr_->nrow(), target_matrix_size );
+//    std :: vector< int > choice_key = this->get_choice_key( this->original_matrix_ptr_->nrow(), target_matrix_size );
+    std :: vector< int > choice_key = get_choice_key( this->original_matrix_ptr_->nrow(), target_matrix_size );
 
     SimpleMatrix transform_mat;
     transform_mat.resize( this->original_matrix_ptr_->nrow(), target_matrix_size );
@@ -53,9 +54,10 @@ public:
     new_matrix = transform_mat_t * mid_mat;
 
     return new_matrix;
+
   }
 
-  static std :: vector<int> get_choice_key( size_t n, size_t target_size ) {
+  std :: vector<int> get_choice_key( size_t n, size_t target_size ) {
 
     std :: vector<int> retval;
     retval.resize(n);
@@ -72,13 +74,14 @@ public:
 //        retval.at(i) = distribution( this->generator_ );
         retval.at(i) = b_distribution( *(this->generator_ptr_) ) ? 1 : 0;
       }
-      if( this->check_n( retval, target_size ) == true ) break;
+//      if( this->check_n( retval, target_size ) == true ) break;
+      if( check_n( retval, target_size ) == true ) break;
     }
 
     return retval;
   }
 
-  static bool check_n( std :: vector<int>& vec, int target_size ) {
+  bool check_n( std :: vector<int>& vec, int target_size ) {
     bool retval = true;
 
     if( vec.size() < target_size ) {

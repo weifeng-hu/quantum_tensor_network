@@ -45,12 +45,13 @@ public:
 
     retval.resize( target_size, length );
 
+    SubMatrixSampler sampler(nullptr);
     for( size_t i = 0; i < target_size; i++ ) {
       StochasticBasis new_basis( length );
       new_basis.clear();
       std :: vector<int> keys;
       keys.resize( original_space_size );
-      keys = SubMatrixSampler :: get_choice_key( original_space_size, target_size );
+      keys = sampler.get_choice_key( original_space_size, target_size );
       for( size_t j = 0; j < keys.size(); j++ ) {
         new_basis += (double) key[j] * original_space.at(j);
       }
