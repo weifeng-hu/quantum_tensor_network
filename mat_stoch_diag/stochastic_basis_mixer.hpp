@@ -6,6 +6,7 @@
 #include <random>
 #include <cmath>
 #include "simple_matrix.hpp"
+#include "sub_matrix_sampler.hpp"
 #include "stochastic_basis.hpp"
 #include "stochastic_space.hpp"
 
@@ -35,7 +36,7 @@ public:
   // each stochastic basis is built by sampling N_sample original basis,
   // where N_sample <= original spacce size
   // the default value of this->total_size_ is N_sample
-  StochasticSpace equal_prob_stoch_space( const StochasticSpace& original_space, const size_t n_sampling = this->total_size_ ) {
+  StochasticSpace equal_prob_stoch_space( StochasticSpace& original_space, const size_t n_sampling ) {
 
     StochasticSpace retval;
 
@@ -43,17 +44,17 @@ public:
     size_t original_space_size = original_space.size();
     size_t target_size         = this->total_size_;
 
-    retval.resize( target_size, length );
+    retval.resize( target_size );
 
     SubMatrixSampler sampler(nullptr);
     for( size_t i = 0; i < target_size; i++ ) {
-      StochasticBasis new_basis( length );
+      StochasticBasis new_basis( basis_length );
       new_basis.clear();
       std :: vector<int> keys;
       keys.resize( original_space_size );
       keys = sampler.get_choice_key( original_space_size, target_size );
       for( size_t j = 0; j < keys.size(); j++ ) {
-        new_basis += (double) key[j] * original_space.at(j);
+        new_basis = new_basis + original_space(j) * (double) keys[j];
       }
       retval(i) = new_basis;
     }

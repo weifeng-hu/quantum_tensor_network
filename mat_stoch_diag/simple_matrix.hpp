@@ -5,6 +5,7 @@
 #include <iostream>
 #include <iomanip>
 #include <utility>
+#include "blas_interface.h"
 
 namespace mat_stoch_diag {
 
@@ -75,8 +76,24 @@ public:
 
   SimpleMatrix inverse() {
     SimpleMatrix retval;
-    retval.resize( this->ncol_, this->nrow_ );
-    // to be implemented
+    if( this->ncol_ == this->nrow_ ) {
+      syminverse_( retval.set_store().data(), (const int*)(&(this->ncol_)) );
+    }
+    else if( this->ncol_ > this->nrow_ ) {
+      /// compute right inverse A^t ( A A^t )^-1
+      SimpleMatrix At = this->transpose();
+      SimpleMatrix A_At = (*this) * At;
+      SimpleMatrix A_At_inv = A_At.inverse();
+      retval = At * A_At_inv;
+    }
+    else {
+     //// compute left inverse (A^t A)^-1 A^t
+      SimpleMatrix At = this->transpose();
+      SimpleMatrix At_A = At * (*this);
+      SimpleMatrix At_A_inv = At_A.inverse();
+      retval = At_A_inv * At;
+    }
+    return retval;
   }
 
   SimpleMatrix transpose() {
@@ -96,6 +113,7 @@ public:
   size_t ncol() const { return this->ncol_; }
   size_t& set_nrow()  { return this->nrow_; }
   size_t& set_ncol()  { return this->ncol_; }
+  std :: vector<double> store() const { return this->store_; }
 
   void print() {
     std :: cout << "Matrix:" << std :: endl;
