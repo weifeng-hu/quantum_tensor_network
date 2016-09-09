@@ -5,6 +5,7 @@
 #include <utility>
 #include <vector>
 #include <iostream>
+#include <algorithm>
 #include "simple_matrix.hpp"
 #include "blas_interface.h"
 
@@ -40,6 +41,19 @@ public:
 
     return new_eigen_pair;
 
+  }
+
+  std :: vector<double> general_diagonalise( matrix_type& matrix ) {
+
+    std :: vector<double> eigval;
+    eigval.resize( std :: max( matrix.nrow(), matrix.ncol() ) ); 
+
+    const int nrow = matrix.nrow();
+    const int ncol = matrix.ncol();
+    const int length = eigval.size();
+    general_eigenvalue_( matrix.set_store().data(), &nrow, &ncol, eigval.data(), &length );
+
+    return eigval;
   }
 
 }; // end of class EigenpairProcessor

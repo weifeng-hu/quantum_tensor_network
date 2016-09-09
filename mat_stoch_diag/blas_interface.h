@@ -8,6 +8,8 @@ extern "C"
 
   void syminverse_( double* matrix, const int* n );
 
+  void general_eigenvalue_( double* matrix, const int* nrow, const int* ncol, double* eigval, const int* nval );
+
 }
 
 #endif

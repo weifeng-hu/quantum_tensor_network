@@ -25,7 +25,7 @@ c      character*1 jobz
       integer ldz
 
       integer i,j
- 
+
 c       eigvec=2.0d0
 c       eigvec(1,2) = 0.0d0
 c       eigvec(2,1) = 0.0d0

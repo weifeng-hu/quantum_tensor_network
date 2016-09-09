@@ -46,7 +46,7 @@ public:
 
     retval.resize( target_size );
 
-    SubMatrixSampler sampler(nullptr);
+    SubMatrixSampler sampler( nullptr );
     for( size_t i = 0; i < target_size; i++ ) {
       StochasticBasis new_basis( basis_length );
       new_basis.clear();
@@ -54,7 +54,7 @@ public:
       keys.resize( original_space_size );
       keys = sampler.get_choice_key( original_space_size, target_size );
       for( size_t j = 0; j < keys.size(); j++ ) {
-        new_basis = new_basis + original_space(j) * (double) keys[j];
+        new_basis = new_basis + (double) keys[j] * original_space(j);
       }
       retval(i) = new_basis;
     }

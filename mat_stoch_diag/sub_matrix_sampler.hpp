@@ -31,7 +31,6 @@ public:
     matrix_type new_matrix;
     new_matrix.resize( target_matrix_size, target_matrix_size );
 
-//    std :: vector< int > choice_key = this->get_choice_key( this->original_matrix_ptr_->nrow(), target_matrix_size );
     std :: vector< int > choice_key = get_choice_key( this->original_matrix_ptr_->nrow(), target_matrix_size );
 
     SimpleMatrix transform_mat;
@@ -66,6 +65,7 @@ public:
 //    std :: uniform_int_distribution<int> distribution(0, upper_limit);
 //    std :: uniform_int_distribution<int> distribution(0, 1);
     double p = (double)target_size / (double)n;
+//    printf( "%10.5f\n ", p );
     std :: bernoulli_distribution b_distribution( p );
 
     while( true ) {
@@ -74,6 +74,10 @@ public:
 //        retval.at(i) = distribution( this->generator_ );
         retval.at(i) = b_distribution( *(this->generator_ptr_) ) ? 1 : 0;
       }
+//      for( size_t ix = 0; ix < retval.size(); ix++ ) {
+//        std :: cout << retval[ix] << " ";
+//      }
+//      std :: cout << std :: endl;
 //      if( this->check_n( retval, target_size ) == true ) break;
       if( check_n( retval, target_size ) == true ) break;
     }

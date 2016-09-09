@@ -105,6 +105,8 @@ public:
       exit(1);
     }
 
+    this->space_transform_matrix_.print();
+
     matrix_type final_matrix;
     final_matrix.resize( n_basis, n_basis );
     final_matrix.clear();
@@ -120,15 +122,25 @@ public:
      }
     }
 
-    SimpleMatrix* inverse_of_transform_matrix_pointer = new Inverse( matrixA ); 
-    for( size_t kov = 0; kov < n_basis; kov++ ) {
-     for( size_t imat = 0; imat < n_basis; imat++ ) {
-      for( size_t jmat = 0; jmat < this->space_transform_matrix_.nrow(); jmat++ ) {
-//        final_matrix( imat, kov ) += this->space_transform_matrix_( jmat, imat ) * mid_matrix( jmat, kov );
-          final_matrix( imat, kov ) += (*inverse_of_transform_matrix_pointer)( imat, jmat ) * mid_matrix( jmat, kov );
-      }
-     }
-    }
+    SimpleMatrix inverse_of_transform_matrix = this->space_transform_matrix_.inverse();
+    std :: cout << "inverse:" << std :: endl;
+    inverse_of_transform_matrix.print();
+
+    std :: cout << "product:" << std :: endl;
+    SimpleMatrix MiM = inverse_of_transform_matrix * this->space_transform_matrix_;
+    MiM.print();
+
+    final_matrix = inverse_of_transform_matrix * mid_matrix;
+    
+
+//    for( size_t kov = 0; kov < n_basis; kov++ ) {
+//     for( size_t imat = 0; imat < n_basis; imat++ ) {
+//      for( size_t jmat = 0; jmat < this->space_transform_matrix_.nrow(); jmat++ ) {
+////        final_matrix( imat, kov ) += this->space_transform_matrix_( jmat, imat ) * mid_matrix( jmat, kov );
+//          final_matrix( imat, kov ) += (inverse_of_transform_matrix )( imat, jmat ) * mid_matrix( jmat, kov );
+//      }
+//     }
+//    }
 
     return final_matrix;
   }

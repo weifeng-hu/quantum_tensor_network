@@ -32,6 +32,7 @@ public:
     for( size_t i = 0; i < dimension; i++ ) {
       StochasticBasis new_basis( dimension );
       new_basis(i) = 1.0e0;
+      (*this)(i) = new_basis;
     }
 
   } // end of function void generate_simple_orth_space()

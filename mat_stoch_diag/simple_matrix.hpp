@@ -77,6 +77,7 @@ public:
   SimpleMatrix inverse() {
     SimpleMatrix retval;
     if( this->ncol_ == this->nrow_ ) {
+      retval = SimpleMatrix( *this );
       syminverse_( retval.set_store().data(), (const int*)(&(this->ncol_)) );
     }
     else if( this->ncol_ > this->nrow_ ) {
@@ -119,7 +120,8 @@ public:
     std :: cout << "Matrix:" << std :: endl;
     for( size_t j = 0; j < this->nrow_; j++ ) {
       for( size_t i = 0; i < this->ncol_; i++ ) {
-        std :: cout <<  std :: fixed << std :: setprecision(7) << std :: setw(10) << (*this)( j, i ) << " ";
+        //std :: cout <<  std :: fixed << std :: setprecision(7) << std :: setw(10) << (*this)( j, i ) << " ";
+        printf( "%10.7f ", (*this)( j, i ) );
       }
       std :: cout << std :: endl;
     }
