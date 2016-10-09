@@ -23,7 +23,7 @@ for idim in range( 0, number_of_dimensions ):
       sample_size = int(sample_sizes[isize]);
       for itry in range( 0, number_of_trials ):
         output_file_path = "data_analysis/" + "test_stoch_diag_d" + str(dimension_of_space) + "_t" + str(target_dimension) + "_s" + str(sample_size) + "_try" + str(itry);
-        exec_command = "./stoch_mat_diag " + str(dimension_of_space) + " " + str(target_dimension) + " " + str(sample_size) + " > " + output_file_path;
+        exec_command = "./stoch_mat_diag " + str(dimension_of_space) + " " + str(target_dimension) + " " + str(sample_size) + " 0 > " + output_file_path;
         print exec_command;
         call( exec_command, shell=True );
         print "done";
