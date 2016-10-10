@@ -94,6 +94,7 @@ public:
       SimpleMatrix At_A_inv = At_A.inverse();
       retval = At_A_inv * At;
     }
+
     return retval;
   }
 

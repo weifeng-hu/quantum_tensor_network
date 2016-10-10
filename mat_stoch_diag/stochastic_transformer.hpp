@@ -115,11 +115,11 @@ public:
     mid_matrix.resize( matrixA.nrow(), n_basis );
     mid_matrix.clear();
     for( size_t kov = 0; kov < n_basis; kov++ ){
-     for( size_t imat = 0; imat < matrixA.nrow(); imat++ ) {
-      for( size_t jmat = 0; jmat < matrixA.ncol(); jmat++ ) {
-        mid_matrix( imat, kov ) += matrixA( imat, jmat ) * ( this->space_transform_matrix_)( jmat, kov );
+      for( size_t imat = 0; imat < matrixA.nrow(); imat++ ) {
+        for( size_t jmat = 0; jmat < matrixA.ncol(); jmat++ ) {
+          mid_matrix( imat, kov ) += matrixA( imat, jmat ) * ( this->space_transform_matrix_)( jmat, kov );
+        }
       }
-     }
     }
 
     SimpleMatrix inverse_of_transform_matrix = this->space_transform_matrix_.inverse();

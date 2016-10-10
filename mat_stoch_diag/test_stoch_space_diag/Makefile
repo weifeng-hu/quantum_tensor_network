@@ -6,7 +6,7 @@ cppobjs	= $(cppsrcs:.cpp=.o)
 fopt	= -O0
 fsrcs	= symdiag.f syminverse.f general_eigenvalue.f
 fobjs	= $(fsrcs:.f=.o)
-libs	= -lmkl_intel_ilp64 -lmkl_sequential -lmkl_solver -lmkl_lapack -lmkl_core  -lgfortran -lrt
+libs	= -lmkl_intel_lp64 -lmkl_sequential -lmkl_solver -lmkl_lapack -lmkl_core  -lgfortran -lrt
 target	= stoch_eigen_test
 
 $(target): $(cppobjs) $(fobjs)
