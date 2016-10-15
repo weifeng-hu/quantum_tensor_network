@@ -67,7 +67,7 @@ public:
           for( size_t k = 0; k < ncol_a; k++ ) {
             retval( i, j ) = retval( i, j ) + mat_a( i, k ) * mat_b( k, j );
           }
-         }
+        }
       }
 
       return retval;
@@ -82,7 +82,7 @@ public:
     }
     else if( this->ncol_ > this->nrow_ ) {
       /// compute right inverse A^t ( A A^t )^-1
-      SimpleMatrix At = this->transpose();
+      SimpleMatrix At   = this->transpose();
       SimpleMatrix A_At = (*this) * At;
       SimpleMatrix A_At_inv = A_At.inverse();
       retval = At * A_At_inv;
@@ -94,7 +94,6 @@ public:
       SimpleMatrix At_A_inv = At_A.inverse();
       retval = At_A_inv * At;
     }
-
     return retval;
   }
 

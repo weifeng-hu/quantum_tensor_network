@@ -4,8 +4,10 @@
 
       integer :: n
       double precision :: a( n, n )
-      double precision :: b( n, n )
-      double precision :: c( n, n )
+!D for debug use when n = 2
+!D
+!D     double precision :: b( n, n )
+!D     double precision :: c( n, n )
 
       double precision work2( 2 * n )
       double precision work( n )
@@ -14,22 +16,22 @@
       integer lda
       integer lwork
       integer info
-
+ 
       integer i, j, k
 
-      a( 1, 1 ) = 2.0
-      a( 1, 2 ) = 1.0
-      a( 2, 1 ) = 1.0
-      a( 2, 2 ) = 3.0
+!D     a( 1, 1 ) = 2.0
+!D     a( 1, 2 ) = 1.0
+!D     a( 2, 1 ) = 1.0
+!D     a( 2, 2 ) = 2.0
 
-      do i = 1, n
-        do j = 1, i - 1
-          a(i, j) = 0.0d0
-        end do
-      end do
+!D      do i = 1, n
+!D       do j = 1, i - 1
+!D         a(i, j) = 0.0d0
+!D       end do
+!D     end do
 
-      write(*,*) a
-      b = a
+!D     write(*,*) a
+!D     b = a
 
       uplo = 'U'
       lda = n
@@ -47,16 +49,16 @@
        enddo
       enddo
 
-      c = 0.0d0
-      do i = 1, 2
-       do j = 1, 2
-        do k = 1, 2
-          c(i,k) = c(i,k) + b(i,j) * a(j,k)
-        enddo
-       enddo
-      enddo
-
-      write(*,*)c
-      stop
+!D      c = 0.0d0
+!D      do i = 1, 2
+!D       do j = 1, 2
+!D        do k = 1, 2
+!D          c(i,k) = c(i,k) + b(i,j) * a(j,k)
+!D        enddo
+!D       enddo
+!D      enddo
+!D
+!D      write(*,*)c
+!D      stop
 
       end subroutine syminverse
