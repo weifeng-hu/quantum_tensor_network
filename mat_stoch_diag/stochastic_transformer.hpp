@@ -123,8 +123,8 @@ public:
     }
 
     SimpleMatrix inverse_of_transform_matrix = this->space_transform_matrix_.inverse();
-    std :: cout << "inverse:" << std :: endl;
-    inverse_of_transform_matrix.print();
+//    std :: cout << "inverse:" << std :: endl;
+//    inverse_of_transform_matrix.print();
 
     std :: cout << "product:" << std :: endl;
     SimpleMatrix MiM = inverse_of_transform_matrix * this->space_transform_matrix_;

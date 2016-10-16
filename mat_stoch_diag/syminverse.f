@@ -37,10 +37,10 @@
       lda = n
       lwork = n
       call dsytrf( uplo, n, a, lda, ipiv, work, lwork, info )
-      write(*,*)a
-      write(*,*)info
-      write(*,*)lwork
-      write(*,*)work
+!      write(*,*)a
+!      write(*,*)info
+!      write(*,*)lwork
+!      write(*,*)work
       call dsytri( uplo, n, a, lda, ipiv, work2, info )
 
       do i = 1, n
