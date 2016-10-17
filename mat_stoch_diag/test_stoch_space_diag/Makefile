@@ -13,6 +13,7 @@ $(target): $(cppobjs) $(fobjs)
 	$(cpp) $(cppopt) -o $(target) $(cppobjs) $(fobjs) ${libs}
 
 main.o:	../stochastic_space.hpp\
+	../stochastic_space_hashed.hpp\
 	../stochastic_basis.hpp\
         ../stochastic_unity_operator.hpp\
 	../stochastic_transformer.hpp\

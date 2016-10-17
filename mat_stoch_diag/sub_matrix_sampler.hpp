@@ -107,10 +107,9 @@ public:
 
     return std :: pair< matrix_type, std :: vector<int> > ( new_matrix, keys );
 
-
   }
 
-  std :: vector<int> get_choice_key( size_t n, size_t target_size) {
+  std :: vector<int> get_choice_key( size_t n, size_t target_size ) {
 
     std :: vector<int> retval;
     retval.resize(n);

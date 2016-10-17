@@ -21,10 +21,10 @@ int main( int argc, char* argv[] ) {
   new_matrix.resize( dimension_of_basis, dimension_of_basis );
 
   initializer.random_symmetric_tridiagonal( new_matrix );
- eigen_pair_type eigen_pair = eigen_processor.diagonalise( new_matrix );
- for( size_t i = 0; i < eigen_pair.second.size(); i++ ) {
-   printf( "%10.5f\n", eigen_pair.second.at(i) );
- }
+  eigen_pair_type eigen_pair = eigen_processor.diagonalise( new_matrix );
+  for( size_t i = 0; i < eigen_pair.second.size(); i++ ) {
+    printf( "%10.5f\n", eigen_pair.second.at(i) );
+  }
 
   StochasticSpace new_space;
   new_space.resize( dimension_of_basis );
