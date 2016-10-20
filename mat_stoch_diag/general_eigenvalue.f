@@ -69,8 +69,8 @@
       allocate( z( ldz, n ) )
       z = a
 
-      write(*,*)h
-      write(*,*)z
+!      write(*,*)h
+!      write(*,*)z
 
       job   = 'S'
       compz = 'V'
@@ -82,13 +82,13 @@
       call dhseqr(job, compz, n, ilo, ihi, h, ldh, 
      &wr, wi, z, ldz, work, lwork, info)
 
-      write(*,*)w
+!      write(*,*)w
       write(*,*)wr
       write(*,*)wi
       do i = 1, n
         eigval(i) = wr(i)
       enddo
-      stop
+!      stop
       deallocate( a, work, tau, h, z, w, wr, wi )
 
       end subroutine general_eigenvalue

@@ -1,5 +1,6 @@
 #include <vector>
 #include <iostream>
+#include <map>
 #include "../simple_matrix.hpp"
 #include "../matrix_initializer.hpp"
 #include "../eigenpair_processor.hpp"
@@ -37,14 +38,14 @@ int main( int argc, char* argv[] ) {
   StochasticTransformer transformer( &new_space, &space_x, true );
   SimpleMatrix matrix_x = transformer.transform_by_overlap( new_matrix, target_size );
 
-  matrix_x.print();
+  //matrix_x.print();
 
   std :: vector<double> eigvals = eigen_processor.general_diagonalise( matrix_x );
+  std :: multimap< double , int > eigen_map;
   for( size_t i = 0; i < eigvals.size(); i++ ) {
-    printf( "%10.5f\n", eigvals.at(i) );
+    eigen_map.insert( std :: pair< double, int > ( eigvals[i], i ) );
   }
-
-// eigen_pair_type eigen_pair_x = eigen_processor.diagonalise( matrix_x );
+  printf( "%20.16f %20.16f\n", eigen_map.begin()->first, eigen_pair.second.at(0) );
 
   return 0;
 

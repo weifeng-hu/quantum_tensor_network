@@ -105,7 +105,7 @@ public:
       exit(1);
     }
 
-    this->space_transform_matrix_.print();
+    //this->space_transform_matrix_.print();
 
     matrix_type final_matrix;
     final_matrix.resize( n_basis, n_basis );
@@ -126,9 +126,9 @@ public:
 //    std :: cout << "inverse:" << std :: endl;
 //    inverse_of_transform_matrix.print();
 
-    std :: cout << "product:" << std :: endl;
-    SimpleMatrix MiM = inverse_of_transform_matrix * this->space_transform_matrix_;
-    MiM.print();
+//    std :: cout << "product:" << std :: endl;
+//    SimpleMatrix MiM = inverse_of_transform_matrix * this->space_transform_matrix_;
+//    MiM.print();
 
     final_matrix = inverse_of_transform_matrix * mid_matrix;
     
