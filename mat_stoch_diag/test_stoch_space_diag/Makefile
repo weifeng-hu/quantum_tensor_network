@@ -14,6 +14,7 @@ $(target): $(cppobjs) $(fobjs)
 
 main.o:	../stochastic_space.hpp\
 	../stochastic_space_hashed.hpp\
+	../stochastic_space_sorted.hpp\
 	../stochastic_basis.hpp\
         ../stochastic_unity_operator.hpp\
 	../stochastic_transformer.hpp\

@@ -11,6 +11,8 @@ $(target): $(cppobjs)
 
 main.o:	stochastic_space.hpp\
 	stochastic_basis.hpp\
+	stochastic_space_hashed.hpp\
+	stochastic_space_sorted.hpp\
         stochastic_unity_operator.hpp\
 	simple_matrix.hpp\
 	main.cpp

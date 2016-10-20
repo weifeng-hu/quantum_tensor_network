@@ -22,7 +22,7 @@ public:
 
 public:
   void push_back( const data_type& data ) {
-    this->store_.push_back();
+    this->store_.push_back( data );
   } // end of function push_back()
 
   size_t size() const
@@ -47,7 +47,8 @@ public:
     this->is_sorted_ = true;
   }
 
-  void bubble_sort( std :: vector< data_tye >& array ) {
+  void bubble_sort( std :: vector< data_type >& array ) {
+
     bool swapped = false;
 
     while( true ) {
@@ -66,56 +67,101 @@ public:
 
   void quick_sort( std :: vector< data_type >& array ) {
 
+    if( array.size() > 1 ) {
+
     size_t middle = array.size()/2;
     size_t pivot  = array.at(middle).first;
+
+    std :: cout << middle << " pivot: " << pivot << "  size " << array.size()  << std :: endl;
 
     size_t left  = 0;
     size_t right = array.size() - 1;
 
     while ( true ) {
+      if( left >= right ) break;
+
       while( true ) {
-        if( array.at(left).first < pivot ) left++;
+        if( array.at(left).first < pivot ) {
+          left++;
+        } else {
+          break;
+        }
       }
 
       while( true ) {
-        if( array.at(right).first > pivot ) right--;
+        if( array.at(right).first > pivot ) {
+          right--;
+        } else {
+          break;
+        }
       }
 
-      if( array.at(left).first > array.at(right).first ) {
+//      if( array.at(left).first > array.at(right).first ) {
+      if( left < right ) {
         const data_type temp = array.at(left);
-        array.at(left) = array.at(right);
+        array.at(left)  = array.at(right);
         array.at(right) = temp;
         left++;
         right--;
       }
 
-      if( left >= right ) break;
     }
 
-    std :: vector< data_type > left_array;
-    std :: copy( array.begin(), array.begin() + left, left_array.begin() );
-    quick_sort( left_array );
-    std :: copy( left_array.begin(), left_array.end(), array.begin() );
+    std :: cout << "size: "  << array.size() << std :: endl;
+    std :: cout << "left: "  << left << std :: endl;
+    std :: cout << "right: " << right << std :: endl;
 
-    std :: vector< data_type > right_array;
-    std :: copy( array.begin() + left + 1, array.end(); right_array.begin() );
-    quick_sort( right_array );
-    std :: copy( right_array.begin(), right_array.end(), array.begin() + left + 1 );
 
-    this->is_sorted_ = true;
+    if( left > 1 ) {
+      std :: vector< data_type > left_array;
+      left_array.resize( left );
+      std :: copy( array.begin(), array.begin() + left, left_array.begin() );
+      quick_sort( left_array );
+      std :: copy( left_array.begin(), left_array.end(), array.begin() );
+    }
+
+    if( ( array.size() - left ) > 1 ) {
+      std :: vector< data_type > right_array;
+      right_array.resize( array.size() - left );
+      std :: copy( array.begin() + left, array.end(), right_array.begin() );
+      quick_sort( right_array );
+      std :: copy( right_array.begin(), right_array.end(), array.begin() + left  );
+    }
+
+    }
+
   } // end of function quick_sort
+
 
   void merge_sort( std :: vector< data_type >& array ) {
 
     size_t middle = array.size()/2;
     std :: vector< data_type > left_half;
+    left_half.resize( middle );
     std :: copy( array.begin(), array.begin() + middle, left_half.begin() );
+//    std :: copy( array.begin(), array.end(), left_half.begin() );
 
     std :: vector< data_type > right_half;
-    std :: copy( array.begin() + middle + 1 , array.end(); right_half.begin() );
+    size_t right_size = array.size() - middle;
+    right_half.resize( right_size );
+    std :: copy( array.begin() + middle, array.end(), right_half.begin() );
 
-    merge_sort( left_half );
-    merge_sort( right_half );
+    //std :: cout << middle << " " << right_size << std :: endl;
+
+//    std :: cout << "left: ";
+//    for( size_t i = 0; i < left_half.size(); i++ ) {
+//      std :: cout << left_half[i].first << " ";
+//    }
+//    //std :: cout << "\t\t\t";
+//
+//    std :: cout << "right : ";
+//    for( size_t i = 0; i < right_half.size(); i++ ) {
+//      std :: cout << right_half[i].first << " ";
+//    }
+//    std :: cout << std :: endl;
+
+    if( left_half.size() >=2  ) merge_sort( left_half );
+    if( right_half.size() >=2 ) merge_sort( right_half );
 
     size_t left_ind = 0;
     size_t right_ind = 0;
@@ -124,7 +170,7 @@ public:
       if( left_ind  == left_half.size() ) break;
       if( right_ind == right_half.size() ) break;
 
-      if( left_half[left_ind].first < right_half[right_half].first ) {
+      if( left_half[left_ind].first < right_half[right_ind].first ) {
         array.at( total_ind ) = left_half[left_ind];
         left_ind++;
       } else {
@@ -134,19 +180,37 @@ public:
       total_ind++;
     }
 
-    if( left_ind < left_array.size() ) {
-      for( size_t i = left_ind; left_ind < left_array.size(); i++ ) {
-        array.at(total_ind) = left_array[left_ind];
+    //std :: cout << "left ind "  << left_ind << std :: endl;
+    //std :: cout << "right ind "  << right_ind << std :: endl;
+    //std :: cout << "total ind " << total_ind << std :: endl;
+    if( left_ind < left_half.size()  ) {
+      for( size_t i = left_ind; i < left_half.size(); i++ ) {
+        array.at(total_ind) = left_half[i];
         total_ind++;
       }
-    } else if( right_ind < right_array.size() ) {
-      continue;
+    } else if( right_ind < right_half.size() ) {
+      for( size_t i = right_ind; i < right_half.size(); i++ ) {
+        array.at(total_ind) = right_half[i];
+        total_ind++;
+      }
     }
+
+    //for( size_t i = 0; i < array.size(); i++ ) {
+    //  std :: cout << array[i].first << " ";
+    //}
+    //std :: cout << std :: endl;
+    //exit(0);
 
   } // end of function merge_sort
 
+  bool exists( const basis_type& basis ) {
+
+    return this->binary_search_exists( basis.compute_key() );
+
+  }
+
   bool binary_search_exists( const key_type& key ) {
-    if( this->is_sorted == false ) {
+    if( this->is_sorted_ == false ) {
       this->sort( "merge" );
     }
 
