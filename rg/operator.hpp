@@ -1,45 +1,49 @@
 #ifndef OPERATOR_HPP
 #define OPERATOR_HPP
 
+#include <../mat_stoch_diag/simple_matrix.hpp>
+#include <unordered_map>
+#include <operator_base.hpp>
+
 namespace rg {
 
-class OperatorBase {
+class CUp : public OperatorBase {
 public:
-  typedef SimpleMatrix matrix_type;
-
-public:
-  OperatorBase() {}
-  virtual ~OperatorBase() {}
-
-public:
-  virtual void fill_elementary_operator() = 0;
-
-public:
-  matrix_type op_matrix() const 
-    { return this->op_matrix_; }
-
-private:
-  matrix_type op_matrix_;
-
-}; // end of OperatorBase
-
-class CreationOp : public OperatorBase {
-public:
-  CreationOp() {}
-  ~CreationOp() {}
-
-public:
-  void fill_elementary_operator() {}
+  CUp( const int& site_ind ) : site_ind_ ( site_ind ) {
+    this->op_matrix_[ std :: pair< qn_type, qn_type >( qn_type( 0, 0  ) , qn_type( 1, 1 ) ) ] = matrix_type( std :: vector<double> {1.0e0}, 1, 1 );
+    this->op_matrix_[ std :: pair< qn_type, qn_type >( qn_type( 1, -1 ) , qn_type( 2, 0 ) ) ] = matrix_type( std :: vector<double> {1.0e0}, 1, 1 );
+  }
+  ~CUp() {}
 
 }; // end of CreationOp
 
-class DestructionOp : public OperatorBase {
+class CDw : public OperatorBase {
 public:
-  DestructionOp() {}
-  ~DestructionOp() {}
+  CDw( const int& site_ind ) : site_ind_ ( site_ind ) {
+   this->op_matrix_[ std :: pair< qn_type, qn_type >( qn_type( 0, 0  ) , qn_type( 1, -1 ) ) ] = matrix_type( std :: vector<double> {1.0e0}, 1, 1 );
+   this->op_matrix_[ std :: pair< qn_type, qn_type >( qn_type( 1, 1  ) , qn_type( 2, 0 ) ) ] = matrix_type( std :: vector<double> {-1.0e0}, 1, 1 );
+  }
+  ~CDw() {}
 
+}; // end of DestructionOp
+
+class DUp : public OperatorBase {
 public:
-  void fill_elementary_operator() {}
+  DUp( const int& site_ind ) : site_ind_ ( site_ind ){
+    this->op_matrix_[ std :: pair< qn_type, qn_type >( qn_type( 0, 0  ) , qn_type( 1, 1 ) ) ] = matrix_type( std :: vector<double> {1.0e0}, 1, 1 );
+    this->op_matrix_[ std :: pair< qn_type, qn_type >( qn_type( 1, -1 ) , qn_type( 2, 0 ) ) ] = matrix_type( std :: vector<double> {1.0e0}, 1, 1 );
+  }
+  ~DUp() {}
+
+}; // end of CreationOp
+
+class DDw : public OperatorBase {
+public:
+  DDw( const int& site_ind ) : site_ind_ ( site_ind ) {
+   this->op_matrix_[ std :: pair< qn_type, qn_type >( qn_type( 0, 0  ) , qn_type( 1, -1 ) ) ] = matrix_type( std :: vector<double> {1.0e0}, 1, 1 );
+   this->op_matrix_[ std :: pair< qn_type, qn_type >( qn_type( 1, 1  ) , qn_type( 2, 0 ) ) ] = matrix_type( std :: vector<double> {-1.0e0}, 1, 1 );
+  }
+  ~DDw() {}
 
 }; // end of DestructionOp
 

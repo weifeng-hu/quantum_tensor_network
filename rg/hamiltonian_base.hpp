@@ -15,7 +15,6 @@ public:
   HamiltonianBase() {}
   virtual ~HamiltonianBase() {}
 
-
 public:
   size_t number_of_sites() const
     { return this->number_of_sites_; }

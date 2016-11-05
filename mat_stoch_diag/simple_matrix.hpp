@@ -16,6 +16,15 @@ public:
     this->nrow_ = 0;
     this->ncol_ = 0;
   }
+  SimpleMatrix( const vector<double>& store, size_t nrow, size_t ncol ) {
+    this->nrow_ = nrow;
+    this->ncol_ = ncol;
+    if( store.size() != ( nrow * ncol ) ) {
+      std :: cout << "unmatching data size vs nrow and ncol in SimpleMatrix " << std :: endl;
+      abort();
+    }
+    this->store_ = store;
+  }
   ~SimpleMatrix() {}
 
 public:
