@@ -54,24 +54,6 @@
         a(i-1, i) = 2.0d0
       end do
 
-<<<<<<< HEAD
-      write(*,*)a
-      job = 'P'
-      call dgebal(job, n, a, lda, ilo, ihi, scal, info)
-      write(*,*)a
-      write(*,*)scal
-      write(*,*)ilo
-      write(*,*)ihi
-      call dgehrd(n, ilo, ihi, a, lda, tau, work, lwork, info)
-      write(*,*)a
-
-      call dorghr(n, ilo, ihi, a, lda, tau, work, lwork, info)
-      stop
-      write(*,*)a
-      write(*,*)tau
-
-      stop
-=======
 !      a( 1, 1 ) = 1.0
 !      a( 1, 2 ) = 2.0
 !      a( 1, 3 ) = 1.0
@@ -88,7 +70,6 @@
 !      a(2, 1) = 2.0
 !      a(2, 2) = 3.0
 !      eigenvalue 5, 4 
->>>>>>> 11c35228c1ed2cb881b285c85171613394bee27c
 
       call dgehrd(n, ilo, ihi, a, lda, tau, work, lwork, info)
       ldh = n
