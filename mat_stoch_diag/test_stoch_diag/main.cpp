@@ -114,18 +114,18 @@ int main( int argc, char* argv[] ) {
   for( size_t i = 0; i < dimension_of_basis; i++ ) {
     // for( std :: map< int, int > :: iterator it = occurance_map.begin(); it != occurance_map.end(); ++it ) {
       //std :: cout << "key: " << it->first << "  occurance: " << it->second << std :: endl;
-//      std :: cout << i << ":\t";
+      std :: cout << i << ":\t";
       std :: map< int, int > :: iterator it = occurance_map.find( i );
       if( it != occurance_map.end() ) {
         for( size_t i = 0; i < it->second; i++ ) {
-//          std :: cout << "*";
+          std :: cout << "*";
         }
         occurance_ordered.insert( std :: pair< int, int > ( it->second, i ) );
       }
       else {
         occurance_ordered.insert( std :: pair< int, int > ( 0, i ) );
       }
-//      std :: cout << std :: endl;
+      std :: cout << std :: endl;
     //}
   }
 

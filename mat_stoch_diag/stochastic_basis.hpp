@@ -117,6 +117,7 @@ public:
       std :: cout << this->store_.at(i) << " "; 
     }
     std :: cout << "  deviation: " << std :: setprecision(4) << this->uniform_deviation();
+    std :: cout << "  key: " << this->compute_key();
     std :: cout << std :: endl;
 
   }
@@ -160,6 +161,16 @@ public:
 
   std :: vector< double > store() {
     return this->store_;
+  }
+
+  size_t compute_key() const {
+    size_t retval = 0;
+    for( size_t i = 0; i < this->store_.size(); i++ ) {
+      if( fabs( this->store_[i] - 0.0e0 ) >= 1.0e-5 ) {
+        retval += i + i * i;
+      }
+    }
+    return retval;
   }
 
 private:

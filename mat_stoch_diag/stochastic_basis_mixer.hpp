@@ -8,6 +8,8 @@
 #include "simple_matrix.hpp"
 #include "sub_matrix_sampler.hpp"
 #include "stochastic_basis.hpp"
+#include "stochastic_space_hashed.hpp"
+#include "stochastic_space_sorted.hpp"
 #include "stochastic_space.hpp"
 
 namespace mat_stoch_diag {
@@ -46,8 +48,24 @@ public:
 
     retval.resize( target_size );
 
+//    SubMatrixSampler sampler( nullptr );
+//    for( size_t i = 0; i < target_size; i++ ) {
+//      StochasticBasis new_basis( basis_length );
+//      new_basis.clear();
+//      std :: vector<int> keys;
+//      keys.resize( original_space_size );
+//      keys = sampler.get_choice_key( original_space_size, target_size );
+//      for( size_t j = 0; j < keys.size(); j++ ) {
+//        new_basis = new_basis + (double) keys[j] * original_space(j);
+//      }
+//      retval(i) = new_basis;
+//    }
+
     SubMatrixSampler sampler( nullptr );
-    for( size_t i = 0; i < target_size; i++ ) {
+//    StochasticSpaceHashed hashed_space( target_size );
+    StochasticSpaceSorted sorted_space;
+    size_t number_of_basis = 0;
+    while( true ) {
       StochasticBasis new_basis( basis_length );
       new_basis.clear();
       std :: vector<int> keys;
@@ -56,9 +74,27 @@ public:
       for( size_t j = 0; j < keys.size(); j++ ) {
         new_basis = new_basis + (double) keys[j] * original_space(j);
       }
-      retval(i) = new_basis;
-    }
+      sorted_space.push_back( std :: pair< size_t, StochasticBasis> ( new_basis.compute_key(), new_basis ) );
+//      if( hashed_space.exists( new_basis ) == false ) {
+//        hashed_space.insert( new_basis );
+//        number_of_basis++;
+//        new_basis.print();
+//      }
+      number_of_basis++;
+      if( number_of_basis == target_size ) break;
 
+    }
+//    hashed_space.print();
+    sorted_space.print();
+    std :: cout << std :: endl;
+    sorted_space.sort( std :: string( "quick" ) );
+    sorted_space.print();
+
+    exit(0);
+
+    retval = sorted_space.convert();
+//    retval = hashed_space.convert();
+//    exit(0);
 //    StochasticSpace mixing_coeffs( original_size, target_size );
 //    for( size_t i = 0; i < target_size; i++ ) {
 //      for( size_t j = 0; j < original_size; j++ ) {
