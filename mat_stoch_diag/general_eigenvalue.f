@@ -54,6 +54,7 @@
         a(i-1, i) = 2.0d0
       end do
 
+<<<<<<< HEAD
       write(*,*)a
       job = 'P'
       call dgebal(job, n, a, lda, ilo, ihi, scal, info)
@@ -70,23 +71,55 @@
       write(*,*)tau
 
       stop
+=======
+!      a( 1, 1 ) = 1.0
+!      a( 1, 2 ) = 2.0
+!      a( 1, 3 ) = 1.0
+!      a( 2, 1 ) = 6.0
+!      a( 2, 2 ) = -1.0
+!      a( 2, 3 ) = 0.0
+!      a( 3, 1 ) = -1.0
+!      a( 3, 2 ) = -2.0
+!      a( 3, 3 ) = -1.0
+!      eigenvalues 3, 0, -4
 
-      job = 'E'
-      compz = 'N'
+!      a(1, 1) = 6.0
+!      a(1, 2) = -1.0
+!      a(2, 1) = 2.0
+!      a(2, 2) = 3.0
+!      eigenvalue 5, 4 
+>>>>>>> 11c35228c1ed2cb881b285c85171613394bee27c
+
+      call dgehrd(n, ilo, ihi, a, lda, tau, work, lwork, info)
       ldh = n
       allocate( h( ldh, n ) )
+      h = a
+
+      call dorghr(n, ilo, ihi, a, lda, tau, work, lwork, info)
       ldz = n
       allocate( z( ldz, n ) )
+      z = a
+
+!      write(*,*)h
+!      write(*,*)z
+
+      job   = 'S'
+      compz = 'V'
+
       allocate( w( n ) )
       allocate( wr(n) )
       allocate( wi(n) )
+
       call dhseqr(job, compz, n, ilo, ihi, h, ldh, 
      &wr, wi, z, ldz, work, lwork, info)
 
+!      write(*,*)w
+      write(*,*)wr
+      write(*,*)wi
       do i = 1, n
-        eigval(i) = w(i)
+        eigval(i) = wr(i)
       enddo
-
+!      stop
       deallocate( a, work, tau, h, z, w, wr, wi )
 
       end subroutine general_eigenvalue

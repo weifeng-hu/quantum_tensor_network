@@ -16,6 +16,15 @@ public:
     this->nrow_ = 0;
     this->ncol_ = 0;
   }
+  SimpleMatrix( const vector<double>& store, size_t nrow, size_t ncol ) {
+    this->nrow_ = nrow;
+    this->ncol_ = ncol;
+    if( store.size() != ( nrow * ncol ) ) {
+      std :: cout << "unmatching data size vs nrow and ncol in SimpleMatrix " << std :: endl;
+      abort();
+    }
+    this->store_ = store;
+  }
   ~SimpleMatrix() {}
 
 public:
@@ -67,7 +76,7 @@ public:
           for( size_t k = 0; k < ncol_a; k++ ) {
             retval( i, j ) = retval( i, j ) + mat_a( i, k ) * mat_b( k, j );
           }
-         }
+        }
       }
 
       return retval;
@@ -82,7 +91,7 @@ public:
     }
     else if( this->ncol_ > this->nrow_ ) {
       /// compute right inverse A^t ( A A^t )^-1
-      SimpleMatrix At = this->transpose();
+      SimpleMatrix At   = this->transpose();
       SimpleMatrix A_At = (*this) * At;
       SimpleMatrix A_At_inv = A_At.inverse();
       retval = At * A_At_inv;
