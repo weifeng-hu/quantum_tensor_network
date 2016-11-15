@@ -9,19 +9,20 @@ namespace rg {
  // definition of Term 
  // Contains something like Ci Cj Ck... only multiply
 
-class Term {
+class OpTerm {
 public:
+  typedef OpTerm this_type;
   typedef OperatorBase op_base_type;
   typedef std :: vector< op_base_type > op_sequence_type;
 
 public:
-  Term() {}
-  Term( const std :: string term_info_value, const size_t n_site ) :
+  OpTerm() {}
+  OpTerm( const std :: string term_info_value, const size_t n_site ) :
     term_info_ ( term_info_value ), 
     n_site_ ( n_site ) {
     this->initialize_operators_from_info();
   }
-  ~Term() {}
+  ~OpTerm() {}
 
 private:
   void initialize_operators_from_info() {
@@ -29,7 +30,7 @@ private:
   }
 
 public:
-  op_sequence_type get_op_seq( std :: array< size_t, 2 > op_indices) {
+  op_sequence_type get_op_seq( std :: array< size_t, 2 > op_indices ) {
     op_sequence_type retval;
     auto it = this->op_list.begin();
     size_t ind_op = 0;
@@ -70,7 +71,7 @@ public:
 private:
   std :: string term_info_;
   op_sequence_type op_sequence_;
-  std :: list< operator_sequence_type > op_list;
+  std :: list< operator_sequence_type > op_list_;
   size_t n_site_;
 
 }; // end of class Term 

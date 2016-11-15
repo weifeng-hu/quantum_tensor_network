@@ -7,6 +7,7 @@
 
 namespace rg {
 
+template < size_t Order >
 class OperatorBase {
 public:
   typedef OperatorBase this_type;
@@ -108,7 +109,7 @@ public:
 protected:
   op_matrix_type op_matrix_;
   size_t n_qn_row_, n_qn_col_;
-  int site_ind_;
+  std :: array< size_t, Order > indices_;
 
 }; // end of OperatorBase
 

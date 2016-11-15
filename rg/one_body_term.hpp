@@ -1,0 +1,92 @@
+#ifndef ONEBODY_TERM_HPP
+#define ONEBODY_TERM_HPM
+
+#include <cmath>
+#include "operator.hpp"
+
+namespace rg {
+
+class OneBodyTerm {
+public:
+  typedef OneBodyTerm this_type;
+
+public:
+  OneBodyTerm() {}
+  OneBodyTerm( const int lower_i, const int upper_i, const int lower_j, const int upper_j ) {
+    this->i_bounds_ = make_pair( lower_i, upper_i );
+    this->i_list_.resize(0);
+    for( int i = lower_i; i <= upper_i; i++ ) {
+      i_list_.push_back(i);
+    }
+    this->j_bounds_ = make_pair( lower_j, upper_j );
+    this->j_list_.resize(0);
+    for( int j = lower_i; j <= upper_j; j++ ) {
+      j_list_.push_back(j);
+    }
+  }
+
+  OneBodyTerm( const int lower_site, const int upper_site ) {
+    this->i_bounds_.first = lower_site;
+    this->j_bounds_.first = lower_site;
+    this->i_bounds_.second = upper_site;
+    this->j_bounds_.second = upper_site;
+    this->i_list_.resize(0);
+    this->j_list_.resize(0);
+    for( int k = lower_site; k <= upper_site; k++ ) {
+      this->i_list_.push_back(k);
+      this->j_list_.push_back(k);
+    }
+  }
+
+  ~OneBodyTerm() {}
+
+public:
+  friend 
+    std :: array< this_type, 4 > this_type& operator|| ( const this_type& term_a, const this_type& term_b ) {
+      if( term_a & term_b == true ) {
+        abort();
+      }
+      std :: array< this_type, 4 > retval; 
+      retval[0] = term_a;
+      retval[1] = this_type( term_a.i_lower_bound(), term_a.i_upper_bound(), term_b.j_lower_bound(), term_b.j_upper_bound() );
+      retval[2] = this_type( term_b.i_lower_bound(), term_b.i_upper_bound(), term_a.j_lower_bound(), term_a.j_upper_bound() );
+      retval[3] = term_b;
+    }
+
+  this_type& operator+= ( const this_type& rhs ) {
+    if( *this & rhs == true ) {
+      abort();
+    }
+    this->i_bounds = make_pair( min( this->i_lower_bound(), rhs.i_lower_bound() ), max( this->i_upper_bound(), rhs.i_upper_bound() ) );
+    this->j_bounds = make_pair( min( this->j_lower_bound(), rhs.j_lower_bound() ), max( this->j_upper_bound(), rhs.j_upper_bound() ) );
+    this->i_list_ = this->i_upper_bound() < rhs.i_lower_bound() ? 
+      this->i_list_.insert( this->i_list_.end(), rhs.set_i_list().begin(), rhs.set_i_list().end() ) : 
+      rhs.set_i_list().insert( rhs.set_i_list().end(), this->i_list_.begin(), this->i_list_.end() );
+    this->j_list_ = this->j_upper_bound() < rhs.j_lower_bound() ?
+      this->j_list_.insert( this->j_list_.end(), rhs.set_j_list().begin(), rhs.set_j_list().end() ) : 
+      rhs.set_j_list().insert( rhs.set_j_list().end(), this->j_list_.begin(), this->j_list_.end() );
+    return *this;
+  }
+
+  bool operator& ( const this_type& rhs ) {
+    if( this->i_lower_bound() >= rhs.i_lower_bound() && this->i_lower_bound() <= rhs.i_upper_bound() ) return true;
+    if( this->i_upper_bound() >= rhs.i_lower_bound() && this->i_upper_bound() <= rhs.i_upper_bound() ) return true;
+    if( this->j_lower_bound() >= rhs.j_lower_bound() && this->j_lower_bound() <= rhs.j_upper_bound() ) return true;
+    if( this->j_upper_bound() >= rhs.j_lower_bound() && this->j_upper_bound() <= rhs.j_upper_bound() ) return true;
+  }
+
+  class iterator {
+
+  }
+
+private:
+  std :: pair< int, int > i_bounds_;
+  std :: pair< int, int > j_bounds_;
+  std :: vector< int > i_list_;
+  std :: vector< int > j_list_;
+
+}; // end of class OneBodyTerm
+
+} // end of namespace rg
+
+#endif
