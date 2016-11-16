@@ -7,9 +7,9 @@
 #include "operator_base.hpp"
 #include "formula.hpp"
 
-namespace rg {
+namespace renormalization_group {
 
-enum HamType { HUBBARD, ExHUBBARD };
+enum HamType { UNSET, HUBBARD, ExHUBBARD };
 
 class HamiltonianBase : public OperatorBase {
 public:
@@ -58,7 +58,16 @@ public:
 
   } // end of eigen_system()
 
-  std :: string hamiltonian_name( const HamType hamiltonian_type ) {
+  static std :: string hamiltonian_name( const HamType hamiltonian_type ) {
+
+    switch( hamiltonian_type ) {
+      case( HUBBARD ):
+        return std :: string( "Hubbard" );
+      case( ExHUBBARD ):
+        return std :: string( "Extended Hubbard" );
+      default:
+        return std :: string( "Unknown" );
+    }
 
   }
 
@@ -81,17 +90,15 @@ public:
 private:
 //  formula_type         formula_;                 // stores ordinary operators
   one_body_term_pointer one_body_term_ptr_;
-  two_body_term_pointer one_body_term_ptr_;
-  size_t               n_sites_;
+  two_body_term_pointer two_body_term_ptr_;
+  size_t                n_sites_;
 
 }; // end of class HamiltonianBase
 
-std :: string hamiltonian_name( const HamType hamiltonian_type ) {
+std :: string hamiltonian_name( const HamType hamiltonian_type )
+  {  return HamiltonianBase :: hamiltonian_name( hamiltonian_type ); }
 
-  return HamiltonianBase :: hamiltonian_name( hamiltonian_type );
 
-}
-
-} // end of namespace rg
+} // end of namespace renormalization_group
 
 #endif
