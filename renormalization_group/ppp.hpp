@@ -5,9 +5,9 @@
 #include "../mat_stoch_diag/simple_matrix.hpp"
 #include "hamiltonian_base.hpp"
 
-namespace rg {
+namespace renormalization_group {
 
-class PPP
+class ExtendedHubbard
  : public HamiltonainBase {
 
 public:
@@ -18,8 +18,8 @@ public:
   typedef double on_site_coulomb_value_type;
 
 public:
-  PPP() {}
-  ~PPP() {}
+  ExtendedHubbard() {}
+  ~ExtendedHubbard() {}
 
 public:
   std :: vector< hopping_value_type > hopping() const
@@ -37,8 +37,8 @@ private:
   std :: vector< hopping_value_type > hopping_;
   std :: vector< on_site_coulomb_value_type > on_site_coulomb_; 
 
-}; // end of class Hubbard
+}; // end of class ExtendedHubbard
 
-} // end of namespace rg
+} // end of namespace renormalization_group
 
 #endif

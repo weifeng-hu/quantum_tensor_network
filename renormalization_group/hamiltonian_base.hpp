@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <vector>
 #include <string>
+#include <memory>
+#include "integral.hpp"
 #include "operator_base.hpp"
 #include "formula.hpp"
 
@@ -13,12 +15,20 @@ enum HamType { UNSET, HUBBARD, ExHUBBARD };
 
 class HamiltonianBase : public OperatorBase {
 public:
-  typedef OperatorBase operator_type;
-  typedef std :: vector< operator_type* > operator_array_type;
-  typedef Formula formula_type;
+  typedef Integral                          integral_type;
+  typedef OperatorBase                      operator_type;
+  typedef std :: vector< operator_type* >   operator_array_type;
+  typedef Formula                           formula_type;
 
 public:
   HamiltonianBase() {}
+  HamiltonianBase( const std :: vector<int> site_indices,
+                   integral_type*  integral_pointer ) : 
+    integral_ptr_ ( std :: shared_ptr< integral_type >( integral_pointer ) );
+    {
+      this->one_body_term_ptr_ = new OneBodyTerm( site_indices, site_indices );
+      this->two_body_term_ptr_ = new TwoBodyTerm( );
+    }
   virtual ~HamiltonianBase() {}
 
 public:
@@ -26,16 +36,16 @@ public:
   this_type& operator&& ( const this_type& rhs ) {
 
     for( size_t iterm_group = 0; iterm_group < this->formular_.size(); i++ ) {
-     const OpTerm term = formula_.at(iterm_group);
-     const operator_type op_a = term.get_op_rep();
-     const operator_type op_b = term.get_op_rep();
-     const operator_type op_a_x_op_b = op_a * op_b;
-     this->hamiltonian_ += op_a_x_op_b + conjugate( op_a_x_op_b );
-   }
+      const OpTerm term = formula_.at(iterm_group);
+      const operator_type op_a = term.get_op_rep();
+      const operator_type op_b = term.get_op_rep();
+      const operator_type op_a_x_op_b = op_a * op_b;
+      this->hamiltonian_ += op_a_x_op_b + conjugate( op_a_x_op_b );
+    }
 
-   return *this;
+    return *this;
 
-  } // end of operator&
+  } // end of operator& ()
 
   this_type& operator+ ( const this_type& rhs ) {
 
@@ -52,7 +62,7 @@ public:
     this->hamiltonian_ = this->hamiltonian_ && rhs.hamiltonian();
 
     return *this;
-  } // end of operator+
+  } // end of operator+ ()
 
   void eigen_system() {
 
@@ -69,13 +79,11 @@ public:
         return std :: string( "Unknown" );
     }
 
-  }
+  } // end of hamiltonian_name()
 
 public:
-  size_t n_sites() const
-    { return this->number_of_sites_; }
-  size_t& set_n_sites() 
-    { return this->number_of_sites_; }
+  size_t n_site() const
+    { return this->n_site_; }
 
   operator_array_type operator_array() const
     { return this->operator_array_; }
@@ -91,13 +99,12 @@ private:
 //  formula_type         formula_;                 // stores ordinary operators
   one_body_term_pointer one_body_term_ptr_;
   two_body_term_pointer two_body_term_ptr_;
-  size_t                n_sites_;
+  std :: shared_ptr< integral_type > integral_ptr_;
 
 }; // end of class HamiltonianBase
 
 std :: string hamiltonian_name( const HamType hamiltonian_type )
   {  return HamiltonianBase :: hamiltonian_name( hamiltonian_type ); }
-
 
 } // end of namespace renormalization_group
 

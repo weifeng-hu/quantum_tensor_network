@@ -61,7 +61,7 @@ public:
     this->eigen_value_.resize( nroot );
   }
 
-  ~RenormalizationGroup() {}
+  virtual ~RenormalizationGroup() {}
 
 public:
   virtual void run() = 0;

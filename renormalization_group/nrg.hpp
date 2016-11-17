@@ -18,10 +18,10 @@ public:
 
 public:
   NRG() :
-   RenormalizationGroup(), 
+   RenormalizationGroup(),
    increment_ (0),
    routine_type_ ( LOOP_WHILE ),
-   {}
+  {}
 
   NRG( const size_t n_site_value, 
        const size_t increment_value = 1, 
@@ -54,7 +54,11 @@ public:
     switch( this->routine_type_ ) {
 
       case( LOOP_WHILE ) :
-        
+        block_type total_block = solve();
+        this->eigen_values_
+          = total_block.export_eigenvalues( this->eigen_values_.size() );
+        break;
+
       case( RECUR ):
         std :: vector< int > total_site_indices;
         for( size_t i = 0; i < this->n_site_; i++ ) {
@@ -63,6 +67,7 @@ public:
         block_type total_block = this->solve_block( total_site_indices );
         this->eigen_values_ 
           = total_block.export_eigenvalues( this->eigen_values_.size() );
+        break;
     }
 
   }
@@ -141,7 +146,7 @@ public:
   void print_info_specific() {
     std :: cout << "increment:\t\t"  << this->increment_ << std :: endl;
     std :: cout << "solver routine type:\t\t" << this->routine_name() << std :: endl;
-  }
+  } // end of print_info_specific()
 
 public:
   size_t increment() const

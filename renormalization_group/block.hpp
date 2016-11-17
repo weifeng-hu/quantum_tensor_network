@@ -3,7 +3,7 @@
 
 #include "hamiltonian_base.hpp"
 
-namespace rg {
+namespace renormalization_group {
 
 class Block {
 public:
@@ -67,6 +67,6 @@ private:
 
 }; // end of class Block
 
-} // end of namespace rg
+} // end of namespace renormalization_group
 
 #endif

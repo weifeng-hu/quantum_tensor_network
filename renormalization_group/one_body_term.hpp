@@ -2,9 +2,10 @@
 #define ONEBODY_TERM_HPM
 
 #include <cmath>
+#include <utility>
 #include "operator.hpp"
 
-namespace rg {
+namespace renormalization_group {
 
 class OneBodyTerm {
 public:
@@ -38,6 +39,14 @@ public:
     }
   }
 
+  OneBodyTerm( const std :: vector< int > i_list, const std :: vector< int > j_list ) 
+    i_list_ ( i_list ),
+    j_list_ ( j_list ) : 
+  {
+    this->i_bounds_ = std :: make_pair( *(i_list.begin()), *(i_list.rbegin()) );
+    this->j_bounds_ = std :: make_pair( *(j_list.begin()), *(j_list.rbegin()) );
+  } 
+
   ~OneBodyTerm() {}
 
 public:
@@ -51,7 +60,7 @@ public:
       retval[1] = this_type( term_a.i_lower_bound(), term_a.i_upper_bound(), term_b.j_lower_bound(), term_b.j_upper_bound() );
       retval[2] = this_type( term_b.i_lower_bound(), term_b.i_upper_bound(), term_a.j_lower_bound(), term_a.j_upper_bound() );
       retval[3] = term_b;
-    }
+    }  // end of friend operator ||
 
   this_type& operator+= ( const this_type& rhs ) {
     if( *this & rhs == true ) {
@@ -66,14 +75,14 @@ public:
       this->j_list_.insert( this->j_list_.end(), rhs.set_j_list().begin(), rhs.set_j_list().end() ) : 
       rhs.set_j_list().insert( rhs.set_j_list().end(), this->j_list_.begin(), this->j_list_.end() );
     return *this;
-  }
+  }  // end of operator+= 
 
   bool operator& ( const this_type& rhs ) {
     if( this->i_lower_bound() >= rhs.i_lower_bound() && this->i_lower_bound() <= rhs.i_upper_bound() ) return true;
     if( this->i_upper_bound() >= rhs.i_lower_bound() && this->i_upper_bound() <= rhs.i_upper_bound() ) return true;
     if( this->j_lower_bound() >= rhs.j_lower_bound() && this->j_lower_bound() <= rhs.j_upper_bound() ) return true;
     if( this->j_upper_bound() >= rhs.j_lower_bound() && this->j_upper_bound() <= rhs.j_upper_bound() ) return true;
-  }
+  }  // end of operator& 
 
   class iterator {
 
@@ -87,6 +96,6 @@ private:
 
 }; // end of class OneBodyTerm
 
-} // end of namespace rg
+} // end of namespace renormalization_group
 
 #endif
