@@ -1,4 +1,3 @@
-
 #include <stdlib.h>
 #include "../nrg.hpp"
 
@@ -15,7 +14,7 @@ int main( int argc, char* argv[] ) {
   nrg_instance.set_increment()          = increment;
   nrg_instance.set_M()                  = M;
   nrg_instance.set_hamiltonian()        = HUBBARD;
-  nrg_instance.set_renormalize_method() = STOCH_MIX;
+  nrg_instance.set_state_sampling_method() = STOCH_MIX;
   nrg_instance.set_on_site_hopping( on_site_hopping );
   nrg_instance.set_neighbour_hopping( neighbour_hopping );
   nrg_instance.set_onsite_coulomb( on_site_coulomb );
