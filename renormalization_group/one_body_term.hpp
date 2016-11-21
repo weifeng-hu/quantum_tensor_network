@@ -85,7 +85,13 @@ public:
   }  // end of operator& 
 
   class iterator {
-
+    public:
+      iterator() {}
+      ~iterator() {}
+    public:
+      this& operator++ ( iterator& this ) {
+        return *this;
+      }
   }
 
 private:

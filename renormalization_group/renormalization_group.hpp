@@ -114,59 +114,17 @@ public:
   RenormMethod& set_renormalization_method()
     { return this->renormalization_method_; }
 
-  void set_on_site_hopping( const double value ) {
-   if( this->site_lower_bound_ == std :: numeric_limits<int> :: min() ) {
-     std :: cout << "should set n_site first " << std :: endl;
-     abort();
-   }
-   if( this->site_lower_bound_ == std :: numeric_limits<int> :: min() ) {
-     std :: cout << "should set n_site first " << std :: endl;
-     abort();
-   }
-
-   for( size_t i = this->site_lower_bound_; i <= this->site_upper_bound_; i++ ) {
-      this->integral_( i, i ) = value;
-    }
-    this->on_site_hopping_ = value;
-  }
-
-  void set_neighbour_hopping() {
-    if( this->site_lower_bound_ == std :: numeric_limits<int> :: min() ) {
-      std :: cout << "should set n_site first " << std :: endl;
-      abort();
-    }
-    if( this->site_lower_bound_ == std :: numeric_limits<int> :: min() ) {
-      std :: cout << "should set n_site first " << std :: endl;
-      abort();
-    }
- 
-    for( size_t i = this->site_lower_bound_; i <= this->site_upper_bound_; i++ ) {
-      for( size_t j = this->site_lower_bound_; j < i; j++ ) {
-        this->integral_( i, j ) = value;
-        this->integral_( j, i ) = value;
-      }
-    }
-    this->neighbour_hopping_ = value;
-  }
-
-  void set_on_site_coulomb( const double value ) {
-    if( this->site_lower_bound_ == std :: numeric_limits<int> :: min() ) {
-      std :: cout << "should set n_site first " << std :: endl;
-      abort();
-    }
-    if( this->site_lower_bound_ == std :: numeric_limits<int> :: min() ) {
-      std :: cout << "should set n_site first " << std :: endl;
-      abort();
-    }
-
-    for( size_t i = this->site_lower_bound_; i <= this->site_upper_bound_; i++ ) {
-      this->integral_( i, i, i, i ) = value;
-    }
-    this->on_site_coulomb_ = value;
-  }
-
   integral_type* integral_ptr() 
     { return &(this->integral_); }
+
+  void set_on_site_hopping( const double on_site_hopping ) 
+    { this->integral_.set_on_site_hopping( on_site_hopping ); }
+
+  void set_neighbour_hopping( const double neighbour_hopping )
+    { this->integral_.set_neighbour_hopping( neighbour_hopping ); }
+
+  void set_on_site_coulomb( const double on_site_coulomb )
+    { this->integral_.set_on_site_coulomb( on_site_coulomb ); }
 
 public:
   static std :: string state_sampling_method_name( const StateSamplingMethod method ) {

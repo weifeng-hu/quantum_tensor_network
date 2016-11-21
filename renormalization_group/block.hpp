@@ -1,6 +1,7 @@
 #ifndef BLOCK_HPP
 #define BLOCk_HPP
 
+#include <memory>
 #include "hamiltonian_base.hpp"
 
 namespace renormalization_group {
@@ -27,17 +28,16 @@ public:
   ~Block() {}
 
 public:
-  hamiltonian_pointer set_hamiltonian() 
-    { return this->hamiltonian_ptr_; }
-
-  friend
-    Block operator+ ( const Block& block_a, const Block& block_b ) {
-      return block_a + block_b;
-    }
+  size_t n_site() const 
+    { return this->site_indices_.size(); }
+  void attach_hamiltonian( hamiltonian_pointer hamiltonian_ptr ) 
+    { hamiltonian_ptr_ = std :: shared_ptr< hamiltoian_type > ( hamiltonian_ptr ); }
+  hamiltonian_type& hamiltoian()
+    { return *(this->hamiltonian_ptr_;) }
 
   Block& operator+ ( const Block& rhs ) {
     this->site_indices_.insert( this->site_indices_.end(), rhs.site_indices().begin(), rhs.site_indices.end() );
-    this->hamiltonian_ += rhs.hamiltonian();
+    this->hamiltonian() += rhs.hamiltonian();
     if( M_ >= this->hamiltonian_.n_states() ) {
       std :: cout << " New Hamiltonian n_states " << this->hamiltonian_.n_states() << " exceeds threshold " << M_ << std ::endl; 
       std :: cout << " Renormalizing: " << std :: endl;
@@ -45,7 +45,6 @@ public:
     }
     return *this;
   } // end of operator+
-
   friend 
     Block operator+ ( Block& block_a, Block& block_b ) {
       block_a += block_b;
@@ -56,12 +55,8 @@ public:
 
   }
 
-public:
-  size_t n_site() const 
-    { return this->site_indices_.size(); }
-
 private:
-  hamiltonian_pointer hamiltonian_ptr_;
+  std :: shared_ptr< hamiltonian_type > hamiltonian_ptr_;
   std :: vector<int> site_indices_;
   size_t M_;
 

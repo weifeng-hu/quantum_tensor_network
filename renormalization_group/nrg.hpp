@@ -84,7 +84,7 @@ private:
 
     if( site_indices.size() <= this->increment_ ) {
       Hubbard hubbard_start( start_block_sites, this->integral_ptr() );
-      starting_block.attach_hamiltonian( hubbard_start );
+      starting_block.attach_hamiltonian( &hubbard_start );
     } else {
       starting_block = solve_block( starting_sites );
     }
@@ -95,7 +95,7 @@ private:
       { increment_block_sites.push_back( site_indices.at( starting_block_sites.size() + i ) ); }
     block_type increment_block( this->M_, increment_sites );
     Hubbard hubbard_increment( increment_sites, this->integral_ptr() );
-    increment_block.attach_hamiltonian( hubbard_increment );
+    increment_block.attach_hamiltonian( &hubbard_increment );
 
     starting_block += increment_block; // do the combination 
 
@@ -113,7 +113,7 @@ private:
 
     block_type sum_block( this->M_, sum_block_sites );
     Hubbard hubbard_start( sum_block_sites, this->integral_ptr() );
-    sum_block.attach_hamiltonian( hubbard_start );
+    sum_block.attach_hamiltonian( &hubbard_start );
 
     while( sum_block_sites.size() <= this->n_sites_ ) {
 
@@ -123,7 +123,7 @@ private:
 
       block_type increment_block( this->M_, increment_sites );
       Hubbard hubbard_increment( increment_sites, this->integral_ptr() );
-      increment_block.attach_hamiltonian( hubbard_hamiltonian_increment );
+      increment_block.attach_hamiltonian( &hubbard_hamiltonian_increment );
 
       sum_block += increment_block;
       sum_block_sites.insert( sum_block_sites.end(), increment_sites.begin(), increment_sites.end() );

@@ -36,6 +36,60 @@ public:
   } // end of at for two_body
 
 public:
+  void set_on_site_hopping( const double value ) {
+   if( this->site_lower_bound_ == std :: numeric_limits<int> :: min() ) {
+     std :: cout << "should set n_site first " << std :: endl;
+     abort();
+   }
+
+   if( this->site_lower_bound_ == std :: numeric_limits<int> :: min() ) {
+     std :: cout << "should set n_site first " << std :: endl;
+     abort();
+   }
+
+   for( size_t i = this->site_lower_bound_; i <= this->site_upper_bound_; i++ ) {
+      (*this)( i, i ) = value;
+    }
+    this->on_site_hopping_ = value;
+  }
+  
+  void set_neighbour_hopping() {
+    if( this->site_lower_bound_ == std :: numeric_limits<int> :: min() ) {
+      std :: cout << "should set n_site first " << std :: endl;
+      abort();
+    }
+    if( this->site_lower_bound_ == std :: numeric_limits<int> :: min() ) {
+      std :: cout << "should set n_site first " << std :: endl;
+      abort();
+    }
+ 
+    for( size_t i = this->site_lower_bound_; i <= this->site_upper_bound_; i++ ) {
+      for( size_t j = this->site_lower_bound_; j < i; j++ ) {
+        (*this)( i, j ) = value;
+        (*this)( j, i ) = value;
+      }
+    }
+    this->neighbour_hopping_ = value;
+  }
+
+  void set_on_site_coulomb( const double value ) {
+    if( this->site_lower_bound_ == std :: numeric_limits<int> :: min() ) {
+      std :: cout << "should set n_site first " << std :: endl;
+      abort();
+    }
+    if( this->site_lower_bound_ == std :: numeric_limits<int> :: min() ) {
+      std :: cout << "should set n_site first " << std :: endl;
+      abort();
+    }
+
+    for( size_t i = this->site_lower_bound_; i <= this->site_upper_bound_; i++ ) {
+      (*this)( i, i, i, i ) = value;
+    }
+    this->on_site_coulomb_ = value;
+  }
+
+
+private:
   store_type store_;
 
 }; // end of class Integral
