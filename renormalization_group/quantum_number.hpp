@@ -5,7 +5,7 @@
 
 namespace renormalization_group {
 
-enum SpinType { Up, Down };
+enum SpinType { up, down };
 
 class QuantumNumber {
 public:

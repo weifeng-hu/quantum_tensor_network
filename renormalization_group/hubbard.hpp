@@ -43,23 +43,22 @@ public:
   HamType hamiltonian_type() 
     { return this->hamiltonian_type_; }
 
-  bool term_fit_constraint_one_body( one_body_term_type :: op_term_info_type& op_term_info ) {
-    return ( std :: get<2> ( std :: get<0> ( op_term_info ) ) == 
-             std :: get<2> ( std :: get<0> ( op_term_info ) );
-  }
+  bool term_fit_constraint_one_body( one_body_term_type :: op_term_info_type& op_term_info ) 
+    { return ( op_term_info.spin_type_0() == op_term_info.spin_type_1(); }
 
   bool term_fit_constraint_two_body( two_body_term_type :: op_term_info_type& op_term_info ) {
     // judge the site indices: must be all the same
-    if( std :: get<1> ( std :: get<0> ( op_term_info ) ) != std :: get<1> ( std :: get<1> ( op_term_info ) ) ) return false;
-    if( std :: get<1> ( std :: get<0> ( op_term_info ) ) != std :: get<1> ( std :: get<2> ( op_term_info ) ) ) return false;
-    if( std :: get<1> ( std :: get<0> ( op_term_info ) ) != std :: get<1> ( std :: get<3> ( op_term_info ) ) ) return false;
-    if( std :: get<1> ( std :: get<1> ( op_term_info ) ) != std :: get<1> ( std :: get<2> ( op_term_info ) ) ) return false;
-    if( std :: get<1> ( std :: get<1> ( op_term_info ) ) != std :: get<1> ( std :: get<3> ( op_term_info ) ) ) return false;
-    if( std :: get<1> ( std :: get<2> ( op_term_info ) ) != std :: get<1> ( std :: get<3> ( op_term_info ) ) ) return false;
+    if( op_term_info.ind_0()!= op_term_info.ind_1() ) return false;
+    if( op_term_info.ind_0()!= op_term_info.ind_2() ) return false;
+    if( op_term_info.ind_0()!= op_term_info.ind_3() ) return false;
+    if( op_term_info.ind_1()!= op_term_info.ind_2() ) return false;
+    if( op_term_info.ind_1()!= op_term_info.ind_3() ) return false;
+    if( op_term_info.ind_2()!= op_term_info.ind_3() ) return false;
 
     // judge the spin constraint a b c d, a == d, b == c 
-    if( std :: get<2> ( std :: get<0> ( op_term_info ) ) != std :: get<2> ( std :: get<3> ( op_term_info ) ) ) return false;
-    if( std :: get<2> ( std :: get<1> ( op_term_info ) ) != std :: get<2> ( std :: get<2> ( op_term_info ) ) ) return false;
+    if( op_term_info.spin_type_0() != op_term_info.spin_type_3() ) return false;
+    if( op_term_info.spin_type_1() != op_term_info.spin_type_2() ) return false;
+    return true;
   }
 
 private:

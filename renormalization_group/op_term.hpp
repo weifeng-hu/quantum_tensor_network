@@ -4,7 +4,7 @@
 #include <list>
 #include "operator.hpp"
 
-namespace rg {
+namespace renormalization_group {
 
  // definition of Term 
  // Contains something like Ci Cj Ck... only multiply
@@ -76,6 +76,6 @@ private:
 
 }; // end of class Term 
 
-} // end of namespace rg
+} // end of namespace renormalization_group
 
 #endif

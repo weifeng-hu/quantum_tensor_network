@@ -3,6 +3,8 @@
 
 #include <cmath>
 #include <utility>
+#include <limits>
+#include "./op_term_info.hpp"
 #include "./quantum_number.hpp"
 #include "./operator.hpp"
 
@@ -11,10 +13,7 @@ namespace renormalization_group {
 class TwoBodyTerm {
 public:
   typedef TwoBodyTerm this_type;
-  typedef std :: tuple< std :: tuple< OpType, int, SpinType >,
-                        std :: tuple< OpType, int, SpinType >, 
-                        std :: tuple< OpType, int, SpinType >,
-                        std :: tuple< OpType, int, SpinType > >
+  typedef OpTermInfoTwoBody op_term_info_type;
 
 public:
   TwoBodyTerm() {}
@@ -43,6 +42,10 @@ public:
       l_list_.push_back(l);
     }
 
+    this->begin_ = op_term_info_type( c_dagger, 0, up, c_dagger, 0, up,  
+                                      c       , 0, up, c       , 0, up );
+    this->end_   = op_term_info_type( c_dagger, std :: numeric_limits<int> :: max(), down, c_dagger, std :: numeric_limits<int> :: max(), down,  
+                                      c       , std :: numeric_limits<int> :: max(), down, c       , std :: numeric_limits<int> :: max(), down );
   }
 
   TwoBodyTerm( const int lower_site, const upper_site ) {
@@ -65,6 +68,10 @@ public:
       this->l_list_.push_back(k);
     }
 
+    this->begin_ = op_term_info_type( c_dagger, 0, up, c_dagger, 0, up,  
+                                      c       , 0, up, c       , 0, up );
+    this->end_   = op_term_info_type( c_dagger, std :: numeric_limits<int> :: max(), down, c_dagger, std :: numeric_limits<int> :: max(), down,  
+                                      c       , std :: numeric_limits<int> :: max(), down, c       , std :: numeric_limits<int> :: max(), down );
   }
 
   TwoBodyTerm( const std :: vector< int > i_list, 
@@ -80,6 +87,11 @@ public:
     this->j_bounds_ = std :: make_pair( *(j_list.begin()), *(j_list.rbegin()) );
     this->k_bounds_ = std :: make_pair( *(k_list.begin()), *(k_list.rbegin()) );
     this->l_bounds_ = std :: make_pair( *(l_list.begin()), *(l_list.rbegin()) );
+
+    this->begin_ = op_term_info_type( c_dagger, 0, up, c_dagger, 0, up,  
+                                      c       , 0, up, c       , 0, up );
+    this->end_   = op_term_info_type( c_dagger, std :: numeric_limits<int> :: max(), down, c_dagger, std :: numeric_limits<int> :: max(), down,  
+                                      c       , std :: numeric_limits<int> :: max(), down, c       , std :: numeric_limits<int> :: max(), down );
   }
 
   ~TwoBodyTerm() {}
@@ -130,6 +142,96 @@ public:
     if( this->l_upper_bound() >= rhs.l_lower_bound() && this->l_upper_bound() <= rhs.l_upper_bound() ) return true;
   } // end of operator& 
 
+  class iterator {
+    public:
+      iterator()  {}
+      iterator( op_term_info_type op_term_info , int ind_i, int ind_j, int ind_k, int ind_l ) :
+        store_ ( op_term_info ),
+        ind_i_ ( ind_i ),
+        ind_j_ ( ind_j ),
+        ind_k_ ( ind_k ),
+        ind_l_ ( ind_l )  {}
+      ~iterator() {}
+    public:
+      this& operator++ () {
+        if( store_.spin_0() == up && store_.spin_1() == up && store_.spin_2() == up && store_.spin_3() == up ) {
+          store_ = op_term_info_type( c_dagger, store_.ind_0(), up, c_dagger, store_.ind_1(), down, store_.ind_2(), down, store_.ind_3(), up );
+        } 
+        else if( store_.spin_0() == up && store_.spin_1() == down && store_.spin_2() == down && store_.spin_3() == up ) {
+          store_ = op_term_info_type( c_dagger, store_.ind_0(), down, c_dagger, store_.ind_1(), up, store_.ind_2(), up, store_.ind_3(), down );
+        } 
+        else if( store_.spin_0() == down && store_.spin_1() == up && store_.spin_2() == up && store_.spin_3() == down ) {
+          store_ = op_term_info_type( c_dagger, store_.ind_0(), down, c_dagger, store_.ind_1(), down, store_.ind_2(), down, store_.ind_3(), down );
+        } 
+        else if( store_.spin_0() == down && store_.spin_1() == down && store_.spin_2() == down && store_.spin_3() == down ) {
+          ++ind_l_;
+          if( ind_l_ == l_list_.size() ) {
+            ++ind_k;
+            if( ind_k_ == k_list_.size() ) {
+              ++ind_j;
+              if( ind_j_ == j_list_.size() ) {
+                ++ind_i;
+                if( ind_i_ == i_list_.size() ) {
+                  store = op_term_info_type( c_dagger, std :: numeric_limits<int> :: max(), down, c_dagger, std :: numeric_limits<int> :: max(), down,  
+                                             c       , std :: numeric_limits<int> :: max(), down, c       , std :: numeric_limits<int> :: max(), down );
+                } else {
+                  store = op_term_info_type( c_dagger, i_list_[ind_i_] , up, c_dagger, j_list_[ind_j_], up,  
+                                             c       , k_list_[ind_k_] , up, c       , l_list_[ind_l_], up );
+                }
+              }
+            }
+          }
+        }
+        return *this;
+      }
+
+      inline bool operator== ( const iterator& lhs, const iterator& rhs ) {
+        if( lhs.store().op_type_0()   != rhs.store().op_type_0() )   return false;
+        if( lhs.store().ind_0()       != rhs.store().ind_0() )       return false;
+        if( lhs.store().spin_type_0() != rhs.store().spin_type_0() ) return false;
+        if( lhs.store().op_type_1()   != rhs.store().op_type_1() )   return false;
+        if( lhs.store().ind_1()       != rhs.store().ind_1() )       return false;
+        if( lhs.store().spin_type_1() != rhs.store().spin_type_1() ) return false;
+        if( lhs.store().op_type_2()   != rhs.store().op_type_2() )   return false;
+        if( lhs.store().ind_2()       != rhs.store().ind_2() )       return false;
+        if( lhs.store().spin_type_2() != rhs.store().spin_type_2() ) return false;
+        if( lhs.store().op_type_3()   != rhs.store().op_type_3() )   return false;
+        if( lhs.store().ind_3()       != rhs.store().ind_3() )       return false;
+        if( lhs.store().spin_type_3() != rhs.store().spin_type_3() ) return false;
+        //if( lhs.ind_i() != rhs.ind_i() ) return false;
+        //if( lhs.ind_j() != rhs.ind_j() ) return false;
+        return true;
+      }
+
+      inline bool operator!= ( const iterator& lhs, const iterator& rhs )
+        { return !( lhs == rhs ); }
+
+    private:
+      op_term_info_type store() const
+        { return store_; }
+      int ind_i() const
+        { return ind_i_; }
+      int ind_j() const
+        { return ind_j_; }
+      int ind_k() const
+        { return ind_k_; }
+      int ind_l() const
+        { return ind_l_; }
+
+    private:
+      op_term_info_type store_;
+      int ind_i_;
+      int ind_j_;
+      int ind_k_;
+      int ind_l_;
+
+  }; // end of in-class class iterator
+
+  const iterator& begin()
+    { return this->begin_; }
+  const iterator& end()
+    { return this->end_; }
+
 private:
   std :: pair< int, int > i_bounds_;
   std :: pair< int, int > j_bounds_;
@@ -139,6 +241,8 @@ private:
   std :: vector< int > j_list_;
   std :: vector< int > k_list_;
   std :: vector< int > l_list_;
+  iterator begin_;
+  iterator end_;
 
 }; // end of class TwoBodyTerm
 

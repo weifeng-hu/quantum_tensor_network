@@ -3,6 +3,8 @@
 
 #include <cmath>
 #include <utility>
+#include <limits>
+#include "./op_term_info.hpp"
 #include "./quantum_number.hpp"
 #include "./operator.hpp"
 
@@ -11,8 +13,7 @@ namespace renormalization_group {
 class OneBodyTerm {
 public:
   typedef OneBodyTerm this_type;
-  typedef std :: tuple< std :: tuple< OpType, int, SpinType >, 
-                        std :: tuple< OpType, int, SpinType > > op_term_info_type;
+  typedef OpTermInfoOneBody op_term_info_type;
 
 public:
   OneBodyTerm() {}
@@ -27,6 +28,8 @@ public:
     for( int j = lower_i; j <= upper_j; j++ ) {
       j_list_.push_back(j);
     }
+    this->begin_ = iterator( op_term_info_type( c_dagger, i_list_.front(), up, c,  j_list_.front(), up ), 0, 0 ) ;
+    this->end_ = iterator( op_term_info_type( c_dagger, std :: numeric_limits<int> :: max() , down , c, std :: numeric_limits<int> :: max() , down  ), i_list_.size(), j_list_.size() );
   }
 
   OneBodyTerm( const int lower_site, const int upper_site ) {
@@ -40,6 +43,9 @@ public:
       this->i_list_.push_back(k);
       this->j_list_.push_back(k);
     }
+
+    this->begin_ = iterator( op_term_info_type( c_dagger, i_list_.front(), up, c,  j_list_.front(), up ), 0, 0 ) ;
+    this->end_ = iterator( op_term_info_type( c_dagger, std :: numeric_limits<int> :: max() , down , c, std :: numeric_limits<int> :: max() , down  ), i_list_.size(), j_list_.size() );
   }
 
   OneBodyTerm( const std :: vector< int > i_list, const std :: vector< int > j_list ) 
@@ -48,6 +54,9 @@ public:
   {
     this->i_bounds_ = std :: make_pair( *(i_list.begin()), *(i_list.rbegin()) );
     this->j_bounds_ = std :: make_pair( *(j_list.begin()), *(j_list.rbegin()) );
+
+    this->begin_ = iterator( op_term_info_type( c_dagger, i_list_.front(), up, c,  j_list_.front(), up ), 0, 0 ) ;
+    this->end_ = iterator( op_term_info_type( c_dagger, std :: numeric_limits<int> :: max() , down , c, std :: numeric_limits<int> :: max() , down  ), i_list_.size(), j_list_.size() );
   } 
 
   ~OneBodyTerm() {}
@@ -88,20 +97,59 @@ public:
   class iterator {
     public:
       iterator()  {}
+      iterator( op_term_info_type op_term_info , int ind_i, int ind_j ) :
+        store_ ( op_term_info ),
+        ind_i_ ( ind_i ),
+        ind_j_ ( ind_j ) {}
       ~iterator() {}
     public:
       this& operator++ () {
+        if( store_.spin_0() == up ) {
+          store_ = op_term_info_type( c_dagger, store_.ind_0(), down, c, store_.ind_1(), down );
+        } else {
+          ++ind_j_;
+          if( ind_j_ == j_list_.size() ) {
+            ind_j_ = 0;
+            ++ind_i_;
+            if( ind_i_ == i_list_.size() ) {
+              store_ = op_term_info_type( c_dagger, std :: numeric_limits<int> :: max() , down , c, std :: numeric_limits<int> :: max() , down  );
+            } else {
+              store_ = op_term_info_type( c_dagger, i_list_[ind_i_], up, c, j_list_[ind_j_], up );
+            }
+          }
+        }
         return *this;
       }
 
       inline bool operator== ( const iterator& lhs, const iterator& rhs ) {
-        
+        if( lhs.store().op_type_0()   != rhs.store().op_type_0() )   return false;
+        if( lhs.store().ind_0()       != rhs.store().ind_0() )       return false;
+        if( lhs.store().spin_type_0() != rhs.store().spin_type_0() ) return false;
+        if( lhs.store().op_type_1()   != rhs.store().op_type_1() )   return false;
+        if( lhs.store().ind_1()       != rhs.store().ind_1() )       return false;
+        if( lhs.store().spin_type_1() != rhs.store().spin_type_1() ) return false;
+        //if( lhs.ind_i() != rhs.ind_i() ) return false;
+        //if( lhs.ind_j() != rhs.ind_j() ) return false;
+        return true;
       }
 
       inline bool operator!= ( const iterator& lhs, const iterator& rhs )
         { return !( lhs == rhs ); }
 
-  }
+    private:
+      op_term_info_type store() const
+        { return store_; }
+      int ind_i() const
+        { return ind_i_; }
+      int ind_j() const
+        { return ind_j_; }
+
+    private:
+      op_term_info_type store_;
+      int ind_i_;
+      int ind_j_;
+
+  }; // end of in-class class iterator
 
   const iterator& begin() 
     { return this->begin_; }
