@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <array>
 #include "integral.hpp"
 #include "operator_base.hpp"
 #include "one_body_term.hpp"
@@ -45,13 +46,16 @@ public:
 
   // this operator treats the coupling terms between Ha and rhs
   this_type& operator&= ( const this_type& rhs ) {
-    for( size_t iterm_group = 0; iterm_group < this->formular_.size(); i++ ) {
-      const OpTerm term = formula_.at(iterm_group);
-      const operator_type op_a = term.get_op_rep();
-      const operator_type op_b = term.get_op_rep();
-      const operator_type op_a_x_op_b = op_a * op_b;
-      this->hamiltonian_ += op_a_x_op_b + conjugate( op_a_x_op_b );
-    }
+//    for( size_t iterm_group = 0; iterm_group < this->formular_.size(); i++ ) {
+//      const OpTerm term = formula_.at(iterm_group);
+//      const operator_type op_a = term.get_op_rep();
+//      const operator_type op_b = term.get_op_rep();
+//      const operator_type op_a_x_op_b = op_a * op_b;
+//      this->hamiltonian_ += op_a_x_op_b + conjugate( op_a_x_op_b );
+//    }
+    std :: array< one_body_term, 4 > = this->one_body_term_ | rhs.one_body_term();
+
+    std :: array< two_body_term, 4 > = this->two_body_term_ | rhs.two_body_term();
     return *this;
   } // end of operator& ()
 

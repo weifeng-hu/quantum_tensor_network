@@ -51,7 +51,7 @@ public:
 
 public:
   friend 
-    std :: array< this_type, 4 > this_type& operator|| ( const this_type& term_a, const this_type& term_b ) {
+    std :: array< this_type, 4 > this_type& operator| ( const this_type& term_a, const this_type& term_b ) {
       if( term_a & term_b == true ) {
         abort();
       }
