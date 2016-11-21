@@ -4,7 +4,7 @@
 #include <utility>
 #include "operator_base.hpp"
 
-namespace rg {
+namespace renormalization_group {
 
   typedef OperatorBase op_type;
 
@@ -85,6 +85,6 @@ namespace rg {
 
   } // end of same_site_plus()
 
-} // end of namespace rg
+} // end of namespace renormalization_group
 
 #endif

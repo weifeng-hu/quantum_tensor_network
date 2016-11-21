@@ -4,7 +4,7 @@
 #include <vector>
 #include "operator_base.hpp"
 
-namespace rg {
+namespace renormalization_group {
 
 template < size_t order >
 class OPArray {
@@ -13,14 +13,11 @@ public:
   typedef std :: vector< operator_type > store_type;
   typedef OPArray this_type;
 
-public:
-  
-
 private:
   store_type store_;
 
 }; // end of class OPArray
 
-} // end of namespace rg
+} // end of namespace renormalization_group
 
 #endif

@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <operator_base.hpp>
 
-namespace rg {
+namespace renormalization_group {
 
 class CUp : public OperatorBase {
 public:
@@ -47,6 +47,6 @@ public:
 
 }; // end of DestructionOp
 
-} // end of namespace rg
+} // end of namespace renormalization_group
 
 #endif

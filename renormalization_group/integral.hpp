@@ -6,7 +6,7 @@
 #include <array>
 #include <unordered_map>
 
-namespace rg {
+namespace renormalization_group {
 
 class Integral {
 public:
@@ -94,6 +94,6 @@ private:
 
 }; // end of class Integral
 
-} // end of namespace rg
+} // end of namespace renormalization_group
 
 #endif

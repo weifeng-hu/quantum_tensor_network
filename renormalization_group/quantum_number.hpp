@@ -3,7 +3,7 @@
 
 #include <utility>
 
-namespace rg {
+namespace renormalization_group {
 
 class QuantumNumber {
 public:
@@ -51,6 +51,6 @@ private:
 
 }; // end of class QuantumNumber
 
-} // end of namespace rg
+} // end of namespace renormalization_group
 
 #endif

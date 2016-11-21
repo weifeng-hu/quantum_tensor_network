@@ -5,7 +5,7 @@
 #include "../mat_stoch_diag/simple_matrix.hpp"
 #include "operator_operations.hpp"
 
-namespace rg {
+namespace renormalization_group {
 
 template < size_t Order >
 class OperatorBase {
@@ -113,6 +113,6 @@ protected:
 
 }; // end of OperatorBase
 
-} // end of namespace rg
+} // end of namespace renormalization_group
 
 #endif

@@ -3,7 +3,7 @@
 
 #include <vector>
 
-namespace rg {
+namespace renormalization_group {
 
 class Formula {
 public:
@@ -47,6 +47,6 @@ private:
 
 }; // end of class Formula
 
-} // end of namespace rg
+} // end of namespace renormalization_group
 
 #endif
