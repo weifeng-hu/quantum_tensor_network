@@ -3,13 +3,18 @@
 
 #include <cmath>
 #include <utility>
-#include <operator.hpp>
+#include "./quantum_number.hpp"
+#include "./operator.hpp"
 
 namespace renormalization_group {
 
 class TwoBodyTerm {
 public:
   typedef TwoBodyTerm this_type;
+  typedef std :: tuple< std :: tuple< OpType, int, SpinType >,
+                        std :: tuple< OpType, int, SpinType >, 
+                        std :: tuple< OpType, int, SpinType >,
+                        std :: tuple< OpType, int, SpinType > >
 
 public:
   TwoBodyTerm() {}
@@ -81,15 +86,13 @@ public:
 
 public:
   friend
-    std :: array< this_type, 4 > this_type& operator || ( const this_type& term_a, const this_type& term_b ) {
+    std :: array< this_type, 2 > this_type& operator | ( const this_type& term_a, const this_type& term_b ) {
       if( term_a & term_b == true ) {
         abort();
       }
-      std :: array< this_type, 4 > retval; 
-      retval[0] = term_a;
+      std :: array< this_type, 2 > retval; 
       retval[1] = this_type( term_a.i_lower_bound(), term_a.i_upper_bound(), term_b.j_lower_bound(), term_b.j_upper_bound() );
       retval[2] = this_type( term_b.i_lower_bound(), term_b.i_upper_bound(), term_a.j_lower_bound(), term_a.j_upper_bound() );
-      retval[3] = term_b;
     } // end of friend operator || 
 
   this_type& operator+= ( const this_type& rhs ) {

@@ -5,6 +5,8 @@
 
 namespace renormalization_group {
 
+enum SpinType { Up, Down };
+
 class QuantumNumber {
 public:
   typedef QuantumNumber this_type;

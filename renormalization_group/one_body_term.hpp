@@ -3,13 +3,16 @@
 
 #include <cmath>
 #include <utility>
-#include "operator.hpp"
+#include "./quantum_number.hpp"
+#include "./operator.hpp"
 
 namespace renormalization_group {
 
 class OneBodyTerm {
 public:
   typedef OneBodyTerm this_type;
+  typedef std :: tuple< std :: tuple< OpType, int, SpinType >, 
+                        std :: tuple< OpType, int, SpinType > > op_term_info_type;
 
 public:
   OneBodyTerm() {}
@@ -51,15 +54,13 @@ public:
 
 public:
   friend 
-    std :: array< this_type, 4 > this_type& operator| ( const this_type& term_a, const this_type& term_b ) {
+    std :: array< this_type, 2 > this_type& operator| ( const this_type& term_a, const this_type& term_b ) {
       if( term_a & term_b == true ) {
         abort();
       }
-      std :: array< this_type, 4 > retval; 
-      retval[0] = term_a;
-      retval[1] = this_type( term_a.i_lower_bound(), term_a.i_upper_bound(), term_b.j_lower_bound(), term_b.j_upper_bound() );
-      retval[2] = this_type( term_b.i_lower_bound(), term_b.i_upper_bound(), term_a.j_lower_bound(), term_a.j_upper_bound() );
-      retval[3] = term_b;
+      std :: array< this_type, 2 > retval; 
+      retval[0] = this_type( term_a.i_lower_bound(), term_a.i_upper_bound(), term_b.j_lower_bound(), term_b.j_upper_bound() );
+      retval[1] = this_type( term_b.i_lower_bound(), term_b.i_upper_bound(), term_a.j_lower_bound(), term_a.j_upper_bound() );
     }  // end of friend operator ||
 
   this_type& operator+= ( const this_type& rhs ) {
@@ -86,19 +87,34 @@ public:
 
   class iterator {
     public:
-      iterator() {}
+      iterator()  {}
       ~iterator() {}
     public:
-      this& operator++ ( iterator& this ) {
+      this& operator++ () {
         return *this;
       }
+
+      inline bool operator== ( const iterator& lhs, const iterator& rhs ) {
+        
+      }
+
+      inline bool operator!= ( const iterator& lhs, const iterator& rhs )
+        { return !( lhs == rhs ); }
+
   }
+
+  const iterator& begin() 
+    { return this->begin_; }
+  const iterator& end()
+    { return this->end_; }
 
 private:
   std :: pair< int, int > i_bounds_;
   std :: pair< int, int > j_bounds_;
-  std :: vector< int > i_list_;
-  std :: vector< int > j_list_;
+  std :: vector< int >    i_list_;
+  std :: vector< int >    j_list_;
+  iterator begin_;
+  iterator end_;
 
 }; // end of class OneBodyTerm
 

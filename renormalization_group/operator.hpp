@@ -7,6 +7,8 @@
 
 namespace renormalization_group {
 
+enum OpType { c, c_dagger };
+
 class CUp : public OperatorBase {
 public:
   CUp( const int& site_ind ) : site_ind_ ( site_ind ) {

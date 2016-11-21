@@ -43,6 +43,25 @@ public:
   HamType hamiltonian_type() 
     { return this->hamiltonian_type_; }
 
+  bool term_fit_constraint_one_body( one_body_term_type :: op_term_info_type& op_term_info ) {
+    return ( std :: get<2> ( std :: get<0> ( op_term_info ) ) == 
+             std :: get<2> ( std :: get<0> ( op_term_info ) );
+  }
+
+  bool term_fit_constraint_two_body( two_body_term_type :: op_term_info_type& op_term_info ) {
+    // judge the site indices: must be all the same
+    if( std :: get<1> ( std :: get<0> ( op_term_info ) ) != std :: get<1> ( std :: get<1> ( op_term_info ) ) ) return false;
+    if( std :: get<1> ( std :: get<0> ( op_term_info ) ) != std :: get<1> ( std :: get<2> ( op_term_info ) ) ) return false;
+    if( std :: get<1> ( std :: get<0> ( op_term_info ) ) != std :: get<1> ( std :: get<3> ( op_term_info ) ) ) return false;
+    if( std :: get<1> ( std :: get<1> ( op_term_info ) ) != std :: get<1> ( std :: get<2> ( op_term_info ) ) ) return false;
+    if( std :: get<1> ( std :: get<1> ( op_term_info ) ) != std :: get<1> ( std :: get<3> ( op_term_info ) ) ) return false;
+    if( std :: get<1> ( std :: get<2> ( op_term_info ) ) != std :: get<1> ( std :: get<3> ( op_term_info ) ) ) return false;
+
+    // judge the spin constraint a b c d, a == d, b == c 
+    if( std :: get<2> ( std :: get<0> ( op_term_info ) ) != std :: get<2> ( std :: get<3> ( op_term_info ) ) ) return false;
+    if( std :: get<2> ( std :: get<1> ( op_term_info ) ) != std :: get<2> ( std :: get<2> ( op_term_info ) ) ) return false;
+  }
+
 private:
   HamType hamiltonian_type_;
   double on_site_hopping_;

@@ -39,24 +39,62 @@ public:
   virtual ~HamiltonianBase() {}
 
 public:
-  bool operator== ( const this_type& rhs )
-    { return this->hamiltonian_type() == rhs.hamiltonian_type();  }
-  bool operator!= ( const this_type& rhs )
-    { return !( *this ==  rhs ); }
+  inline bool operator== ( const this_type& lhs, const this_type& rhs )
+    { return lhs.hamiltonian_type() == rhs.hamiltonian_type();  }
+  inline bool operator!= ( const this_type& lhs, const this_type& rhs )
+    { return !( lhs ==  rhs ); }
+
+  virtual bool term_fit_constraint_one_body( one_body_term_type :: op_term_info_type& op_term_info ) = 0;
+  virtual bool term_fit_constraint_two_body( two_body_term_type :: op_term_info_type& op_term_info ) = 0;
 
   // this operator treats the coupling terms between Ha and rhs
   this_type& operator&= ( const this_type& rhs ) {
-//    for( size_t iterm_group = 0; iterm_group < this->formular_.size(); i++ ) {
-//      const OpTerm term = formula_.at(iterm_group);
-//      const operator_type op_a = term.get_op_rep();
-//      const operator_type op_b = term.get_op_rep();
-//      const operator_type op_a_x_op_b = op_a * op_b;
-//      this->hamiltonian_ += op_a_x_op_b + conjugate( op_a_x_op_b );
-//    }
-    std :: array< one_body_term, 4 > = this->one_body_term_ | rhs.one_body_term();
 
-    std :: array< two_body_term, 4 > = this->two_body_term_ | rhs.two_body_term();
+    std :: array< one_body_term_type, 2 > one_body_A_x_B = this->one_body_term_ | rhs.one_body_term();
+
+    for( one_body_term_type :: iterator it = one_body_A_x_B[0].begin(); it != one_body_A_X_B[0].end(); ++it ) {
+      const one_body_term_type :: op_term_info_type op_term_info = *it;
+      if( this->term_fit_constraint_one_body( op_term_info ) ) {
+        operator_type op_a = op_term.first;
+        operator_type op_b = op_term.second;
+        const operator_type op_a_x_op_b = op_a * op_b;
+        *this = *this + op_a_x_op_b; // need to pay attention to operator += in the base class OperatorBase...
+      }
+    }
+
+    for( one_body_term_type :: iterator it = one_body_A_x_B[1].begin(); it != one_body_A_X_B[1].end(); ++it ) {
+      const one_body_term_type :: op_term_info op_term = *it;
+      if( this->term_fit_constaint_one_body( op_term_info ) ) {
+        operator_type op_a = op_term.first;
+        operator_type op_b = op_term.second;
+        const operator_type op_a_x_op_b = op_a * op_b;
+        *this = *this + op_a_x_op_b;
+      }
+    }
+
+    std :: array< two_body_term_type, 2 > = this->two_body_term_ | rhs.two_body_term();
+    for( two_body_term_type :: iterator it = two_body_A_x_B[0].begin(); it != two_body_A_X_B[0].end(); ++it ) {
+      const two_body_term_type :: op_term_info_type op_term_info = *it;
+      if( this->term_fit_constraint_two_body( op_term_info ) == true ) {
+        operator_type op_a = op_term.first;
+        operator_type op_b = op_term.second;
+        const operator_type op_a_x_op_b = op_a * op_b;
+        *this = *this + op_a_x_op_b;
+      }
+    }
+
+    for( two_body_term_type :: iterator it = two_body_A_x_B[1].begin(); it != two_body_A_X_B[1].end(); ++it ) {
+      const two_body_term_type :: op_term_info_type op_term_info = *it;
+      if( this->term_fit_constraint_two_body( op_term_info ) == true ) {
+        operator_type op_a = op_term.first;
+        operator_type op_b = op_term.second;
+        const operator_type op_a_x_op_b = op_a * op_b;
+        *this = *this + op_a_x_op_b;
+      }
+    }
+
     return *this;
+
   } // end of operator& ()
 
   friend
@@ -77,9 +115,7 @@ public:
     this->one_body_term_ += rhs.one_body_term();
     this->two_body_term_ += rhs.two_body_term();
 
-    this->hamiltonian_ = this->hamiltonian_ * Iden() +
-                         Iden( this ) * rhs.hamiltonian();
-    this->hamiltonian_ = this->hamiltonian_ & rhs.hamiltonian();
+    *this = *this * Iden() + Iden( this ) * rhs + *this & rhs.hamiltonian();
 
     return *this;
 
