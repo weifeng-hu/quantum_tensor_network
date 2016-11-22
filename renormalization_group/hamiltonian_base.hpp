@@ -55,9 +55,9 @@ public:
     for( one_body_term_type :: iterator it = one_body_A_x_B[0].begin(); it != one_body_A_X_B[0].end(); ++it ) {
       const one_body_term_type :: op_term_info_type op_term_info = *it;
       if( this->term_fit_constraint_one_body( op_term_info ) ) {
-        operator_type op_a = op_term.first;
-        operator_type op_b = op_term.second;
-        const operator_type op_a_x_op_b = op_a * op_b;
+        operator_type* op_a_ptr = op_term.first();
+        operator_type* op_b_ptr = op_term.second();
+        const operator_type op_a_x_op_b = (*op_a) * (*op_b);
         *this = *this + op_a_x_op_b; // need to pay attention to operator += in the base class OperatorBase...
       }
     }
@@ -65,9 +65,9 @@ public:
     for( one_body_term_type :: iterator it = one_body_A_x_B[1].begin(); it != one_body_A_X_B[1].end(); ++it ) {
       const one_body_term_type :: op_term_info op_term = *it;
       if( this->term_fit_constaint_one_body( op_term_info ) ) {
-        operator_type op_a = op_term.first;
-        operator_type op_b = op_term.second;
-        const operator_type op_a_x_op_b = op_a * op_b;
+        operator_type* op_a_ptr = op_term.first();
+        operator_type* op_b_ptr = op_term.second();
+        const operator_type op_a_x_op_b = (*op_a) * (*op_b);
         *this = *this + op_a_x_op_b;
       }
     }
@@ -76,9 +76,9 @@ public:
     for( two_body_term_type :: iterator it = two_body_A_x_B[0].begin(); it != two_body_A_X_B[0].end(); ++it ) {
       const two_body_term_type :: op_term_info_type op_term_info = *it;
       if( this->term_fit_constraint_two_body( op_term_info ) == true ) {
-        operator_type op_a = op_term.first;
-        operator_type op_b = op_term.second;
-        const operator_type op_a_x_op_b = op_a * op_b;
+        operator_type* op_a_ptr = op_term.first( two_body_A_x_B[0].middle() );
+        operator_type* op_b_ptr = op_term.second( two_body_A_x_B[0].middle() );
+        const operator_type op_a_x_op_b = (*op_a) * (*op_b);
         *this = *this + op_a_x_op_b;
       }
     }
@@ -86,9 +86,9 @@ public:
     for( two_body_term_type :: iterator it = two_body_A_x_B[1].begin(); it != two_body_A_X_B[1].end(); ++it ) {
       const two_body_term_type :: op_term_info_type op_term_info = *it;
       if( this->term_fit_constraint_two_body( op_term_info ) == true ) {
-        operator_type op_a = op_term.first;
-        operator_type op_b = op_term.second;
-        const operator_type op_a_x_op_b = op_a * op_b;
+        operator_type* op_a = op_term.first( two_body_A_x_B[1].middle() );
+        operator_type* op_b = op_term.second( two_body_A_x_B[1].middle() );
+        const operator_type op_a_x_op_b = (*op_a) * (*op_b);
         *this = *this + op_a_x_op_b;
       }
     }
@@ -115,7 +115,7 @@ public:
     this->one_body_term_ += rhs.one_body_term();
     this->two_body_term_ += rhs.two_body_term();
 
-    *this = *this * Iden() + Iden( this ) * rhs + *this & rhs.hamiltonian();
+    *this = *this * Iden() + Iden( this ) * rhs + *this & rhs;
 
     return *this;
 

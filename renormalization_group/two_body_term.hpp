@@ -20,7 +20,7 @@ public:
   TwoBodyTerm( const int lower_i, const int upper_i, 
                const int lower_j, const int upper_j,
                const int lower_k, const int upper_k,
-               const int lower_l, const int upper_l ) {
+               const int lower_l, const int upper_l, const int left_max, const right_min ) {
     this->i_bounds_ = make_pair( lower_i, upper_i );
     this->i_list_.resize(0);
     for( int i = lower_i; i <= upper_i; i++ ) {
@@ -41,6 +41,9 @@ public:
     for( int l = lower_l; l <= upper_l; l++ ) {
       l_list_.push_back(l);
     }
+
+    this->left_max_ = left_max;
+    this->right_min_ = right_min;
 
     this->begin_ = op_term_info_type( c_dagger, 0, up, c_dagger, 0, up,  
                                       c       , 0, up, c       , 0, up );
@@ -98,13 +101,57 @@ public:
 
 public:
   friend
-    std :: array< this_type, 2 > this_type& operator | ( const this_type& term_a, const this_type& term_b ) {
+    std :: array< this_type, 14 > this_type& operator | ( const this_type& term_a, const this_type& term_b ) {
       if( term_a & term_b == true ) {
         abort();
       }
-      std :: array< this_type, 2 > retval; 
-      retval[1] = this_type( term_a.i_lower_bound(), term_a.i_upper_bound(), term_b.j_lower_bound(), term_b.j_upper_bound() );
-      retval[2] = this_type( term_b.i_lower_bound(), term_b.i_upper_bound(), term_a.j_lower_bound(), term_a.j_upper_bound() );
+      std :: array< this_type, 14 > retval; 
+      retval[0] = this_type( term_b.i_lower_bound(), term_b.i_upper_bound(), term_a.j_lower_bound(), term_a.j_upper_bound(),
+                             term_a.k_lower_bound(), term_a.k_upper_bound(), term_a.l_lower_bound(), term_a.l_upper_bound(),
+                             term_a.i_upper_bound(), term_b.i_lower_bound() );
+      retval[1] = this_type( term_a.i_lower_bound(), term_a.i_upper_bound(), term_b.j_lower_bound(), term_b.j_upper_bound(),
+                             term_a.k_lower_bound(), term_a.k_upper_bound(), term_a.l_lower_bound(), term_a.l_upper_bound(),
+                             term_a.i_upper_bound(), term_b.i_lower_bound() );
+      retval[2] = this_type( term_a.i_lower_bound(), term_a.i_upper_bound(), term_a.j_lower_bound(), term_a.j_upper_bound(),
+                             term_b.k_lower_bound(), term_b.k_upper_bound(), term_a.l_lower_bound(), term_a.l_upper_bound(),
+                             term_a.i_upper_bound(), term_b.i_lower_bound() );
+      retval[3] = this_type( term_a.i_lower_bound(), term_a.i_upper_bound(), term_a.j_lower_bound(), term_a.j_upper_bound(),
+                             term_a.k_lower_bound(), term_a.k_upper_bound(), term_b.l_lower_bound(), term_b.l_upper_bound(),
+                             term_a.i_upper_bound(), term_b.i_lower_bound() );
+
+      retval[4] = this_type( term_a.i_lower_bound(), term_a.i_upper_bound(), term_b.j_lower_bound(), term_b.j_upper_bound(),
+                             term_b.k_lower_bound(), term_b.k_upper_bound(), term_b.l_lower_bound(), term_b.l_upper_bound(),
+                             term_a.i_upper_bound(), term_b.i_lower_bound() );
+      retval[5] = this_type( term_b.i_lower_bound(), term_b.i_upper_bound(), term_a.j_lower_bound(), term_a.j_upper_bound(),
+                             term_b.k_lower_bound(), term_b.k_upper_bound(), term_b.l_lower_bound(), term_b.l_upper_bound(),
+                             term_a.i_upper_bound(), term_b.i_lower_bound() );
+      retval[6] = this_type( term_b.i_lower_bound(), term_b.i_upper_bound(), term_b.j_lower_bound(), term_b.j_upper_bound(),
+                             term_a.k_lower_bound(), term_a.k_upper_bound(), term_b.l_lower_bound(), term_b.l_upper_bound(),
+                             term_a.i_upper_bound(), term_b.i_lower_bound() );
+      retval[7] = this_type( term_b.i_lower_bound(), term_b.i_upper_bound(), term_b.j_lower_bound(), term_b.j_upper_bound(),
+                             term_b.k_lower_bound(), term_b.k_upper_bound(), term_a.l_lower_bound(), term_a.l_upper_bound(),
+                             term_a.i_upper_bound(), term_b.i_lower_bound() );
+
+      retval[8] = this_type( term_a.i_lower_bound(), term_a.i_upper_bound(), term_a.j_lower_bound(), term_a.j_upper_bound(),
+                             term_b.k_lower_bound(), term_b.k_upper_bound(), term_b.l_lower_bound(), term_b.l_upper_bound(),
+                             term_a.i_upper_bound(), term_b.i_lower_bound() );
+      retval[9] = this_type( term_a.i_lower_bound(), term_a.i_upper_bound(), term_b.j_lower_bound(), term_b.j_upper_bound(),
+                             term_a.k_lower_bound(), term_a.k_upper_bound(), term_b.l_lower_bound(), term_b.l_upper_bound(),
+                             term_a.i_upper_bound(), term_b.i_lower_bound() );
+      retval[10] = this_type( term_b.i_lower_bound(), term_b.i_upper_bound(), term_a.j_lower_bound(), term_a.j_upper_bound(),
+                              term_b.k_lower_bound(), term_b.k_upper_bound(), term_a.l_lower_bound(), term_a.l_upper_bound(),
+                              term_a.i_upper_bound(), term_b.i_lower_bound() );
+      retval[11] = this_type( term_b.i_lower_bound(), term_b.i_upper_bound(), term_b.j_lower_bound(), term_b.j_upper_bound(),
+                              term_a.k_lower_bound(), term_a.k_upper_bound(), term_a.l_lower_bound(), term_a.l_upper_bound(),
+                              term_a.i_upper_bound(), term_b.i_lower_bound() );
+
+      retval[12] = this_type( term_a.i_lower_bound(), term_a.i_upper_bound(), term_b.j_lower_bound(), term_b.j_upper_bound(),
+                              term_b.k_lower_bound(), term_b.k_upper_bound(), term_a.l_lower_bound(), term_a.l_upper_bound(),
+                              term_a.i_upper_bound(), term_b.i_lower_bound() );
+      retval[13] = this_type( term_b.i_lower_bound(), term_b.i_upper_bound(), term_a.j_lower_bound(), term_a.j_upper_bound(),
+                              term_a.k_lower_bound(), term_a.k_upper_bound(), term_b.l_lower_bound(), term_b.l_upper_bound(),
+                              term_a.i_upper_bound(), term_b.i_lower_bound() );
+
     } // end of friend operator || 
 
   this_type& operator+= ( const this_type& rhs ) {
@@ -206,6 +253,9 @@ public:
       inline bool operator!= ( const iterator& lhs, const iterator& rhs )
         { return !( lhs == rhs ); }
 
+      op_term_info operator* () 
+        { return store_; }
+
     private:
       op_term_info_type store() const
         { return store_; }
@@ -231,6 +281,9 @@ public:
     { return this->begin_; }
   const iterator& end()
     { return this->end_; }
+  int middle() {
+    return this->left_max_;
+  }
 
 private:
   std :: pair< int, int > i_bounds_;
@@ -243,6 +296,8 @@ private:
   std :: vector< int > l_list_;
   iterator begin_;
   iterator end_;
+  int left_max_;
+  int right_min_;
 
 }; // end of class TwoBodyTerm
 

@@ -135,6 +135,8 @@ public:
 
       inline bool operator!= ( const iterator& lhs, const iterator& rhs )
         { return !( lhs == rhs ); }
+      op_term_info_type operator* ()
+        { return store_; }
 
     private:
       op_term_info_type store() const
