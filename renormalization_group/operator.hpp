@@ -7,7 +7,7 @@
 
 namespace renormalization_group {
 
-enum OpType { c, c_dagger };
+enum OpType { c, c_dagger, i };
 
 class CUp : public OperatorBase {
 public:
@@ -48,6 +48,18 @@ public:
   ~DDw() {}
 
 }; // end of DestructionOp
+
+class Iden: public OperatorBase {
+public:
+  Iden( const int& site_ind ) : site_ind_ ( site_ind ) {
+    this->op_matrix_[ std :: pair< qn_type, qn_type > qn_type( 0, 0 ), qn_type( 0, 0 ) ] = matrix_type( std :: vector< double > { 1.0e0 }, 1, 1 );
+    this->op_matrix_[ std :: pair< qn_type, qn_type > qn_type( 1, 1 ), qn_type( 1, 1 ) ] = matrix_type( std :: vector< double > { 1.0e0 }, 1, 1 );
+    this->op_matrix_[ std :: pair< qn_type, qn_type > qn_type( 1, -1 ), qn_type( 1, -1 ) ] = matrix_type( std :: vector< double > { 1.0e0 }, 1, 1 );
+    this->op_matrix_[ std :: pair< qn_type, qn_type > qn_type( 2, 0 ), qn_type( 2, 0 ) ] = matrix_type( std :: vector< double > { 1.0e0 }, 1, 1 );
+  }
+  ~Iden() {}
+
+}; // end of Identity Operator
 
 } // end of namespace renormalization_group
 

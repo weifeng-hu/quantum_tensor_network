@@ -8,6 +8,7 @@
 #include <array>
 #include "integral.hpp"
 #include "operator_base.hpp"
+#include "wavefunction.hpp"
 #include "one_body_term.hpp"
 #include "two_body_term.hpp"
 //#include "formula.hpp"
@@ -127,9 +128,23 @@ public:
       return *lhs;
     }
 
-  void eigen_system() {
+  std :: vector< std :: pair< double, Wavefunction > > eigenspectrum() {
 
-    matrix_type hamiltonian_matrix = this->acquire_hamiltonian_matrix();
+    std :: vector< std :: pair< double, Wavefunction > > retval;
+
+    this->sort_qn();
+    matrix_stoch_diag :: EigenProcessor eigen_processor;
+    for( size_t i = 0; i < n_qn_row_; i++ ) {
+      matrix_type sub_matrix = this->matrix( i, i );
+      Wavefunction new_wavefunction( this->qn_series() );
+      matrix_stoch_diag :: EigenPair eigen_pair_i = eigen_processor.diagonalize( sub_matrix );
+      for( size_t j = 0; j < sub_matrix.size(); j++ ) {
+        new_wavefunction( n_qn_row_ ) = eigen_pair_i.second.at(j);
+        retval.push_back( std :: pair< double, Wavefunction> ( eigen_pair_.first.at(j), new_wavefunction ) );
+      }
+    }
+
+    return retval;
 
   } // end of eigen_system()
 

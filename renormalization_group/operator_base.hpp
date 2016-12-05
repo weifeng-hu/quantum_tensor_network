@@ -106,6 +106,14 @@ public:
   matrix_type matrix( const size_t ind_i, const size_t ind_j ) const 
     { return this->op_matrix_[ ind_i * n_qn_row_ + ind_j ]; }
 
+  void sort_qn() {
+    // sort the operator to be blocked structure
+  }
+
+  vector< qn_type > qn_series() {
+
+  }
+
 protected:
   op_matrix_type op_matrix_;
   size_t n_qn_row_, n_qn_col_;

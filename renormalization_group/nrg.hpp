@@ -80,7 +80,7 @@ private:
     std :: vector< int > starting_block_sites;
     for( size_t i = 0; i < site_indices.size() - this->increment_; i++ )
       { starting_block_sites.push_back( site_indices.at(i) ); }
-    block_type starting_block( this->M_, starting_sites );
+    block_type starting_block( this->M_, starting_sites, state_sampling_method_ );
 
     if( site_indices.size() <= this->increment_ ) {
       Hubbard hubbard_start( start_block_sites, this->integral_ptr() );
@@ -93,7 +93,7 @@ private:
     std :: vector<int> increment_sites;
     for( size_t i = 0; i < increment_size; i++ )
       { increment_block_sites.push_back( site_indices.at( starting_block_sites.size() + i ) ); }
-    block_type increment_block( this->M_, increment_sites );
+    block_type increment_block( this->M_, increment_sites, state_sampling_method_ );
     Hubbard hubbard_increment( increment_sites, this->integral_ptr() );
     increment_block.attach_hamiltonian( &hubbard_increment );
 
@@ -111,7 +111,7 @@ private:
     for( size_t i = 0; i < starting_size; i++ )
       {  sum_block_sites.push_back( this->site_lower_bound_ + i ); }
 
-    block_type sum_block( this->M_, sum_block_sites );
+    block_type sum_block( this->M_, sum_block_sites, state_sampling_method_ );
     Hubbard hubbard_start( sum_block_sites, this->integral_ptr() );
     sum_block.attach_hamiltonian( &hubbard_start );
 

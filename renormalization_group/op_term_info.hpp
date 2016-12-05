@@ -7,6 +7,7 @@
 #include <tuple>
 #include "./quantum_number.hpp"
 #include "./operator.hpp"
+#include "./operator_factory.hpp"
 
 namespace renormalization_group {
 
