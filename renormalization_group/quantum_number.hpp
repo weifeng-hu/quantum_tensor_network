@@ -2,6 +2,7 @@
 #define QUANTUM_NUMBER_HPP
 
 #include <utility>
+#include <vector>
 
 namespace renormalization_group {
 
@@ -12,9 +13,10 @@ public:
   typedef QuantumNumber this_type;
 
 public:
+  QuantumNumber() {}
   QuantumNumber( const int n_value, const int s_z_value ) :
     n_ (n_value),
-    s_z_value( s_z_ ) {}
+    s_z_( s_z_value ) {}
   ~QuantumNumber(){}
 
 public:
@@ -23,22 +25,29 @@ public:
   int s_z() const
     { return this->s_z_; }
 
-  this_type& operator+ ( const this_type& rhs ) {
+  this_type& operator+= ( this_type& rhs ) {
     this->n_   += rhs.n();
     this->s_z_ += rhs.s_z();
     return *this;
   }
 
-  this_type& operator* ( const this_type& rhs ) {
-    return ( *this + rhs );
+  friend
+    this_type operator+ ( this_type& lhs, this_type& rhs ) {
+      lhs += rhs;
+      return lhs;
+    }
+
+  this_type& operator*= ( this_type& rhs ) {
+    return *this += rhs ;
   }
 
-  std :: vector< this_type > operator* ( const vector< this_type > rhs_group ) {
-    std :: vector< this_type > retval;
-    for( size_t i = 0; i < rhs.group.size(); i++ ) {
-      retval.push( *this + rhs_group[i] );
-    }
-    return retval;
+  friend 
+    std :: vector< this_type > operator* ( this_type& lhs, std :: vector< this_type > rhs_group ) {
+      std :: vector< this_type > retval;
+      for( std :: size_t i = 0; i < rhs_group.size(); i++ ) {
+        retval.push_back( lhs + rhs_group[i] );
+      }
+      return retval;
   }
 
   this_type& operator- () {
@@ -46,6 +55,8 @@ public:
     this->s_z_ = -this->s_z_; 
     return *this;
   }
+
+  
 
 private:
   int n_;

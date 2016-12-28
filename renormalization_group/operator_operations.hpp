@@ -2,7 +2,7 @@
 #define OP_OPERATORS_HPP
 
 #include <utility>
-#include "operator_base.hpp"
+#include "./operator_base.hpp"
 
 namespace renormalization_group {
 
@@ -84,6 +84,32 @@ namespace renormalization_group {
     return retval;
 
   } // end of same_site_plus()
+
+    this_type operator+ ( const this_type& op_a, const this_type& op_b ) {
+
+      this_type retval;
+      if( op_a.site_ind() == _op_b.site_ind() ) {
+        retval = rg :: same_site_add( op_a, op_b );
+      } else {
+        retval = rg :: different_site_add( op_a, op_b );
+      }
+      return retval;
+    }
+
+    this_type operator* ( const this_type& op_a, const this_type& op_b ) {
+
+      this_type retval;
+
+      if( this->site_ind_ == rhs.site_ind() ) {
+        retval = rg :: same_site_multiply( op_a, op_b );
+      } else {
+        retval = rg :: different_site_multiply( op_a, op_b );
+      }
+
+    return retval;
+
+  } // end of operator*
+
 
 } // end of namespace renormalization_group
 

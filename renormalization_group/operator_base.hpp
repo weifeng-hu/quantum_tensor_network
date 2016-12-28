@@ -1,33 +1,35 @@
 #ifndef OPERATOR_BASE_HPP
 #define OPERATOR_BASE_HPP
 
+#include <limits>
 #include <unordered_map>
 #include "../mat_stoch_diag/simple_matrix.hpp"
-#include "operator_operations.hpp"
+#include "./quantum_number.hpp"
+//#include "operator_operations.hpp"
 
 namespace renormalization_group {
 
-template < size_t Order >
+//template < size_t Order >
 class OperatorBase {
 public:
   typedef OperatorBase this_type;
   typedef mat_stoch_diag :: SimpleMatrix matrix_type;
-  typedef rg :: QuantumNumber qn_type;
+  typedef QuantumNumber qn_type;
 //  typedef std :: unordered_map< std :: pair< qn_type, qn_type >, matrix_type > op_matrix_type;
   typedef std :: vector< std :: pair< std :: pair< qn_type, qn_type >, matrix_type > > op_matrix_type;
 
 public:
-  OperatorBase() : site_ind_( INT_MAX ) {}
-  OperatorBase( const op_matrix_type& op_matrix_obj ) : op_matrix_ ( op_matrix_obj ), site_ind_( INT_MAX ) {}
+  OperatorBase() : site_ind_( std :: numeric_limits<int> :: max() ) {}
+  OperatorBase( const op_matrix_type& op_matrix_obj ) : 
+    op_matrix_ ( op_matrix_obj ),
+    site_ind_( std :: numeric_limits<int> :: max() ) {}
   virtual ~OperatorBase() {}
 
 public:
-  op_matrix_type op_matrix() const
-    { return this->op_matrix_; }
-  std :: pair< std :: pair< qn_type, qn_type >, matrix_type > operator() ( const size_t ind_i, const size_t ind_j )
-    { return this->op_matrix_[ ind_i * n_qn_ + ind_j ]; }
-  std :: pair< std :: pair< qn_type, qn_type >, matrix_type > at( const size_t ind_i, const size_t ind_j )
-    { return this->op_matrix_.at( ind_o * n_qn_ + ind_j ); }
+  std :: pair< std :: pair< qn_type, qn_type >, matrix_type > operator() ( size_t ind_i, size_t ind_j )
+    { return this->op_matrix_[ ind_i * this->n_qn_row_ + ind_j ]; }
+  std :: pair< std :: pair< qn_type, qn_type >, matrix_type > at( size_t ind_i, size_t ind_j )
+    { return this->op_matrix_.at( ind_i * this->n_qn_row_ + ind_j ); }
 
 //  matrix_type& operator() ( const qn_type& qn_i, const qn_type& qn_j )
 //    { return this->op_matrix_[ std :: pair< qn_type, qn_type > ] ( qn_i, qn_j ); }
@@ -67,57 +69,72 @@ public:
 //     }
 //   }
 
-    friend 
-      this_type operator+ ( const this_type& op_a, const this_type& op_b ) {
-
-        this_type retval;
-        if( op_a.site_ind() == _op_b.site_ind() ) {
-          retval = rg :: same_site_add( op_a, op_b );
-        } else {
-          retval = rg :: different_site_add( op_a, op_b );
-        }
-        return retval;
-      }
- 
-    friend 
-      this_type operator* ( const this_type& op_a, const this_type& op_b ) {
-
-        this_type retval;
-
-        if( this->site_ind_ == rhs.site_ind() ) {
-          retval = rg :: same_site_multiply( op_a, op_b );
-        } else {
-          retval = rg :: different_site_multiply( op_a, op_b );
-        }
-
-      return retval;
-
-    } // end of operator*
+//    friend 
+//      this_type operator+ ( const this_type& op_a, const this_type& op_b ) {
+//
+//        this_type retval;
+//        if( op_a.site_ind() == _op_b.site_ind() ) {
+//          retval = rg :: same_site_add( op_a, op_b );
+//        } else {
+//          retval = rg :: different_site_add( op_a, op_b );
+//        }
+//        return retval;
+//      }
+// 
+//    friend 
+//      this_type operator* ( const this_type& op_a, const this_type& op_b ) {
+//
+//        this_type retval;
+//
+//        if( this->site_ind_ == rhs.site_ind() ) {
+//          retval = rg :: same_site_multiply( op_a, op_b );
+//        } else {
+//          retval = rg :: different_site_multiply( op_a, op_b );
+//        }
+//
+//      return retval;
+//
+//    } // end of operator*
 
 public:
-  op_matrix_type op_matrix() const 
+  op_matrix_type op_matrix() 
     { return this->op_matrix_; }
   size_t n_qn_row() const 
     { return this->n_qn_row_; }
   size_t n_qn_col() const 
     { return this->n_qn_col_; }
   int site_ind() const
-    { return this->n_qn_; }
-  matrix_type matrix( const size_t ind_i, const size_t ind_j ) const 
-    { return this->op_matrix_[ ind_i * n_qn_row_ + ind_j ]; }
+    { return this->site_ind_; }
+  matrix_type matrix( const size_t ind_i, const size_t ind_j )
+    { return this->op_matrix_[ ind_i * n_qn_row_ + ind_j ].second; }
 
   void sort_qn() {
     // sort the operator to be blocked structure
   }
 
-  vector< qn_type > qn_series() {
+  std :: vector< qn_type > qn_series_row() {
+    std :: vector< qn_type > retval;
+    retval.resize(0);
+    for( size_t i = 0; i < this->op_matrix_.size(); i++ ) {
+      retval.push_back( op_matrix_[i].first.first );
+    }
+    return retval;
+  }
 
+  std :: vector< qn_type > qn_series_col() {
+    std :: vector< qn_type > retval;
+    retval.resize(0);
+    for( size_t i = 0; i < this->op_matrix_.size(); i++ ) {
+      retval.push_back( op_matrix_[i].first.second );
+    }
+    return retval;
   }
 
 protected:
   op_matrix_type op_matrix_;
   size_t n_qn_row_, n_qn_col_;
-  std :: array< size_t, Order > indices_;
+  int site_ind_; 
+//  std :: array< size_t, Order > indices_;
 
 }; // end of OperatorBase
 

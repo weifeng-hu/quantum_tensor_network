@@ -5,6 +5,8 @@
 #include <iostream>
 #include <iomanip>
 #include <utility>
+#include <stdlib.h>
+#include <stdio.h>
 #include "blas_interface.h"
 
 namespace mat_stoch_diag {
@@ -16,7 +18,7 @@ public:
     this->nrow_ = 0;
     this->ncol_ = 0;
   }
-  SimpleMatrix( const vector<double>& store, size_t nrow, size_t ncol ) {
+  SimpleMatrix( const std :: vector<double>& store, size_t nrow, size_t ncol ) {
     this->nrow_ = nrow;
     this->ncol_ = ncol;
     if( store.size() != ( nrow * ncol ) ) {
