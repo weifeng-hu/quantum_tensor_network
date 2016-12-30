@@ -85,6 +85,31 @@ public:
 
     }
 
+  friend
+    SimpleMatrix operator+ ( const SimpleMatrix& mat_a, const SimpleMatrix& mat_b ) {
+      size_t ncol_a = mat_a.ncol();
+      size_t nrow_a = mat_a.nrow();
+      size_t ncol_b = mat_b.ncol();
+      size_t nrow_b = mat_b.nrow();
+      SimpleMatrix retval;
+      if( ncol_a != ncol_b ) {
+        std :: cout << "ncol_a != ncol_b" << std :: endl;
+        abort();
+      }
+      if( nrow_a != nrow_b ) {
+        std :: cout << "nrow_a != nrow_b" << std :: endl;
+        abort();
+      }
+
+      for( size_t i = 0; i < ncol_a; i++ ) {
+        for( size_t j = 0; j < nrow_a; j++ ) {
+          retval( i, j ) = mat_a(i, j) + mat_b(i, j);
+        }
+      }
+      return retval;
+
+    }
+
   SimpleMatrix inverse() {
     SimpleMatrix retval;
     if( this->ncol_ == this->nrow_ ) {

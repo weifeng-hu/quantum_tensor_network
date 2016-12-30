@@ -56,13 +56,37 @@ public:
     return *this;
   }
 
-  
+  friend
+    bool operator== ( const this_type lhs, const this_type rhs ) {
+      return ( lhs.n() == rhs.n() & lhs.s_z() == rhs.s_z() );
+    }
+
+  friend
+    bool operator!= ( const this_type lhs, const this_type rhs ) {
+      return !( lhs == rhs );
+    }
+
+  int site_ind() {
+    if( n_ == 0 & s_z_ == 0 ) return 0;
+    if( n_ == 1 & s_z_ == 1 ) return 1;
+    if( n_ == 1 & s_z_ == -1 ) return 2;
+    if( n_ == 2 & s_z_ == 0 ) return 3;
+  }
+
+  void print() {
+    printf( "n: %i   sz: %i", n_, s_z_ );
+  }
 
 private:
   int n_;
   int s_z_;
 
 }; // end of class QuantumNumber
+
+std :: vector< QuantumNumber > site_qn = { QuantumNumber(0, 0),
+                                           QuantumNumber(1, 1),
+                                           QuantumNumber(1, -1),
+                                           QuantumNumber(2, 0) };
 
 } // end of namespace renormalization_group
 

@@ -16,7 +16,48 @@ public:
   typedef mat_stoch_diag :: SimpleMatrix matrix_type;
   typedef QuantumNumber qn_type;
 //  typedef std :: unordered_map< std :: pair< qn_type, qn_type >, matrix_type > op_matrix_type;
-  typedef std :: vector< std :: pair< std :: pair< qn_type, qn_type >, matrix_type > > op_matrix_type;
+
+  struct OpMatrix {
+    typedef std :: pair< std :: pair< qn_type, qn_type >, matrix_type > sub_matrix_type;
+    typedef std :: vector< std :: pair< std :: pair< qn_type, qn_type >, matrix_type > > store_type;
+
+    OpMatrix() : nrow_(0), ncol_(0) {}
+    size_t nrow_, ncol_;
+    store_type store_;
+    sub_matrix_type& operator() ( const size_t i_qn, const size_t j_qn )
+      { return this->store_[ i_qn * this->nrow_ + j_qn ]; }
+    sub_matrix_type& at( const size_t i_qn, const size_t j_qn )
+      { return this->store_.at( i_qn * this->nrow_ + j_qn ); }
+    void resize( const size_t nrow, const size_t ncol ) { 
+      this->nrow_ = nrow;
+      this->ncol_ = ncol;
+      this->store_.resize( nrow * ncol );
+    }
+    void resize( std :: vector< qn_type >& qn_row, std :: vector< qn_type > qn_col ) {
+      size_t nrow = qn_row.size();
+      size_t ncol = qn_col.size();
+      this->resize( nrow, ncol );
+      for( size_t i_qn = 0; i_qn < nrow; i_qn++ ) {
+        for( size_t j_qn = 0; j_qn < ncol; j_qn++ ) {
+          (*this)( i_qn, j_qn ).first = std :: make_pair ( qn_row[i_qn], qn_col[j_qn] );
+        }
+      }
+    }
+    void print() {
+      for( int i = 0; i < nrow_ ; i++ ) {
+        for( int j = 0; j < ncol_ ; j++ ) {
+          printf( "  qn row: " ); (*this)(i,j).first.first.print();
+          printf( "  qn col: " ); (*this)(i,j).first.second.print();
+          printf( "\n" );
+          (*this)(i,j).second.print();
+          printf( "\n" );
+        }
+      }
+    }
+ };
+
+  typedef OpMatrix op_matrix_type;
+  typedef OpMatrix :: sub_matrix_type sub_matrix_type;
 
 public:
   OperatorBase() : site_ind_( std :: numeric_limits<int> :: max() ) {}
@@ -26,11 +67,23 @@ public:
   virtual ~OperatorBase() {}
 
 public:
-  std :: pair< std :: pair< qn_type, qn_type >, matrix_type > operator() ( size_t ind_i, size_t ind_j )
-    { return this->op_matrix_[ ind_i * this->n_qn_row_ + ind_j ]; }
-  std :: pair< std :: pair< qn_type, qn_type >, matrix_type > at( size_t ind_i, size_t ind_j )
-    { return this->op_matrix_.at( ind_i * this->n_qn_row_ + ind_j ); }
+  sub_matrix_type& operator() ( size_t i_qn, size_t j_qn )
+    { return this->op_matrix_( i_qn, j_qn ); }
+  sub_matrix_type& at( size_t i_qn, size_t j_qn )
+    { return this->op_matrix_.at( i_qn, j_qn ); }
+  op_matrix_type op_matrix() 
+    { return this->op_matrix_; }
+  size_t n_qn_row() const 
+    { return this->op_matrix_.nrow_; }
+  size_t n_qn_col() const 
+    { return this->op_matrix_.ncol_; }
+  int site_ind() const
+    { return this->site_ind_; }
+  matrix_type matrix( const size_t i_qn, const size_t j_qn )
+    { return (*this)( i_qn, j_qn ).second; }
 
+  int& set_site_ind() 
+    { return this->site_ind_; }
 //  matrix_type& operator() ( const qn_type& qn_i, const qn_type& qn_j )
 //    { return this->op_matrix_[ std :: pair< qn_type, qn_type > ] ( qn_i, qn_j ); }
 
@@ -96,18 +149,6 @@ public:
 //
 //    } // end of operator*
 
-public:
-  op_matrix_type op_matrix() 
-    { return this->op_matrix_; }
-  size_t n_qn_row() const 
-    { return this->n_qn_row_; }
-  size_t n_qn_col() const 
-    { return this->n_qn_col_; }
-  int site_ind() const
-    { return this->site_ind_; }
-  matrix_type matrix( const size_t ind_i, const size_t ind_j )
-    { return this->op_matrix_[ ind_i * n_qn_row_ + ind_j ].second; }
-
   void sort_qn() {
     // sort the operator to be blocked structure
   }
@@ -115,8 +156,8 @@ public:
   std :: vector< qn_type > qn_series_row() {
     std :: vector< qn_type > retval;
     retval.resize(0);
-    for( size_t i = 0; i < this->op_matrix_.size(); i++ ) {
-      retval.push_back( op_matrix_[i].first.first );
+    for( size_t i = 0; i < this->op_matrix_.nrow_; i++ ) {
+      retval.push_back( op_matrix_( i, 0 ).first.first );
     }
     return retval;
   }
@@ -124,15 +165,26 @@ public:
   std :: vector< qn_type > qn_series_col() {
     std :: vector< qn_type > retval;
     retval.resize(0);
-    for( size_t i = 0; i < this->op_matrix_.size(); i++ ) {
-      retval.push_back( op_matrix_[i].first.second );
+    for( size_t i = 0; i < this->op_matrix_.ncol_; i++ ) {
+      retval.push_back( op_matrix_( 0, i ).first.second );
     }
     return retval;
   }
 
+  void resize( const size_t nrow, const size_t ncol ) 
+    {  this->op_matrix_.resize( nrow, ncol ); }
+
+  void resize( std :: vector< qn_type >& qn_row, std :: vector< qn_type >& qn_col ) {
+    this->op_matrix_.resize( qn_row, qn_col );
+  }
+
+  void print() {
+    printf( "site index: %i\n", site_ind_ );
+    this->op_matrix_.print();
+  }
+
 protected:
   op_matrix_type op_matrix_;
-  size_t n_qn_row_, n_qn_col_;
   int site_ind_; 
 //  std :: array< size_t, Order > indices_;
 
