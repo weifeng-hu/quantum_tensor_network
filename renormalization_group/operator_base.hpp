@@ -5,7 +5,6 @@
 #include <unordered_map>
 #include "../mat_stoch_diag/simple_matrix.hpp"
 #include "./quantum_number.hpp"
-//#include "operator_operations.hpp"
 
 namespace renormalization_group {
 
@@ -71,7 +70,7 @@ public:
     { return this->op_matrix_( i_qn, j_qn ); }
   sub_matrix_type& at( size_t i_qn, size_t j_qn )
     { return this->op_matrix_.at( i_qn, j_qn ); }
-  op_matrix_type op_matrix() 
+  op_matrix_type& op_matrix() 
     { return this->op_matrix_; }
   size_t n_qn_row() const 
     { return this->op_matrix_.nrow_; }
@@ -79,7 +78,7 @@ public:
     { return this->op_matrix_.ncol_; }
   int site_ind() const
     { return this->site_ind_; }
-  matrix_type matrix( const size_t i_qn, const size_t j_qn )
+  matrix_type& matrix( const size_t i_qn, const size_t j_qn )
     { return (*this)( i_qn, j_qn ).second; }
 
   int& set_site_ind() 
@@ -150,7 +149,7 @@ public:
 //    } // end of operator*
 
   void sort_qn() {
-    // sort the operator to be blocked structure
+    // sort the operator to be blocked structure w.r.t particle number
   }
 
   std :: vector< qn_type > qn_series_row() {

@@ -19,34 +19,49 @@ namespace renormalization_group {
       std :: cout << "n_qn_col of A != n_qn_row of B" << std :: endl;
       abort();
     }
- 
     retval.resize( op_a.n_qn_row(), op_b.n_qn_col() );
  
     for( size_t i_qn = 0; i_qn < op_a.n_qn_row(); i_qn++ ) {
-      for( size_t j_qn = 0; j_qn < op_a.n_qn_col(); j_qn++ ) {
+      for( size_t j_qn = 0; j_qn < op_b.n_qn_col(); j_qn++ ) {
         const qn_type qn_i = op_a( i_qn, j_qn ).first.first;
-        const qn_type qn_j = op_a( i_qn, j_qn ).first.second;
-        for( size_t k_qn = 0; k_qn < op_b.n_qn_col() ; k_qn++ ) {
-          const qn_type qn_k_ref = op_b( i_qn, k_qn ).first.second;
-          const qn_type qn_k = op_b( k_qn, j_qn ).first.first;
-          if( qn_k_ref != qn_k ) {
+        const qn_type qn_j = op_b( i_qn, j_qn ).first.second;
+
+        matrix_type mat_ij;
+        for( size_t k_qn = 0; k_qn < op_a.n_qn_col() ; k_qn++ ) {
+          const qn_type qn_k     = op_a( i_qn, k_qn ).first.second;
+          const qn_type qn_k_ref = op_b( k_qn, j_qn ).first.first;
+          if( qn_k != qn_k_ref ) {
             std :: cout << "error: two qn not equal for k when multiplying same site operators" << std :: endl;
             abort();
           }
  
-          matrix_type matrix_i = op_a( i_qn, k_qn ).second;
-          matrix_type matrix_j = op_a( k_qn, j_qn ).second;
-          matrix_type new_matrix = matrix_i * matrix_j; // this operation will check the sanity
-          retval( i_qn, j_qn ) 
-            = std :: pair< std :: pair< qn_type, qn_type>, matrix_type > ( std :: pair< qn_type, qn_type > ( qn_i, qn_j ), new_matrix );
-
+          matrix_type matrix_ik = op_a( i_qn, k_qn ).second;
+          matrix_type matrix_kj = op_b( k_qn, j_qn ).second;
+          if( matrix_ik.ncol() != 0 & matrix_kj.nrow() != 0 ) {
+            matrix_type new_matrix = matrix_ik * matrix_kj; // this operation will check the sanity
+            mat_ij = mat_ij + new_matrix;
+          }
         } // end of for k_qn
+
+        retval( i_qn, j_qn ) 
+          = std :: make_pair( std :: make_pair( qn_i, qn_j ), mat_ij );
+
       } // end of for j_qn
     } // end of for i_qn
+
+    retval.set_site_ind() = op_a.site_ind();
 
     return retval;
 
   } // end of same_site_multiply()
+
+  inline op_type different_site_multiply( op_type& op_a, op_type& op_b ) {
+
+    op_type retval;
+
+    return retval;
+
+  } // end of different_site_multiply()
 
   inline op_type same_site_add( op_type& op_a, op_type& op_b ) {
 
@@ -98,6 +113,14 @@ namespace renormalization_group {
     return retval;
 
   } // end of same_site_plus()
+
+  inline op_type different_site_add( op_type& op_a, op_type& op_b ) {
+
+    op_type retval;
+
+    return retval;
+
+  } // end of different_site_add()
 
   op_type operator+ ( op_type& op_a, op_type& op_b ) {
 

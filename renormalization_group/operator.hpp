@@ -66,8 +66,8 @@ public:
 //   this->op_matrix_[ std :: pair< qn_type, qn_type >( qn_type( 1, 1  ) , qn_type( 2, 0 ) ) ] = matrix_type( std :: vector<double> {-1.0e0}, 1, 1 );
     this->op_matrix_( qn_type( 0, 0 ).site_ind(), qn_type( 1, -1 ).site_ind() )
       = std :: make_pair( std :: make_pair( qn_type( 0, 0 ), qn_type( 1, -1 ) ), matrix_type( std :: vector<double> {1.0e0}, 1, 1 )  ); 
-    this->op_matrix_( qn_type( 1, -1 ).site_ind(), qn_type( 2, 0 ).site_ind() )
-      = std :: make_pair( std :: make_pair( qn_type( 1, -1 ), qn_type( 2, 0 ) ), matrix_type( std :: vector<double> {1.0e0}, 1, 1 )  ) ;
+    this->op_matrix_( qn_type( 1, 1 ).site_ind(), qn_type( 2, 0 ).site_ind() )
+      = std :: make_pair( std :: make_pair( qn_type( 1, 1 ), qn_type( 2, 0 ) ), matrix_type( std :: vector<double> {-1.0e0}, 1, 1 )  ) ;
   }
   ~DDw() {}
 

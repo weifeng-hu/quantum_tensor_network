@@ -86,29 +86,38 @@ public:
     }
 
   friend
-    SimpleMatrix operator+ ( const SimpleMatrix& mat_a, const SimpleMatrix& mat_b ) {
-      size_t ncol_a = mat_a.ncol();
-      size_t nrow_a = mat_a.nrow();
-      size_t ncol_b = mat_b.ncol();
-      size_t nrow_b = mat_b.nrow();
-      SimpleMatrix retval;
-      if( ncol_a != ncol_b ) {
-        std :: cout << "ncol_a != ncol_b" << std :: endl;
+    SimpleMatrix operator+ ( SimpleMatrix& mat_a, SimpleMatrix& mat_b ) {
+      SimpleMatrix retval = mat_a;
+      retval += mat_b;
+      return retval;
+    }
+
+  SimpleMatrix& operator+= ( const SimpleMatrix& rhs ) {
+    if( this->nrow_ == 0 & this->ncol_ == 0 ) {
+      this->nrow_ = rhs.nrow();
+      this->ncol_ = rhs.ncol();
+      this->store_ = rhs.store();
+    } else {
+      size_t ncol_b = rhs.ncol();
+      size_t nrow_b = rhs.nrow();
+      if( ncol_ != ncol_b ) {
+        std :: cout << "ncol_ != ncol_b" << std :: endl;
         abort();
       }
-      if( nrow_a != nrow_b ) {
-        std :: cout << "nrow_a != nrow_b" << std :: endl;
+      if( nrow_ != nrow_b ) {
+        std :: cout << "nrow_ != nrow_b" << std :: endl;
         abort();
       }
 
-      for( size_t i = 0; i < ncol_a; i++ ) {
-        for( size_t j = 0; j < nrow_a; j++ ) {
-          retval( i, j ) = mat_a(i, j) + mat_b(i, j);
+      for( size_t i = 0; i < ncol_; i++ ) {
+        for( size_t j = 0; j < nrow_; j++ ) {
+          this->operator()( i, j ) += rhs(i, j);
         }
       }
-      return retval;
 
     }
+    return *this;
+  }
 
   SimpleMatrix inverse() {
     SimpleMatrix retval;
