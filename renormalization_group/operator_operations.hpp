@@ -57,9 +57,72 @@ namespace renormalization_group {
 
   inline op_type different_site_multiply( op_type& op_a, op_type& op_b ) {
 
-    op_type retval;
+    op_type op_c;
 
-    return retval;
+    op_c.set_site_ind() = -1;
+
+    int site_a = op_a.site_ind();
+    int site_b = op_b.site_ind();
+
+    int n_qn_row_a = op_a.n_qn_row();
+    int n_qn_col_a = op_a.n_qn_col();
+    int n_qn_row_b = op_b.n_qn_row();
+    int n_qn_col_b = op_b.n_qn_col();
+
+    int n_qn_row_c = n_qn_row_a * n_qn_row_b;
+    int n_qn_col_c = n_qn_col_a * n_qn_col_b;
+
+    op_c.resize( n_qn_row_c, n_qn_col_c );
+    using namespace std ;
+    cout << site_a << " " << site_b << endl;
+    cout << n_qn_row_a << " " << n_qn_col_a << endl;
+    op_type& op_first = site_a < site_b ? op_a : op_b;
+    op_type& op_second = site_a < site_b ? op_b : op_a;
+
+    int& n_qn_row_first  = site_a < site_b ? n_qn_row_a : n_qn_row_b;
+    int& n_qn_row_second = site_a < site_b ? n_qn_row_b : n_qn_row_a;
+    int& n_qn_col_first  = site_a < site_b ? n_qn_col_a : n_qn_col_b;
+    int& n_qn_col_second = site_a < site_b ? n_qn_col_b : n_qn_col_a;
+
+    for( size_t i = 0; i < n_qn_row_second; i++ ) {
+      for( size_t j = 0; j < n_qn_col_second; j++ ) {
+        qn_type qn_i_second = op_second.set_qn_pair( i, j ).first;
+        qn_type qn_j_second = op_second.set_qn_pair( i, j ).second;
+        matrix_type mat_ij = op_second( i, j ).second;
+
+        for( size_t k = 0; k < n_qn_row_first; k++ ) {
+          for( size_t l = 0; l < n_qn_col_first; l++ ) {
+            qn_type qn_k_first = op_first.set_qn_pair( k, l ).first;
+            qn_type qn_l_first = op_first.set_qn_pair( k, l ).second;
+            matrix_type mat_kl = op_second( k, l ).second;
+
+            qn_type qn_row = qn_i_second + qn_k_first;
+            qn_type qn_col = qn_j_second + qn_l_first;
+
+            matrix_type mat_ij_kl;
+            if( mat_ij.nrow() != 0 & mat_kl.nrow() != 0 ) {
+              int nrow_1 = mat_ij.nrow();
+              int ncol_1 = mat_ij.ncol();
+              int nrow_2 = mat_kl.nrow();
+              int ncol_2 = mat_kl.ncol();
+              mat_ij_kl.resize( nrow_1 * nrow_2, ncol_1 * ncol_2 );
+              for( size_t irow = 0; irow < nrow_1; irow++ ) {
+                for( size_t icol = 0; icol < ncol_1; icol++ ) {
+                  for( size_t jrow = 0; jrow < nrow_2; jrow++ ) {
+                    for( size_t jcol = 0; jcol < ncol_2; jcol++ ) {
+                      mat_ij_kl( irow * nrow_1 + jrow, icol * ncol_1 + jcol ) = mat_ij( irow, icol ) * mat_kl( jrow, jcol );
+                    }
+                  }
+                }
+              }
+            }
+            op_c( i * n_qn_row_second + k, j * n_qn_col_second + l ) = std :: make_pair( std :: make_pair( qn_row, qn_col ), mat_ij_kl);
+          }
+        }
+      }
+    }
+
+    return op_c;
 
   } // end of different_site_multiply()
 
@@ -116,9 +179,40 @@ namespace renormalization_group {
 
   inline op_type different_site_add( op_type& op_a, op_type& op_b ) {
 
-    op_type retval;
+    op_type op_c;
 
-    return retval;
+    op_c.set_site_ind() = -1;
+
+    int site_a = op_a.site_ind();
+    int site_b = op_b.site_ind();
+
+    op_type& op_first = site_a < site_b  ? op_a : op_b;
+    op_type& op_second = site_a < site_b ? op_b : op_a;
+
+    op_type op_first_obj( op_first );
+    op_type op_second_obj( op_second );
+
+    int site_first  = site_a < site_b ? site_a : site_b;
+    int site_second = site_a < site_b ? site_b : site_a;
+
+    for( size_t site_ind = site_first; site_ind < site_second; site_ind++ ) {
+      Parity parity( site_ind + 1 );
+      op_type new_op = different_site_multiply( op_first_obj, parity );
+      op_first_obj = new_op;
+    }
+
+    for( size_t site_ind = site_second; site_ind > site_first; site_ind-- ) {
+      Parity parity( site_ind - 1 );
+      op_type new_op = different_site_multiply( parity,  op_second_obj );
+      op_second_obj = new_op;
+    }
+
+    op_first_obj.set_site_ind() = -1;
+    op_second_obj.set_site_ind() = -1;
+
+    op_c = same_site_add( op_first_obj, op_second_obj );
+
+    return op_c;
 
   } // end of different_site_add()
 
@@ -129,7 +223,7 @@ namespace renormalization_group {
       retval = renormalization_group :: same_site_add( op_a, op_b );
       retval.set_site_ind() = op_a.site_ind();
     } else {
-      //retval = renormalization_group :: different_site_add( op_a, op_b );
+      retval = renormalization_group :: different_site_add( op_a, op_b );
     }
     return retval;
   }
@@ -142,9 +236,10 @@ namespace renormalization_group {
       retval = renormalization_group :: same_site_multiply( op_a, op_b );
       retval.set_site_ind() = op_a.site_ind();
     } else {
-      //retval = renormalization_group :: different_site_multiply( op_a, op_b );
+      retval = renormalization_group :: different_site_multiply( op_a, op_b );
     }
     return retval;
+
   } // end of operator*
 
 } // end of namespace renormalization_group

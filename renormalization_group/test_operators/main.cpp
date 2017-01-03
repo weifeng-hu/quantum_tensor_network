@@ -12,9 +12,17 @@ int main( int argc, char* argv[] ) {
   DDw des_dw(0);
   Iden iden(1);
   Num num(0);
+  Num num_1(1);
+  Parity parity(0);
 
-  OperatorBase op = cre_dw * des_dw;
-  op.print();
+  OperatorBase op_1 = cre_dw * des_dw;
+  op_1.print();
+
+  OperatorBase op_2 = cre_up * iden;
+  op_2.print();
+
+  OperatorBase op_3 = num + num_1;
+  op_3.print();
 
   return 0;
 

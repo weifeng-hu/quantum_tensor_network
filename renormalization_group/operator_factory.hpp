@@ -34,6 +34,10 @@ public:
         }
       case( i ):
         return new Iden( ind );
+      case( p ):
+        return new Parity( ind );
+      case( num ):
+        return new Num( ind );
     }
   } // end of get_op()
 

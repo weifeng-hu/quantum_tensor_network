@@ -32,6 +32,7 @@ public:
       this->ncol_ = ncol;
       this->store_.resize( nrow * ncol );
     }
+
     void resize( std :: vector< qn_type >& qn_row, std :: vector< qn_type > qn_col ) {
       size_t nrow = qn_row.size();
       size_t ncol = qn_col.size();
@@ -42,6 +43,7 @@ public:
         }
       }
     }
+
     void print() {
       for( int i = 0; i < nrow_ ; i++ ) {
         for( int j = 0; j < ncol_ ; j++ ) {
@@ -70,14 +72,16 @@ public:
     { return this->op_matrix_( i_qn, j_qn ); }
   sub_matrix_type& at( size_t i_qn, size_t j_qn )
     { return this->op_matrix_.at( i_qn, j_qn ); }
-  op_matrix_type& op_matrix() 
+  op_matrix_type& op_matrix()
     { return this->op_matrix_; }
-  size_t n_qn_row() const 
+  size_t n_qn_row() const
     { return this->op_matrix_.nrow_; }
-  size_t n_qn_col() const 
+  size_t n_qn_col() const
     { return this->op_matrix_.ncol_; }
   int site_ind() const
     { return this->site_ind_; }
+  std :: pair< qn_type, qn_type>& set_qn_pair( size_t i_qn, size_t j_qn )
+    { return (*this)( i_qn, j_qn ).first; }
   matrix_type& matrix( const size_t i_qn, const size_t j_qn )
     { return (*this)( i_qn, j_qn ).second; }
 
