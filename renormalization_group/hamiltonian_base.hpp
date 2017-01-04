@@ -6,11 +6,11 @@
 #include <string>
 #include <memory>
 #include <array>
-#include "integral.hpp"
-#include "operator_base.hpp"
-#include "wavefunction.hpp"
-#include "one_body_term.hpp"
-#include "two_body_term.hpp"
+#include "./integral.hpp"
+#include "./operator_base.hpp"
+#include "./wavefunction.hpp"
+#include "./one_body_term.hpp"
+#include "./two_body_term.hpp"
 //#include "formula.hpp"
 
 namespace renormalization_group {

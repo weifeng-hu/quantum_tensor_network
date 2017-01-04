@@ -6,9 +6,9 @@
 #include <limits>
 #include <iostream>
 #include <string>
-#include "integral.hpp"
-#include "block.hpp"
-#include "hamiltonian_type.hpp"
+#include "./integral.hpp"
+#include "./block.hpp"
+#include "./hamiltonian_base.hpp"
 
 namespace renormalization_group {
 

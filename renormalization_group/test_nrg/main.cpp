@@ -3,9 +3,15 @@
 
 int main( int argc, char* argv[] ) {
 
-  int n_sites   = atoi( argv[2] );
-  int increment = atoi( argv[3] );
-  int M         = atoi( argv[4] );
+  using namespace renormalization_group ;
+
+//  int n_sites   = atoi( argv[2] );
+//  int increment = atoi( argv[3] );
+//  int M         = atoi( argv[4] );
+
+  int n_sites   = 4;
+  int increment = 1;
+  int M = 1000;
 
   NRG nrg_instance;
   std :: vector< int > starting_sites;

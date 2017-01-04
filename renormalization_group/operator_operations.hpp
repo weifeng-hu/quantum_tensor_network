@@ -59,8 +59,6 @@ namespace renormalization_group {
 
     op_type op_c;
 
-    op_c.set_site_ind() = -1;
-
     int site_a = op_a.site_ind();
     int site_b = op_b.site_ind();
 
@@ -73,11 +71,13 @@ namespace renormalization_group {
     int n_qn_col_c = n_qn_col_a * n_qn_col_b;
 
     op_c.resize( n_qn_row_c, n_qn_col_c );
-    using namespace std ;
-    cout << site_a << " " << site_b << endl;
-    cout << n_qn_row_a << " " << n_qn_col_a << endl;
+//    using namespace std ;
+//    cout << site_a << " " << site_b << endl;
+//    cout << n_qn_row_a << " " << n_qn_col_a << endl;
     op_type& op_first = site_a < site_b ? op_a : op_b;
     op_type& op_second = site_a < site_b ? op_b : op_a;
+
+    op_c.set_site_ind() = site_a < site_b ? site_b : site_a;
 
     int& n_qn_row_first  = site_a < site_b ? n_qn_row_a : n_qn_row_b;
     int& n_qn_row_second = site_a < site_b ? n_qn_row_b : n_qn_row_a;
@@ -181,8 +181,6 @@ namespace renormalization_group {
 
     op_type op_c;
 
-    op_c.set_site_ind() = -1;
-
     int site_a = op_a.site_ind();
     int site_b = op_b.site_ind();
 
@@ -195,6 +193,8 @@ namespace renormalization_group {
     int site_first  = site_a < site_b ? site_a : site_b;
     int site_second = site_a < site_b ? site_b : site_a;
 
+    op_c.set_site_ind() = site_second;
+
     for( size_t site_ind = site_first; site_ind < site_second; site_ind++ ) {
       Parity parity( site_ind + 1 );
       op_type new_op = different_site_multiply( op_first_obj, parity );
@@ -203,7 +203,7 @@ namespace renormalization_group {
 
     for( size_t site_ind = site_second; site_ind > site_first; site_ind-- ) {
       Parity parity( site_ind - 1 );
-      op_type new_op = different_site_multiply( parity,  op_second_obj );
+      op_type new_op = different_site_multiply( parity, op_second_obj );
       op_second_obj = new_op;
     }
 

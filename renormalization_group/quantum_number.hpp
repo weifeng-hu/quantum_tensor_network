@@ -1,6 +1,7 @@
 #ifndef QUANTUM_NUMBER_HPP
 #define QUANTUM_NUMBER_HPP
 
+#include <stdio.h>
 #include <utility>
 #include <vector>
 

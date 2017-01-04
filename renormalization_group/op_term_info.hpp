@@ -1,13 +1,15 @@
 #ifndef OP_TERM_INFO_HPP
 #define OP_TERM_INFO_HPP
 
-#include <utilitly>
+#include <utility>
 #include <vector>
 #include <array>
 #include <tuple>
+#include <algorithm>
 #include "./quantum_number.hpp"
 #include "./operator.hpp"
 #include "./operator_factory.hpp"
+#include "./operator_operations.hpp"
 
 namespace renormalization_group {
 
@@ -77,7 +79,7 @@ private:
 class OpTermInfoTwoBody {
 public:
   typedef OperatorBase operator_type;
-  typedef operator_type& operator_pointer;
+  typedef operator_type* operator_pointer;
 
 public:
   OpTermInfoTwoBody() {}
@@ -98,13 +100,13 @@ public:
     spin_type_0_ ( spin_type_0 ),
     op_type_1_ ( op_type_1 ),
     ind_1_ ( ind_1 ),
-    spin_type_1_ ( spin_type_1 ) 
+    spin_type_1_ ( spin_type_1 ), 
     op_type_2_ ( op_type_2 ),
     ind_2_ ( ind_2 ),
-    spin_type_2_ ( spin_type_2 ) 
+    spin_type_2_ ( spin_type_2 ), 
     op_type_3_ ( op_type_3 ),
     ind_3_ ( ind_3 ),
-    spin_type_3_ ( spin_type_3 ),
+    spin_type_3_ ( spin_type_3 )
     {}
   ~OpTermInfoTwoBody() {}
 
@@ -135,36 +137,44 @@ public:
     { return spin_type_3_; }
 
   operator_pointer first( const int left_edge_ ) {
-    operator_pointer retval;
 
     OperatorFactory op_factory;
-    vector< operator_pointer > left_ops;
-    if( int_0_ <= left_edge_ ) { left_inds.push_back( op_factory.get_op( c_dagger, ind_0_, spin_type_0_ ) ); }
-    if( int_1_ <= left_edge_ ) { left_inds.push_back( op_factory.get_op( c_dagger, ind_1_, spin_type_1_ ) ); }
-    if( int_2_ <= left_edge_ ) { left_inds.push_back( op_factory.get_op( c       , ind_2_, spin_type_2_ ) ); }
-    if( int_3_ <= left_edge_ ) { left_inds.push_back( op_factory.get_op( c       , ind_3_, spin_type_3_ ) ); }
+    std :: vector< operator_pointer > left_ops;
+    if( ind_0_ <= left_edge_ ) { left_ops.push_back( op_factory.get_op( c_dagger, ind_0_, spin_type_0_ ) ); }
+    if( ind_1_ <= left_edge_ ) { left_ops.push_back( op_factory.get_op( c_dagger, ind_1_, spin_type_1_ ) ); }
+    if( ind_2_ <= left_edge_ ) { left_ops.push_back( op_factory.get_op( c       , ind_2_, spin_type_2_ ) ); }
+    if( ind_3_ <= left_edge_ ) { left_ops.push_back( op_factory.get_op( c       , ind_3_, spin_type_3_ ) ); }
 
-    retval = left_ops[0];
+    operator_pointer retval = left_ops[0];
     for( size_t i = 1; i < left_ops.size(); i++ ) {
-      (*retval) *= (*left_ops[i]);
+      (*retval) = (*retval) * (*left_ops[i]);
     }
 
     return retval;
   }
 
   operator_pointer second( const int left_edge_ ) {
-    operator_pointer retval;
 
     OperatorFactory op_factory;
-    vector< operator_pointer > right_ops;
-    if( int_0_ > left_edge_ ) { right_inds.push_back( op_factory.get_op( c_dagger, ind_0_, spin_type_0_ ) ); }
-    if( int_1_ > left_edge_ ) { right_inds.push_back( op_factory.get_op( c_dagger, ind_1_, spin_type_1_ ) ); }
-    if( int_2_ > left_edge_ ) { right_inds.push_back( op_factory.get_op( c       , ind_2_, spin_type_2_ ) ); }
-    if( int_3_ > left_edge_ ) { right_inds.push_back( op_factory.get_op( c       , ind_3_, spin_type_3_ ) ); }
+    std :: vector< operator_pointer > right_ops;
+    if( ind_0_ > left_edge_ ) { right_ops.push_back( op_factory.get_op( c_dagger, ind_0_, spin_type_0_ ) ); }
+    if( ind_1_ > left_edge_ ) { right_ops.push_back( op_factory.get_op( c_dagger, ind_1_, spin_type_1_ ) ); }
+    if( ind_2_ > left_edge_ ) { right_ops.push_back( op_factory.get_op( c       , ind_2_, spin_type_2_ ) ); }
+    if( ind_3_ > left_edge_ ) { right_ops.push_back( op_factory.get_op( c       , ind_3_, spin_type_3_ ) ); }
 
-    retval = right_ops[0];
-    for( size_t i = 1; i < right_ops.size(); i++ ) {
-      (*retval) *= (*right_ops[i]);
+//    operator_pointer retval = right_ops[0];
+
+    std :: vector<int> indices = { ind_0_, ind_1_, ind_2_, ind_3_ };
+    std :: sort( indices.begin(), indices.end() );
+
+    operator_pointer retval = right_ops[ indices[0] ];
+
+//    for( size_t i = 1; i < right_ops.size(); i++ ) {
+//      (*retval) = (*retval) * (*right_ops[i]);
+//    }
+
+    for( size_t i = 1; i < indices.size(); i++ ) {
+       ( *retval ) = (*retval) * ( *right_ops[ indices[i]] );
     }
 
     return retval;
@@ -187,3 +197,5 @@ private:
 }; // end of class OpTermInfoTwoBody
 
 } // end of namespace renormalization_group
+
+#endif
