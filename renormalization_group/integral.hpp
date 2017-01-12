@@ -18,7 +18,7 @@ public:
 public:
   Integral() {}
   Integral( int nsite ) {
-    this->store_.resize( nsite*nsite*nsite*nsite );
+    this->store_.resize( nsite*nsite*nsite*nsite + nsite * nsite );
     this->nsite_ = nsite;
   }
   ~Integral() {}
@@ -31,7 +31,7 @@ public:
 //    } catch ( const std :: out_of_range& exc ) {
 //      return 0.0e0;
 //    }
-    return store_[ ind_i * nsite_ + ind_j ];
+    return store_[ nsite_ * nsite_ * nsite_ * nsite_  + ind_i * nsite_ + ind_j ];
   } // end of at() for one_body
 
   double& operator() ( const int ind_i, const int ind_j, const int ind_k, const int ind_l ) {
@@ -45,7 +45,7 @@ public:
   } // end of at for two_body
 
 public:
-  void set_on_site_hopping( const double value ) {
+  void set_on_site_hopping( const double& value ) {
 //   if( this->site_lower_bound_ == std :: numeric_limits<int> :: min() ) {
 //     std :: cout << "should set n_site first " << std :: endl;
 //     abort();
@@ -65,7 +65,7 @@ public:
     }
   }
   
-  void set_neighbour_hopping( const double value ) {
+  void set_neighbour_hopping( const double& value ) {
 //    if( this->site_lower_bound_ == std :: numeric_limits<int> :: min() ) {
 //      std :: cout << "should set n_site first " << std :: endl;
 //      abort();
@@ -90,7 +90,7 @@ public:
     }
   }
 
-  void set_on_site_coulomb( const double value ) {
+  void set_on_site_coulomb( const double& value ) {
 //    if( this->site_lower_bound_ == std :: numeric_limits<int> :: min() ) {
 //      std :: cout << "should set n_site first " << std :: endl;
 //      abort();

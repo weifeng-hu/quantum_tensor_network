@@ -18,14 +18,14 @@ public:
 public:
   operator_pointer get_op( OpType op_type, int ind, SpinType spin_type ) {
     switch( op_type ) {
-      case( c ) :
+      case( c_dagger ) :
         switch( spin_type ) {
           case( up ):
             return new CUp( ind );
           case( down ):
             return new CDw( ind );
         }
-      case( c_dagger ) :
+      case( c ) :
          switch( spin_type ) {
           case( up ):
             return new DUp( ind );

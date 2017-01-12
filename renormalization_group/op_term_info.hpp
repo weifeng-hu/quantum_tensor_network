@@ -88,10 +88,10 @@ public:
                      SpinType spin_type_0, 
                      OpType op_type_1,
                      int ind_1,
-                     SpinType spin_type_1, 
+                     SpinType spin_type_1,
                      OpType op_type_2,
                      int ind_2,
-                     SpinType spin_type_2, 
+                     SpinType spin_type_2,
                      OpType op_type_3,
                      int ind_3, 
                      SpinType spin_type_3 ) :
@@ -145,10 +145,19 @@ public:
     if( ind_2_ <= left_edge_ ) { left_ops.push_back( op_factory.get_op( c       , ind_2_, spin_type_2_ ) ); }
     if( ind_3_ <= left_edge_ ) { left_ops.push_back( op_factory.get_op( c       , ind_3_, spin_type_3_ ) ); }
 
-    operator_pointer retval = left_ops[0];
-    for( size_t i = 1; i < left_ops.size(); i++ ) {
-      (*retval) = (*retval) * (*left_ops[i]);
+    std :: vector<int> indices = { ind_0_, ind_1_, ind_2_, ind_3_ };
+    std :: sort( indices.begin(), indices.end() );
+    
+    operator_pointer retval = left_ops[ indices[0] ];
+    for( size_t i = 1; i < indices.size(); i++ ) {
+      ( *retval ) = (*retval) * ( *left_ops[ indices[i]] );
     }
+
+    for( size_t i = 0; i < left_ops.size(); i++ ) { delete left_ops[i]; }
+
+//    for( size_t i = 1; i < left_ops.size(); i++ ) {
+//      (*retval) = (*retval) * (*left_ops[i]);
+//    }
 
     return retval;
   }
@@ -161,21 +170,19 @@ public:
     if( ind_1_ > left_edge_ ) { right_ops.push_back( op_factory.get_op( c_dagger, ind_1_, spin_type_1_ ) ); }
     if( ind_2_ > left_edge_ ) { right_ops.push_back( op_factory.get_op( c       , ind_2_, spin_type_2_ ) ); }
     if( ind_3_ > left_edge_ ) { right_ops.push_back( op_factory.get_op( c       , ind_3_, spin_type_3_ ) ); }
-
 //    operator_pointer retval = right_ops[0];
-
     std :: vector<int> indices = { ind_0_, ind_1_, ind_2_, ind_3_ };
     std :: sort( indices.begin(), indices.end() );
 
     operator_pointer retval = right_ops[ indices[0] ];
-
 //    for( size_t i = 1; i < right_ops.size(); i++ ) {
 //      (*retval) = (*retval) * (*right_ops[i]);
 //    }
-
     for( size_t i = 1; i < indices.size(); i++ ) {
        ( *retval ) = (*retval) * ( *right_ops[ indices[i]] );
     }
+
+    for( size_t i = 0; i < right_ops.size(); i++ ) { delete right_ops[i]; }
 
     return retval;
   }

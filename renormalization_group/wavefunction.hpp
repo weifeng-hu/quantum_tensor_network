@@ -4,7 +4,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <vector>
-#include "./quantum_number.hpp"
+#include "./sub_space.hpp"
 #include "../mat_stoch_diag/simple_matrix.hpp"
 #include "./operator_base.hpp"
 
@@ -12,7 +12,7 @@ namespace renormalization_group {
 
 class Wavefunction {
 public:
-  typedef renormalization_group :: QuantumNumber qn_type;
+  typedef renormalization_group :: SubSpace qn_type;
   typedef OperatorBase operator_type;
   typedef operator_type :: sub_matrix_type sub_matrix_type;
   typedef mat_stoch_diag :: SimpleMatrix matrix_type;
@@ -78,6 +78,69 @@ public:
       return retval;
     }
 
+  friend
+    Wavefunction operator+ ( Wavefunction& wf_a, Wavefunction& wf_b ) {
+      if( wf_a.n_qn_row() != wf_b.n_qn_row() ) {
+        std :: cout << "wf a nrow != wf b nrow " << std :: endl;
+        abort();
+      }
+      for( int i = 0; i < wf_a.n_qn_row(); i++ ) {
+        if( wf_a.qn(i) != wf_b.qn(i) ) {
+          std :: cout << "qn_a != qn_b " << std :: endl;
+          wf_a.qn(i).print();
+          wf_a.qn(i).print();
+          abort();
+        }
+        if( wf_a.qn(i).dim() != wf_b.qn(i).dim() ) {
+          std :: cout << "qn_a has different dim than qn_b " << std :: endl;
+          wf_a.qn(i).print();
+          wf_a.qn(i).print();
+          abort();
+        }
+      }
+
+      Wavefunction retval;
+      retval = wf_a;
+
+      for( int iqn = 0; iqn < wf_a.n_qn_row(); iqn++ ) {
+        matrix_type mat;
+        mat.resize( retval.qn(iqn).dim(), 1 );
+        bool used = false;
+        if( wf_a.matrix(iqn).nrow() != 0 & wf_b.matrix(iqn).nrow() != 0 ) {
+          mat = wf_a.matrix(iqn) + wf_b.matrix(iqn);
+          used = true;
+        } else if( wf_a.matrix(iqn).nrow() != 0 & wf_b.matrix(iqn).nrow() == 0) {
+          mat = wf_a.matrix(iqn);
+          used = true;
+        } else if( wf_a.matrix(iqn).nrow() == 0 & wf_b.matrix(iqn).nrow() != 0 ) {
+          mat = wf_b.matrix(iqn);
+          used = true;
+        }
+
+        if( used == false ) mat.resize(0,0);
+        retval.matrix(iqn) = mat;
+      }
+
+      return retval;
+
+    }
+
+   Wavefunction& operator*= ( const double a )  {
+     for( int i = 0; i < n_qn_row(); i++ ) {
+       if( matrix(i).nrow() != 0 ) {
+         matrix(i) *= a;
+       }
+     }
+     return *this;
+   }
+
+   friend
+     Wavefunction operator* ( const double a, const Wavefunction& wf ) {
+       Wavefunction retval = wf;
+       retval *= a;
+       return retval;
+     }
+
 public:
   wf_vector_type& wf_vector()
     { return this->wf_vector_; }
@@ -116,6 +179,37 @@ public:
       printf("\n");
       (*this)(i).second.print();
     }
+  }
+
+  int ndim() {
+    int retval = 0;
+    std :: vector< qn_type > qns = qn_series();
+    for( int i = 0; i < n_qn_row(); i++ ) {
+       retval += qns[i].dim();
+    }
+    return retval;
+  }
+
+  matrix_type full_matrix() {
+    int dim = ndim();
+    std :: vector< qn_type > qns = qn_series();
+
+    matrix_type retval;
+    retval.resize( dim, 1 );
+
+    int ind_start = 0;
+    for( int i = 0; i < n_qn_row(); i++ ) {
+      for( int j = 0; j < qns[i].dim(); j++ ) {
+        if( matrix(i).nrow() != 0 ) {
+          retval( ind_start + j, 0 ) = matrix( i )( j, 0 );
+        } else {
+          retval( ind_start + j, 0 ) = 0.0e0;
+        }
+      }
+      ind_start += qns[i].dim();
+    }
+
+    return retval;
   }
 
 public:

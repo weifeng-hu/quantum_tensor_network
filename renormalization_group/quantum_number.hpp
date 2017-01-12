@@ -2,6 +2,7 @@
 #define QUANTUM_NUMBER_HPP
 
 #include <stdio.h>
+#include <iostream>
 #include <utility>
 #include <vector>
 
@@ -14,10 +15,11 @@ public:
   typedef QuantumNumber this_type;
 
 public:
-  QuantumNumber() {}
+  QuantumNumber() : n_(0), s_z_(0) {}
   QuantumNumber( const int n_value, const int s_z_value ) :
     n_ (n_value),
-    s_z_( s_z_value ) {}
+    s_z_( s_z_value ) 
+    {}
   ~QuantumNumber(){}
 
 public:
@@ -34,8 +36,9 @@ public:
 
   friend
     this_type operator+ ( this_type& lhs, this_type& rhs ) {
-      lhs += rhs;
-      return lhs;
+      this_type retval = lhs;
+      retval += rhs;
+      return retval;
     }
 
   this_type& operator*= ( this_type& rhs ) {
@@ -67,18 +70,18 @@ public:
       return !( lhs == rhs );
     }
 
-  int site_ind() {
+  int ind() {
     if( n_ == 0 & s_z_ == 0 ) return 0;
     if( n_ == 1 & s_z_ == 1 ) return 1;
     if( n_ == 1 & s_z_ == -1 ) return 2;
     if( n_ == 2 & s_z_ == 0 ) return 3;
   }
 
-  void print() {
-    printf( "n: %i   sz: %i", n_, s_z_ );
+  virtual void print() {
+    printf( "n: %i   sz: %i  ", n_, s_z_ );
   }
 
-private:
+protected:
   int n_;
   int s_z_;
 
@@ -88,6 +91,24 @@ std :: vector< QuantumNumber > site_qn = { QuantumNumber(0, 0),
                                            QuantumNumber(1, 1),
                                            QuantumNumber(1, -1),
                                            QuantumNumber(2, 0) };
+
+void print( std :: vector< QuantumNumber > qns ) {
+
+  for( int i = 0; i < qns.size(); i++ ) {
+    qns[i].print();
+  }
+  std :: cout << std :: endl;
+
+}
+
+bool equal( std :: vector< QuantumNumber> qa, std :: vector< QuantumNumber > qb ) {
+  if( qa.size() != qb.size() ) return false;
+  for( int i = 0; i < qa.size(); i++ ) {
+    if( qa[i] != qb[i] ) { std :: cout << i; qa[i].print(); qb[i].print(); return false; }
+  }
+  return true;
+
+}
 
 } // end of namespace renormalization_group
 
