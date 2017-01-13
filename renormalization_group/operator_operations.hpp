@@ -5,6 +5,7 @@
 #include <utility>
 #include "./operator_base.hpp"
 #include "./operator.hpp"
+#include "./rotation_matrix.hpp"
 
 namespace renormalization_group {
 
@@ -331,6 +332,26 @@ namespace renormalization_group {
       }
     }
     return new_op;
+
+  }
+
+  op_type transform( const op_type& op, const RotationMatrix& rotmat ) {
+
+    // first step O * T
+    int n_qn_row_op = op.n_qn_row();
+    int n_qn_col_op = op.n_qn_col();
+    int n_qn_row_rot = rot.n_qn_row();
+    int n_qn_col_rot = rot.n_qn_col();
+
+    if( n_qn_col_op != n_qn_row_rot ) {
+      std :: cout << "n_qn_col_op != n_qn_row_rot" << std :: endl;
+      abort();
+    }
+
+    if( n_qn_col_rot != n_qn_row_op ) {
+      std :: cout << "n_qn_col_rot != n_qn_row_op" << std :: endl;
+      abort();
+    }
 
   }
 

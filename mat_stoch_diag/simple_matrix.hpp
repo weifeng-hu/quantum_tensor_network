@@ -168,7 +168,7 @@ public:
     for( size_t j = 0; j < this->nrow_; j++ ) {
       for( size_t i = 0; i < this->ncol_; i++ ) {
         //std :: cout <<  std :: fixed << std :: setprecision(7) << std :: setw(10) << (*this)( j, i ) << " ";
-        printf( "%10.4f ", (*this)( j, i ) );
+        printf( "%10.6f ", (*this)( j, i ) );
       }
       std :: cout << std :: endl;
     }

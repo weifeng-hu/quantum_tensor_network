@@ -49,7 +49,7 @@ public:
     int nwf = 0;
     for( map_iter it = sorted_eigen_spectrum.begin(); it != sorted_eigen_spectrum.end(); ++it ) {
 //      it->second.space().print();
-      if( nwf <= M_ )new_rotmat.push_back( it->second );
+      if( nwf < M_ )new_rotmat.push_back( it->second );
       nwf++;
     }
     new_rotmat.sort_qn();
@@ -63,11 +63,10 @@ public:
     RotationMatrix new_rotmat;
 
     int nwf = 0;
-    for( map_iter it = sorted_eigen_spectrum.begin(); it != sorted_eigen_spectrum.end(); ++it ) {
-      if( nwf <= M_ *1/2 ) {
-        new_rotmat.push_back( it->second );
-        sorted_eigen_spectrum.erase( it );
-      }
+    while( nwf < (M_/2) ) {
+      new_rotmat.push_back( sorted_eigen_spectrum.begin()->second );
+      sorted_eigen_spectrum.erase( sorted_eigen_spectrum.begin() );
+//      std :: cout << sorted_eigen_spectrum.size() << std :: endl;
       nwf++;
     }
 
@@ -80,6 +79,7 @@ public:
       sorted_wavefunction.insert( make_pair( it->second.space(), it->second ) );
     }
 
+//      std :: cout << sorted_eigen_spectrum.size() << std :: endl;
     std :: vector< Wavefunction > ordered_wavefunction;
     for( map_qn_iter it = sorted_wavefunction.begin(); it != sorted_wavefunction.end(); ++it ) {
       ordered_wavefunction.push_back( it->second );
@@ -98,28 +98,47 @@ public:
         x.push_back(j);
       }
     }
+    //std :: cout << new_rotmat.n_qn_row() << " " << new_rotmat.n_qn_col() <<std :: endl;
+
+//    for( int i = 0; i < ind_group.size(); i++ ) {
+//      for( int j = 0; j < ind_group[i].size(); j++ ) {
+//        std :: cout << ind_group[i][j] << " ";
+//      }
+//      std :: cout << std :: endl;
+//    }
+
+//   std :: cout << n_need_vector << " " << n_residual_vector << std :: endl;
 
     for( int i = 0; i < ind_group.size(); i++ ) {
       int sub_space_size = ind_group[i].size();
-      int truncated_size = ind_group[i].size() / ordered_wavefunction.size() * n_need_vector;
+      int truncated_size = (int) ( (double) (ind_group[i].size()) / (double)(ordered_wavefunction.size()) * (double)(n_need_vector) );
+      if( truncated_size == 0 ) truncated_size = 1;
+      std :: cout << sub_space_size << " " << truncated_size << std :: endl;
       mat_stoch_diag :: StochasticSpace new_coeffs( truncated_size, sub_space_size );
       new_coeffs.orthogonalization();
+//      new_coeffs.print();
 
       for( int j = 0; j < truncated_size; j++ ) {
         Wavefunction new_wavefunction;
         new_wavefunction = ordered_wavefunction[ ind_group[i][0] ];
         mat_stoch_diag :: StochasticBasis new_coeff = new_coeffs(j);
-        for( int k = 0; k < sub_space_size; k++ ) {
+        new_wavefunction *= new_coeff(0);
+//        std :: cout << new_coeff(0) << " ";
+
+        for( int k = 1; k < sub_space_size; k++ ) {
           Wavefunction add = ordered_wavefunction[ ind_group[i][k] ] ;
           add *= new_coeff(k);
+//          std :: cout << new_coeff(k) << " ";
           new_wavefunction = new_wavefunction + add;
         }
+// std :: cout << std :: endl;
         new_rotmat.push_back( new_wavefunction );
+        if( new_rotmat.n_qn_col() >= M_ ) break;
       }
 
+      if( new_rotmat.n_qn_col() >= M_ ) break;
     }
-
-    new_rotmat.sort_qn();
+//    new_rotmat.sort_qn();
 
     return new_rotmat;
   }

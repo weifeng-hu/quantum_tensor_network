@@ -90,15 +90,15 @@ public:
 
   bool check_space_row( Wavefunction& wf ) {
     std :: vector< space_type > space_wf = wf.qn_series();
-    for( int i = 0; i < space_wf.size(); i++ ) {
-      space_wf[i].print(); std :: cout << "|";
-    }
-    std :: cout << std :: endl;
-    for( int i = 0; i < space_wf.size(); i++ ) {
-      qn_row( i, 0 ).print(); std :: cout << "|";
-    }
-    std :: cout << std :: endl;
-    std :: cout << std :: endl;
+//    for( int i = 0; i < space_wf.size(); i++ ) {
+//      space_wf[i].print(); std :: cout << "|";
+//    }
+//    std :: cout << std :: endl;
+//    for( int i = 0; i < space_wf.size(); i++ ) {
+//      qn_row( i, 0 ).print(); std :: cout << "|";
+//    }
+//    std :: cout << std :: endl;
+//    std :: cout << std :: endl;
     if( space_wf.size() != n_qn_row_ ) {
       return false;
     }

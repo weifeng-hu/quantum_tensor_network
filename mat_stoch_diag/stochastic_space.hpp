@@ -98,11 +98,11 @@ public:
 
 //    new_space_final.export_rotmat().print();
 
-    for( size_t i = 0; i < new_space_final.size(); i++ ) {
-      for( size_t j = 0; j < new_space_final.size(); j++ ) {
+//    for( size_t i = 0; i < new_space_final.size(); i++ ) {
+//      for( size_t j = 0; j < new_space_final.size(); j++ ) {
 //        std :: cout << i << " " << j << " " << new_space_final(i) * new_space_final(j) << std :: endl;
-      }
-    }
+//      }
+//    }
 
     *this = new_space_final;
   }

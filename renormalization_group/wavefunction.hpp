@@ -76,7 +76,7 @@ public:
         retval( i_qn ).first = wf( i_qn ).first;
       }
 
-      retval.set_space() = undefined_space; 
+//      retval.set_space() = undefined_space; 
 
       return retval;
     }
@@ -124,7 +124,7 @@ public:
         retval.matrix(iqn) = mat;
       }
 
-      retval.set_space() = undefined_space;
+//      retval.set_space() = undefined_space;
 
       return retval;
 

@@ -26,12 +26,15 @@ int main( int argc, char* argv[] ) {
 
   Accelerator accelerator( &eigen_spectrum, NORMAL, 10 );
 
-  RotationMatrix rotmat = accelerator.energy_truncation();
-  rotmat.full_matrix().print();
+  RotationMatrix rotmat_en = accelerator.energy_truncation();
+  rotmat_en.full_matrix().print();
 
-  rotmat.orthogonalize();
+  RotationMatrix rotmat_stoch = accelerator.stochastic_equal_prob_residual();
+  rotmat_stoch.full_matrix().print();
 
-  rotmat.full_matrix().print();
+//  rotmat.orthogonalize();
+
+//  rotmat.full_matrix().print();
   return 0;
 
 }
