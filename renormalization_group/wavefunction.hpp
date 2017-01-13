@@ -29,6 +29,7 @@ public:
 //       std :: cout << op(0,i).second.ncol() << std :: endl;
 //       (*this)(i).second.resize( op(0,i).second.ncol(), 1 );
 //      }
+      space_ = undefined_space;
     }
   }
   ~Wavefunction() {}
@@ -75,6 +76,8 @@ public:
         retval( i_qn ).first = wf( i_qn ).first;
       }
 
+      retval.set_space() = undefined_space; 
+
       return retval;
     }
 
@@ -120,6 +123,8 @@ public:
         if( used == false ) mat.resize(0,0);
         retval.matrix(iqn) = mat;
       }
+
+      retval.set_space() = undefined_space;
 
       return retval;
 
@@ -175,6 +180,7 @@ public:
 
   void print() {
     for( int i = 0; i < n_qn_; i++ ) {
+      printf( " space: " ); this->space_.print();
       printf( "  qn: " ); (*this)(i).first.print();
       printf("\n");
       (*this)(i).second.print();
@@ -212,9 +218,25 @@ public:
     return retval;
   }
 
+  space_type space() {
+    return space_;
+  }
+
+  space_type& set_space() {
+    return space_;
+  }
+
+  void resize( std :: vector< space_type > space_seq ) {
+    this->resize( space_seq.size() );
+    for( int i = 0; i < space_seq.size(); i++ ) {
+      (*this)(i).first = space_seq[i];
+    }
+  }
+
 public:
   wf_vector_type wf_vector_;
   size_t n_qn_;
+  space_type space_;
 
 }; // end of class Wavefunction
 

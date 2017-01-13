@@ -28,9 +28,9 @@ public:
     size_t nrow_, ncol_;
     store_type store_;
     sub_matrix_type& operator() ( const size_t i_qn, const size_t j_qn )
-      { return this->store_[ i_qn * this->nrow_ + j_qn ]; }
+      { return this->store_[ i_qn * this->ncol_ + j_qn ]; }
     sub_matrix_type& at( const size_t i_qn, const size_t j_qn )
-      { return this->store_.at( i_qn * this->nrow_ + j_qn ); }
+      { return this->store_.at( i_qn * this->ncol_ + j_qn ); }
     void resize( const size_t nrow, const size_t ncol ) { 
       this->nrow_ = nrow;
       this->ncol_ = ncol;
@@ -97,6 +97,11 @@ public:
     { return this->op_matrix_.at( i_qn, j_qn ); }
   matrix_type& matrix( const size_t i_qn, const size_t j_qn )
     { return (*this)( i_qn, j_qn ).second; }
+
+  space_type qn_row( const int i_qn, const size_t j_qn )
+    { return (*this)( i_qn, j_qn ).first.first; }
+  space_type qn_col( const int i_qn, const size_t j_qn )
+    { return (*this)( i_qn, j_qn ).first.second; }
 
   size_t n_qn_row() const
     { return this->op_matrix_.nrow_; }
@@ -201,9 +206,9 @@ public:
             if( mat.nrow() != 0 ) {
               used = true;
               int im_start = 0;
-              for( int isub = 0; isub < im; isub++ ) { im_start += qns[ group_i[im] ].dim(); }
+              for( int isub = 0; isub < im; isub++ ) { im_start += qns[ group_i[isub] ].dim(); }
               int jm_start = 0;
-              for( int jsub = 0; jsub < jm; jsub++ ) { jm_start += qns[ group_j[jm] ].dim(); }
+              for( int jsub = 0; jsub < jm; jsub++ ) { jm_start += qns[ group_j[jsub] ].dim(); }
               for( int k = 0; k < mat.nrow(); k++ ) {
                 for( int l = 0; l < mat.ncol(); l++ ) {
                   new_mat_ij( im_start + k, jm_start + l ) = mat( k, l );

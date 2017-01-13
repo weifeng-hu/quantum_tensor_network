@@ -1,6 +1,7 @@
 #ifndef MAT_STOCH_DIAG_SIMPLE_MATRIX
 #define MAT_STOCH_DIAG_SIMPLE_MATRIX
 
+#include <cmath>
 #include <vector>
 #include <iostream>
 #include <iomanip>
@@ -12,6 +13,7 @@
 namespace mat_stoch_diag {
 
 class SimpleMatrix {
+  typedef SimpleMatrix this_type;
 public:
   SimpleMatrix() { 
     this->store_.resize(0);
@@ -200,6 +202,50 @@ public:
     { return this->store_; }
   std :: vector< double >& set_store ()
     { return this->store_; }
+
+  double inner_product_with( this_type& mat ) {
+    if( nrow() != mat.nrow() | ncol() != mat.ncol() ) {
+      std :: cout << "cannot do inner product: matrices of different nrow and ncol" << std :: endl;
+    }
+    double retval = 0.0e0;
+    for( int i = 0; i < nrow(); i++ ) {
+      for( int j = 0; j < ncol(); j++ ) {
+        retval += (*this)( i, j ) * mat( i, j ) ;
+      }
+    }
+    return retval;
+  }
+
+  void orthogonalize_cols() {
+
+    this_type new_mat;
+    new_mat.resize( nrow_, ncol_ );
+    for( int i = 0; i < ncol_; i++ ) {
+      this_type vec_i( this->col(i), nrow_, 1 );
+      for( int k = 0; k < vec_i.nrow(); k++ ) { new_mat(k,i) += vec_i(k,0); }
+      for( int j = 0; j < i; j++ ) {
+        this_type vec_j( this->col(j), nrow_, 1 );
+        double proj = vec_i.inner_product_with( vec_j );
+        double norm2 = vec_j.inner_product_with( vec_j );
+        double proj_factor = proj / norm2;
+        vec_j *= proj_factor;
+        vec_j *= -1.0e0;
+        for( int k = 0; k < vec_j.nrow(); k++ ) { new_mat(k,i) += vec_j(k,0); }
+      }
+    }
+
+    for( int i = 0; i < ncol_; i++ ) {
+      this_type vec_i( new_mat.col(i), nrow_, 1 );
+      double norm2 = vec_i.inner_product_with( vec_i );
+      if( fabs( norm2 ) > 1.0e-12  ) {
+        for( int j = 0; j < vec_i.nrow(); j++ ) {
+          new_mat( j, i ) = ( 1.0e0 / sqrt( norm2 ) * vec_i(j,0) ); 
+        }
+      }
+    }
+    (*this) = new_mat;
+
+  }
 
 private:
   std :: vector< double > store_;

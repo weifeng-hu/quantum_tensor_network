@@ -180,6 +180,7 @@ public:
         for( size_t k = 0; k < eigen_pair_i.second.size(); k++ ) {
           new_wavefunction( i ).second( k, 0 ) = eigen_pair_i.first( k, j );
         }
+        new_wavefunction.set_space() = SubSpace( this->qn_col( i, i ).n(), this->qn_col(i, i).s_z(), 1 );
         retval.push_back( std :: pair< double, Wavefunction> ( eigen_pair_i.second.at(j), new_wavefunction ) );
         new_wavefunction.print();
       }

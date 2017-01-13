@@ -62,7 +62,7 @@ public:
 
     std :: vector< std :: pair < double, Wavefunction > > eigenspectrum 
       = this->hamiltonian_ptr_->eigenspectrum();
-    Accerlator accelerator( &eigenspectrum, state_sampling_method_ );
+    Accerlator accelerator( &eigenspectrum, state_sampling_method_, M_ );
     RotationMatrix rotation_matrix = accelerator.perform();
 
     return rotation_matrix;

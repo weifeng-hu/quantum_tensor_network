@@ -28,7 +28,7 @@ public:
     }
 
   friend 
-    bool operator< ( SubSpace& lhs, SubSpace& rhs ) {
+    bool operator< ( const SubSpace& lhs, const SubSpace& rhs ) {
       if( lhs.n() < rhs.n() ) return true;
       if( lhs.n() == rhs.n() ) {
         if( lhs.s_z() < rhs.s_z() ) return true;
@@ -37,28 +37,27 @@ public:
     }
 
   friend
-    bool operator== ( SubSpace& lhs, SubSpace& rhs ) {
+    bool operator== (const  SubSpace& lhs, const SubSpace& rhs ) {
       return ( lhs.n() == rhs.n() ) & ( lhs.s_z() == rhs.s_z() );
     }
 
   friend
-    bool operator!= ( SubSpace& lhs, SubSpace& rhs ) {
+    bool operator!= ( const SubSpace& lhs, const SubSpace& rhs ) {
       return !(( lhs.n() == rhs.n() ) & ( lhs.s_z() == rhs.s_z() ));
     }
 
-
   friend
-    bool operator<= ( SubSpace& lhs, SubSpace& rhs ) {
+    bool operator<= ( const SubSpace& lhs, const SubSpace& rhs ) {
       return ( lhs < rhs ) | ( lhs == rhs );
     }
 
   friend
-    bool operator>= ( SubSpace& lhs, SubSpace& rhs ) {
+    bool operator>= ( const SubSpace& lhs, const SubSpace& rhs ) {
       return !( lhs < rhs );
     }
 
   friend 
-    bool operator> ( SubSpace& lhs, SubSpace& rhs ) {
+    bool operator> ( const SubSpace& lhs,const  SubSpace& rhs ) {
       if( lhs.n() > rhs.n() ) return true;
       if( lhs.n() == rhs.n() ) {
         if( lhs.s_z() > rhs.s_z() ) return true;
@@ -77,6 +76,8 @@ std :: vector< SubSpace > site_space = { SubSpace(0, 0, 1),
 bool operator< ( std :: pair< SubSpace, int > obj_a, std :: pair< SubSpace, int > obj_b ) {
   return (obj_a.first < obj_b.first);
 }
+
+SubSpace undefined_space( -9999, -9999, -9999 );
 
 } // end of namespace renormalization_group
 
