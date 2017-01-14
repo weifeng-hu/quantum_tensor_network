@@ -6,6 +6,7 @@
 #include "./operator_base.hpp"
 #include "./operator.hpp"
 #include "./rotation_matrix.hpp"
+#include "../mat_stoch_diag/matrix_operations.hpp"
 
 namespace renormalization_group {
 
@@ -335,9 +336,8 @@ namespace renormalization_group {
 
   }
 
-  op_type transform( const op_type& op, const RotationMatrix& rotmat ) {
+  op_type transform( const op_type& op, const RotationMatrix& rot ) {
 
-    // first step O * T
     int n_qn_row_op = op.n_qn_row();
     int n_qn_col_op = op.n_qn_col();
     int n_qn_row_rot = rot.n_qn_row();
@@ -352,6 +352,106 @@ namespace renormalization_group {
       std :: cout << "n_qn_col_rot != n_qn_row_op" << std :: endl;
       abort();
     }
+
+    // first step O * T
+    op_type mid_op;
+    mid_op.block_indices() = op.block_indices();
+    mid_op.set_site_ind() = op.site_ind();
+
+    mid_op.resize( n_qn_row_op, n_qn_col_rot );
+    for( int i = 0; i < n_qn_row_op; i++ ) {
+      space_type space_i = op.qn_row( i, 0 );
+      int dim_i = space_i.dim();
+
+      for( int j = 0; j < n_qn_col_rot; j++ ) {
+        space_type space_j = rot.qn_col( 0, j );
+        int dim_j = space_j.dim();
+
+        matrix_type mat_op_x_rot_ij;
+        mat_op_x_rot_ij.resize( dim_i, dim_j );
+        bool used = false;
+
+        for( int k = 0; k < n_qn_col_op; k++ ) {
+          space_type space_k     = op.qn_col( 0, k );
+          space_type space_k_ref = rot.qn_row( k, 0 );
+          if( space_k != space_k_ref ) {
+            std :: cout << "space_k != space_k_ref in op * R " << std :: endl;
+            std :: cout << "k = " << k << std :: endl;
+            space_k.print();  std :: cout << " | " << std :: endl;
+            space_k_ref.print();
+          }
+          if( space_k.dim() != space_k_ref.dim() ) {                                  
+            std :: cout << "space_k.dim() != space_k_ref.dim() in op * R " << std :: endl;
+            std :: cout << "k = " << k << std :: endl;
+            space_k.print();  std :: cout << " | " << std :: endl;
+            space_k_ref.print();
+          }
+
+          matrix_type mat_op_ik = op.matrix( i, k );
+          matrix_type mat_rot_kj = rot( k, j );
+          matrix_type mat_op_ik_x_rot_kj;
+          if( mat_op_ik.nrow() != 0 & mat_rot_kj.nrow() != 0 ) {
+            used = true;
+            matrix_type mat_op_ik_x_rot_kj = mat_op_ik * matr_rot_kj;
+            mat_op_rot_ij = mat_op_rot_ij + mat_op_ik_x_rot_kj;
+          }
+        }
+        if( used == false ) mat_op_x_rot_ij.resize(0);
+
+        mid_op( i, j ) = std :: make_pair( std :: make_pair( space_i, space_j ), mat_op_x_rot_ij );
+      }
+    }
+
+
+    op_type new_op;
+    new_op.block_indices() = op.block_indices();
+    new_op.set_site_ind() = op.site_ind();
+
+    new_op.resize( n_qn_rot_col, n_qn_rot_col );
+    for( int i = 0; i < n_qn_rot_col; i++ ) {
+      space_type space_i = rot.qn_col( 0, i );
+      int dim_i = space_i.dim();
+      for( int j = 0; j < n_qn_rot_col; j++ ) {
+        space_type space_j = mid_op.qn_col( 0, j );
+        int dim_j = space_j.dim();
+
+        matrix_type rot_T_x_mid_op_ij;
+        rot_T_x_mid_op_ij.resize( dim_i, dim_j );
+        bool used = false;
+
+        for( int k = 0; k < n_qn_rot_row; k++ ) {
+          space_type space_k     = rot.qn_row(k);
+          space_type space_k_ref = mid_op.qn_row(k);
+          if( space_k != space_k_ref ) {
+            std :: cout << "space_k != space_k_ref in Rt * (Op*R) " << std :: endl;
+            std :: cout << "k = " << k << std :: endl;
+            space_k.print();  std :: cout << " | " << std :: endl;
+            space_k_ref.print();
+          }
+          if( space_k.dim() != space_k_ref.dim() ) {                                  
+            std :: cout << "space_k.dim() != space_k_ref.dim() in Rt * (op*R) " << std :: endl;
+            std :: cout << "k = " << k << std :: endl;
+            space_k.print();  std :: cout << " | " << std :: endl;
+            space_k_ref.print();
+          }
+
+          matrix_type rot_ki  = rot( k, i );
+          mat_stoch_diag :: Transpose rot_T_ik( rot_ki );
+          matrix_type mid_op_kj = mid_op( k, j );
+          if( rot_T_ik.nrow() != 0 & mid_op_ki.nrow() != 0 ) {
+            matrix_type rot_T_ik_x_mid_op_kj = rot_T_ik * mid_op_kj;
+            rot_T_x_mid_op_ij = rot_T_x_mid_op_ij + rot_T_ik_x_mid_op_kj;
+            used = true;
+          }
+        }
+
+        if( used == false ) rot_T_x_mid_op.resize( 0, 0 );
+        new_op( i, j ) = std :: make_pair( std :: make_pair( space_i, space_j ), rot_T_x_mid_op );
+
+      }
+    }
+ 
+    return new_op;
 
   }
 
