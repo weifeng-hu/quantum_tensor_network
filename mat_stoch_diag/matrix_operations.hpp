@@ -10,7 +10,7 @@ namespace mat_stoch_diag {
 class Transpose : public SimpleMatrix {
 public:
   Transpose( SimpleMatrix& matrix ) {
-    printf( "dimension: %lu %lu\n", matrix.nrow(),matrix.ncol() );
+//    printf( "dimension: %lu %lu\n", matrix.nrow(),matrix.ncol() );
     SimpleMatrix transposed_matrix = matrix.transpose();
 ////    Transpose* x = new Transpose( transposed_matrix ) ;
     this->set_store() = transposed_matrix.store();

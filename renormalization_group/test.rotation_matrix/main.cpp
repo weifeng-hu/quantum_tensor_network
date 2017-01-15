@@ -23,14 +23,28 @@ int main( int argc, char* argv[] ) {
 
   hubbard.sort_qn();
   HamiltonianBase :: eigen_spectrum_type eigen_spectrum = hubbard.eigen_spectrum();
+  for( int i = 0; i < eigen_spectrum.size(); i++ ) { std :: cout << "lala " << eigen_spectrum[i].first << std :: endl; }
+
 
   Accelerator accelerator( &eigen_spectrum, NORMAL, 10 );
 
   RotationMatrix rotmat_en = accelerator.energy_truncation();
-  rotmat_en.full_matrix().print();
+//  rotmat_en.full_matrix().print();
 
-  RotationMatrix rotmat_stoch = accelerator.stochastic_equal_prob_residual();
-  rotmat_stoch.full_matrix().print();
+//  RotationMatrix rotmat_stoch = accelerator.stochastic_equal_prob_residual();
+//  rotmat_stoch.full_matrix().print();
+
+ // hubbard.full_matrix().print();
+
+  OperatorBase transformed_h = transform( hubbard, rotmat_en );
+  matrix_type x = transformed_h.full_matrix();
+  mat_stoch_diag :: EigenpairProcessor eigen_processor;
+  mat_stoch_diag :: EigenpairProcessor :: eigen_pair_type eigen_pair_trun = eigen_processor.diagonalise( x );
+  for( int i = 0; i < eigen_pair_trun.second.size(); i++ ) {
+    std :: cout << eigen_pair_trun.second[i] << std :: endl;
+  }
+
+//  transformed_h.full_matrix().print();
 
 //  rotmat.orthogonalize();
 

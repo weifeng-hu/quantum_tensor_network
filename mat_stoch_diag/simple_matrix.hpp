@@ -111,8 +111,8 @@ public:
         abort();
       }
 
-      for( size_t i = 0; i < ncol_; i++ ) {
-        for( size_t j = 0; j < nrow_; j++ ) {
+      for( size_t i = 0; i < nrow_; i++ ) {
+        for( size_t j = 0; j < ncol_; j++ ) {
           this->operator()( i, j ) += rhs(i, j);
         }
       }
@@ -168,7 +168,15 @@ public:
     for( size_t j = 0; j < this->nrow_; j++ ) {
       for( size_t i = 0; i < this->ncol_; i++ ) {
         //std :: cout <<  std :: fixed << std :: setprecision(7) << std :: setw(10) << (*this)( j, i ) << " ";
-        printf( "%10.6f ", (*this)( j, i ) );
+if( fabs((*this)( j, i) ) < 1.0e-5 ) {
+
+        printf( "  " );
+} else {
+
+        printf( "%1.0f ", fabs((*this)( j, i )) );
+}
+
+//        printf( "%1.0f ", fabs((*this)( j, i )) );
       }
       std :: cout << std :: endl;
     }

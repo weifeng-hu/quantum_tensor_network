@@ -58,6 +58,11 @@ namespace renormalization_group {
       } // end of for j_qn
     } // end of for i_qn
 
+    QuantumNumber delta_qn_a = op_a.delta_qn();
+    QuantumNumber delta_qn_b = op_b.delta_qn();
+    QuantumNumber delta_qn_a_x_b = delta_qn_a + delta_qn_b;
+    retval.set_delta_qn() = delta_qn_a_x_b;
+
     return retval;
 
   } // end of on_site_multiply()
@@ -133,6 +138,11 @@ namespace renormalization_group {
       }
     }
 
+    QuantumNumber delta_qn_a = op_a.delta_qn();
+    QuantumNumber delta_qn_b = op_b.delta_qn();
+    QuantumNumber delta_qn_a_x_b = delta_qn_a + delta_qn_b;
+    op_c.set_delta_qn() = delta_qn_a_x_b;
+
     return op_c;
 
   } // end of direct_product()
@@ -190,6 +200,11 @@ namespace renormalization_group {
       abort();
     }
 
+    QuantumNumber delta_qn_a = op_a.delta_qn();
+    QuantumNumber delta_qn_b = op_b.delta_qn();
+    QuantumNumber delta_qn_a_x_b = delta_qn_a + delta_qn_b;
+    retval.set_delta_qn() = delta_qn_a_x_b;
+
     return retval;
 
   } // end of same_site_plus()
@@ -213,6 +228,7 @@ namespace renormalization_group {
             if( find( op_a.block_indices().begin(), op_a.block_indices().end(), combined[i] ) != op_a.block_indices().end() ) continue;
             Iden iden( combined[i] );
             op_type new_op = direct_product( op_a_exp, iden );
+            new_op.set_site_ind() = op_a.site_ind();
             op_a_exp = new_op;
           }
         }
@@ -220,8 +236,16 @@ namespace renormalization_group {
         for( int i = combined.size() - 1; i >= 0; i-- ) {
           if( combined[i] < op_a.site_ind() ) {
             if( find( op_a.block_indices().begin(), op_a.block_indices().end(), combined[i] ) != op_a.block_indices().end() ) continue;
-            Parity parity( combined[i] );
-            op_type new_op = direct_product( parity, op_a_exp );
+            
+            op_type* x_op;
+            if( ( op_a_exp.set_delta_qn().n() % 2 == 0 ) ) {
+              x_op =  ( new Iden( combined[i] ) ); }
+            else { x_op = new Parity( combined[i] ); }
+            op_type new_op = direct_product( *x_op, op_a_exp );
+            new_op.set_site_ind() = op_a.site_ind();
+            delete x_op;
+            //Parity parity( combined[i] );
+            //op_type new_op = direct_product( parity, op_a_exp );
             op_a_exp = new_op;
           }
         }
@@ -233,6 +257,7 @@ namespace renormalization_group {
             if( find( op_b.block_indices().begin(), op_b.block_indices().end(), combined[i] ) != op_b.block_indices().end() ) continue;
             Iden iden( combined[i] );
             op_type new_op = direct_product( op_b_exp, iden );
+            new_op.set_site_ind() = op_b.site_ind();
             op_b_exp = new_op;
           }
         }
@@ -240,8 +265,13 @@ namespace renormalization_group {
         for( int i = combined.size() - 1; i >= 0; i-- ) {
           if( combined[i] < op_b.site_ind() ) {
             if( find( op_b.block_indices().begin(), op_b.block_indices().end(), combined[i] ) != op_b.block_indices().end() ) continue;
-            Parity parity( combined[i] );
-            op_type new_op = direct_product( parity, op_b_exp );
+//            Parity parity( combined[i] );
+//            op_type new_op = direct_product( parity, op_b_exp );
+            op_type* x_op;
+            if( op_b_exp.set_delta_qn().n() % 2 == 0 ) { x_op = new Iden( combined[i] ); } else { x_op = new Parity( combined[i] ); }
+            op_type new_op = direct_product( *x_op, op_b_exp );
+            new_op.set_site_ind() = op_b.site_ind();
+            delete x_op;
             op_b_exp = new_op;
           }
         }
@@ -251,6 +281,12 @@ namespace renormalization_group {
         retval.set_site_ind() = std :: max( op_a.site_ind(), op_b.site_ind() );
         retval.block_indices() = combined;
     }
+
+    QuantumNumber delta_qn_a = op_a.delta_qn();
+    QuantumNumber delta_qn_b = op_b.delta_qn();
+    QuantumNumber delta_qn_a_x_b = delta_qn_a + delta_qn_b;
+    retval.set_delta_qn() = delta_qn_a_x_b;
+
     return retval;
 
   }
@@ -277,6 +313,7 @@ namespace renormalization_group {
             if( find( op_a.block_indices().begin(), op_a.block_indices().end(), combined[i] ) != op_a.block_indices().end() ) continue;
             Iden iden( combined[i] );
             op_type new_op = direct_product( op_a_exp, iden );
+            new_op.set_site_ind() = op_a.site_ind();
             op_a_exp = new_op;
           }
         }
@@ -284,35 +321,64 @@ namespace renormalization_group {
         for( int i = combined.size() - 1; i >= 0; i-- ) {
           if( combined[i] < op_a.site_ind() ) {
             if( find( op_a.block_indices().begin(), op_a.block_indices().end(), combined[i] ) != op_a.block_indices().end() ) continue;
-            Parity parity( combined[i] );
-            op_type new_op = direct_product( parity, op_a_exp );
+            op_type* x_op;
+            if( op_a_exp.set_delta_qn().n() % 2 == 0 ) { 
+              x_op = new Iden( combined[i] ); }
+            else { x_op = new Parity( combined[i] ); }
+            op_type new_op = direct_product( *x_op, op_a_exp );
+            new_op.set_site_ind() = op_a.site_ind();
+            delete x_op;
             op_a_exp = new_op;
           }
         }
         op_a_exp.block_indices() = combined;
+
+//op_a_exp.full_matrix().print();
  
         op_type op_b_exp = op_b;
+//std :: cout << op_b.block_indices().size() << std :: endl;
+//std :: cout << op_b_exp.delta_qn().n() << std :: endl;
         for( int i = 0; i < combined.size(); i++ ) {
           if( combined[i] > op_b.site_ind() ) {
+//std :: cout << "opa" << std :: endl;
             if( find( op_b.block_indices().begin(), op_b.block_indices().end(), combined[i] ) != op_b.block_indices().end() ) continue;
             Iden iden( combined[i] );
             op_type new_op = direct_product( op_b_exp, iden );
+            new_op.set_site_ind() = op_b.site_ind();
             op_b_exp = new_op;
           }
         }
 
         for( int i = combined.size() - 1; i >= 0; i-- ) {
           if( combined[i] < op_b.site_ind() ) {
+//std :: cout << op_b.block_indices().size() << std :: endl;
+//std :: cout << op_b.block_indices()[0] << op_b.block_indices()[1] << std :: endl;
+//std :: cout << op_b_exp.delta_qn().n() << std :: endl;
             if( find( op_b.block_indices().begin(), op_b.block_indices().end(), combined[i] ) != op_b.block_indices().end() ) continue;
-            Parity parity( combined[i] );
-            op_type new_op = direct_product( parity, op_b_exp );
+            op_type* x_op;
+            if( op_b_exp.set_delta_qn().n() % 2 == 0 ) { 
+//std :: cout << "x" << combined[i] << std :: endl;
+              x_op = new Iden( combined[i] ); 
+            }
+            else { x_op = new Parity( combined[i] ); 
+//std :: cout << combined[i] << std :: endl;
+            }
+
+//std :: cout << i << ": " << combined[i] << " " << x_op->site_ind() << " " << op_b_exp.site_ind() << std :: endl;  op_b_exp.full_matrix().print();
+            op_type new_op = direct_product( *x_op, op_b_exp );
+//            Parity parity( combined[i] );
+//            op_type new_op = direct_product( parity, op_b_exp );
+            delete x_op;
+            new_op.set_site_ind() = op_b.site_ind();
+//std :: cout << i << ": " << combined[i] << " " << new_op.site_ind() << std :: endl;new_op.full_matrix().print();
             op_b_exp = new_op;
           }
         }
         op_b_exp.block_indices() = combined;
 
+//op_b_exp.full_matrix().print();
         retval = on_block_multiply( op_a_exp, op_b_exp );
-        retval.set_site_ind() = op_a.site_ind();
+        retval.set_site_ind() = std :: max( op_a.site_ind(), op_b.site_ind() );
         retval.block_indices() = combined;
 
     }
@@ -336,27 +402,32 @@ namespace renormalization_group {
 
   }
 
-  op_type transform( const op_type& op, const RotationMatrix& rot ) {
+  op_type transform( op_type& op, RotationMatrix& rot ) {
 
     int n_qn_row_op = op.n_qn_row();
     int n_qn_col_op = op.n_qn_col();
     int n_qn_row_rot = rot.n_qn_row();
     int n_qn_col_rot = rot.n_qn_col();
 
+    std :: cout << n_qn_row_op << " " << n_qn_col_op << std :: endl;
+
     if( n_qn_col_op != n_qn_row_rot ) {
       std :: cout << "n_qn_col_op != n_qn_row_rot" << std :: endl;
+      std :: cout << n_qn_col_op << " " << n_qn_row_rot << std :: endl;
       abort();
     }
 
-    if( n_qn_col_rot != n_qn_row_op ) {
-      std :: cout << "n_qn_col_rot != n_qn_row_op" << std :: endl;
-      abort();
-    }
+//    if( n_qn_col_rot != n_qn_row_op ) {
+//      std :: cout << "n_qn_col_rot != n_qn_row_op" << std :: endl;
+//      std :: cout << n_qn_col_rot << " " << n_qn_row_op << std :: endl;
+//      abort();
+//    }
 
     // first step O * T
     op_type mid_op;
     mid_op.block_indices() = op.block_indices();
     mid_op.set_site_ind() = op.site_ind();
+    mid_op.set_delta_qn() = op.delta_qn();
 
     mid_op.resize( n_qn_row_op, n_qn_col_rot );
     for( int i = 0; i < n_qn_row_op; i++ ) {
@@ -369,6 +440,7 @@ namespace renormalization_group {
 
         matrix_type mat_op_x_rot_ij;
         mat_op_x_rot_ij.resize( dim_i, dim_j );
+        mat_op_x_rot_ij.clear();
         bool used = false;
 
         for( int k = 0; k < n_qn_col_op; k++ ) {
@@ -392,36 +464,52 @@ namespace renormalization_group {
           matrix_type mat_op_ik_x_rot_kj;
           if( mat_op_ik.nrow() != 0 & mat_rot_kj.nrow() != 0 ) {
             used = true;
-            matrix_type mat_op_ik_x_rot_kj = mat_op_ik * matr_rot_kj;
-            mat_op_rot_ij = mat_op_rot_ij + mat_op_ik_x_rot_kj;
+//           std :: cout << i << " " << j << " " << k << std :: endl;
+//            mat_op_ik.print();
+//            mat_rot_kj.print();
+            mat_op_ik_x_rot_kj = mat_op_ik * mat_rot_kj;
+//mat_op_ik_x_rot_kj.print();
+//mat_op_x_rot_ij.print();
+            mat_op_x_rot_ij = mat_op_x_rot_ij + mat_op_ik_x_rot_kj;
+//mat_op_x_rot_ij.print();
+//            mat_op_x_rot_ij.print();
           }
         }
-        if( used == false ) mat_op_x_rot_ij.resize(0);
+        if( used == false ) mat_op_x_rot_ij.resize(0,0);
 
         mid_op( i, j ) = std :: make_pair( std :: make_pair( space_i, space_j ), mat_op_x_rot_ij );
       }
     }
 
+//    mid_op.full_matrix().print();
+
+//    matrix_type op_mat = op.full_matrix(); //op_mat.print();
+//    matrix_type rot_mat = rot.full_matrix(); //rot_mat.print();
+//    matrix_type op_x_rot = op_mat * rot_mat;
+//    op_x_rot.print();
+//    exit(0);
 
     op_type new_op;
     new_op.block_indices() = op.block_indices();
     new_op.set_site_ind() = op.site_ind();
+    new_op.set_delta_qn() = op.delta_qn();
 
-    new_op.resize( n_qn_rot_col, n_qn_rot_col );
-    for( int i = 0; i < n_qn_rot_col; i++ ) {
+    new_op.resize( n_qn_col_rot, n_qn_col_rot );
+    for( int i = 0; i < n_qn_col_rot; i++ ) {
       space_type space_i = rot.qn_col( 0, i );
       int dim_i = space_i.dim();
-      for( int j = 0; j < n_qn_rot_col; j++ ) {
+      for( int j = 0; j < n_qn_col_rot; j++ ) {
         space_type space_j = mid_op.qn_col( 0, j );
         int dim_j = space_j.dim();
 
         matrix_type rot_T_x_mid_op_ij;
         rot_T_x_mid_op_ij.resize( dim_i, dim_j );
+        rot_T_x_mid_op_ij.clear();
         bool used = false;
 
-        for( int k = 0; k < n_qn_rot_row; k++ ) {
-          space_type space_k     = rot.qn_row(k);
-          space_type space_k_ref = mid_op.qn_row(k);
+        for( int k = 0; k < n_qn_row_rot; k++ ) {
+          space_type space_k     = rot.qn_row(k, 0 );
+          space_type space_k_ref = mid_op.qn_row(k, 0 );
           if( space_k != space_k_ref ) {
             std :: cout << "space_k != space_k_ref in Rt * (Op*R) " << std :: endl;
             std :: cout << "k = " << k << std :: endl;
@@ -435,21 +523,22 @@ namespace renormalization_group {
             space_k_ref.print();
           }
 
-          matrix_type rot_ki  = rot( k, i );
-          mat_stoch_diag :: Transpose rot_T_ik( rot_ki );
-          matrix_type mid_op_kj = mid_op( k, j );
-          if( rot_T_ik.nrow() != 0 & mid_op_ki.nrow() != 0 ) {
+//          matrix_type rot_ki  = rot( k, i );
+          matrix_type rot_T_ik = rot(k,i).transpose();
+          matrix_type mid_op_kj = mid_op.matrix( k, j );
+          if( rot_T_ik.nrow() != 0 & mid_op_kj.nrow() != 0 ) {
             matrix_type rot_T_ik_x_mid_op_kj = rot_T_ik * mid_op_kj;
             rot_T_x_mid_op_ij = rot_T_x_mid_op_ij + rot_T_ik_x_mid_op_kj;
             used = true;
           }
         }
 
-        if( used == false ) rot_T_x_mid_op.resize( 0, 0 );
-        new_op( i, j ) = std :: make_pair( std :: make_pair( space_i, space_j ), rot_T_x_mid_op );
+        if( used == false ) rot_T_x_mid_op_ij.resize( 0, 0 );
+        new_op( i, j ) = std :: make_pair( std :: make_pair( space_i, space_j ), rot_T_x_mid_op_ij );
 
       }
     }
+
  
     return new_op;
 

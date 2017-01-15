@@ -33,7 +33,8 @@ public:
   size_t n_site() const 
     { return this->site_indices_.size(); }
   void attach_hamiltonian( hamiltonian_pointer hamiltonian_ptr ) 
-    { hamiltonian_ptr_ = std :: shared_ptr< hamiltoian_type > ( hamiltonian_ptr ); }
+    //{ hamiltonian_ptr_ = std :: shared_ptr< hamiltoian_type > ( hamiltonian_ptr ); }
+    { hamiltonian_ptr_ = ( hamiltonian_ptr ); }
   hamiltonian_type& hamiltoian()
     { return *(this->hamiltonian_ptr_;) }
 
@@ -70,7 +71,7 @@ public:
   }
 
 private:
-  std :: shared_ptr< hamiltonian_type > hamiltonian_ptr_;
+  hamiltonian_type* hamiltonian_ptr_;
   std :: vector<int> site_indices_;
   std :: unordered_map< int,  RotationMatrix > rotation_matrices_;
   size_t M_;

@@ -29,7 +29,7 @@ public:
 //       std :: cout << op(0,i).second.ncol() << std :: endl;
 //       (*this)(i).second.resize( op(0,i).second.ncol(), 1 );
 //      }
-      space_ = undefined_space;
+      space_ = SubSpace( 0, 0, 1 );
     }
   }
   ~Wavefunction() {}
@@ -76,7 +76,10 @@ public:
         retval( i_qn ).first = wf( i_qn ).first;
       }
 
-//      retval.set_space() = undefined_space; 
+      QuantumNumber wf_qn = QuantumNumber( wf.space().n(), wf.space().s_z() );
+      QuantumNumber op_delta_qn = op.delta_qn();
+      QuantumNumber new_qn = wf_qn + op_delta_qn;
+      retval.set_space() = SubSpace( new_qn.n(), new_qn.s_z(), 1 );
 
       return retval;
     }
@@ -155,7 +158,7 @@ public:
     { return this->wf_vector_[ ind_i ].second; }
   sub_vector_type& operator() ( const int ind )
     { return this->wf_vector_[ ind ]; }
-  matrix_type& operator[] ( const qn_type qn_obj ) {
+  matrix_type& operator[] ( const qn_type& qn_obj ) {
     for( size_t i = 0; i < n_qn_; i++ ) {
       if( wf_vector_[i].first == qn_obj ) return wf_vector_[i].second; 
     }
@@ -179,6 +182,7 @@ public:
   }
 
   void print() {
+    printf( "  space: " ); this->space().print(); printf( "\n" );
     for( int i = 0; i < n_qn_; i++ ) {
       printf( " space: " ); this->space_.print();
       printf( "  qn: " ); (*this)(i).first.print();
@@ -218,15 +222,15 @@ public:
     return retval;
   }
 
-  space_type space() {
+  qn_type space() {
     return space_;
   }
 
-  space_type& set_space() {
+  qn_type& set_space() {
     return space_;
   }
 
-  void resize( std :: vector< space_type > space_seq ) {
+  void resize( std :: vector< qn_type > space_seq ) {
     this->resize( space_seq.size() );
     for( int i = 0; i < space_seq.size(); i++ ) {
       (*this)(i).first = space_seq[i];
@@ -236,7 +240,7 @@ public:
 public:
   wf_vector_type wf_vector_;
   size_t n_qn_;
-  space_type space_;
+  qn_type space_;
 
 }; // end of class Wavefunction
 

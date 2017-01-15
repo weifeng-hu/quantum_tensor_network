@@ -7,6 +7,7 @@
 #include "../mat_stoch_diag/simple_matrix.hpp"
 #include "./sub_space.hpp"
 #include "./operator_base.hpp"
+#include "./wavefunction.hpp"
 
 namespace renormalization_group {
 
@@ -66,9 +67,9 @@ public:
     return store_.at( j * n_qn_row_ + i ).first.second;
   }
 
-  int n_qn_row() 
+  int n_qn_row() const
     { return n_qn_row_; }
-  int n_qn_col()
+  int n_qn_col() const
     { return n_qn_col_; }
 
   void push_back( Wavefunction& wf ) {
@@ -82,7 +83,7 @@ public:
     }
 
     for( int i = 0; i < n_qn_row_; i++ ) {
-      this->store_.push_back( make_pair( make_pair( wf.qn(i), wf.space() ), wf.matrix(i) ) );
+      this->store_.push_back( std :: make_pair( std :: make_pair( wf.qn(i), wf.space() ), wf.matrix(i) ) );
     }
     this->n_qn_col_++;
 
@@ -131,7 +132,7 @@ public:
     new_rotmat.resize( n_qn_row(), n_qn_col() );
     for( int i = 0; i < n_qn_row(); i++ ) {
       for( int j = 0; j < n_qn_col(); j++ ) {
-        new_rotmat.sub_matrix( i, j ) = make_pair( make_pair( qn_row( i, seq[j].second ), qn_col( i, seq[j].second ) ),
+        new_rotmat.sub_matrix( i, j ) = std :: make_pair( std :: make_pair( qn_row( i, seq[j].second ), qn_col( i, seq[j].second ) ),
                                                    at( i, seq[j].second ) );
       }
     }

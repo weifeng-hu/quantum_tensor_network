@@ -48,6 +48,7 @@ public:
       this->computed_ = false;
       this->initialized_ = false;
       this->integral_ptr_ = integral_pointer;
+      this->delta_qn_ = QuantumNumber( 0 , 0 );
 //      std :: cout << one_body_term_.set_i_list().size() << std :: endl;
 //      std :: cout << one_body_term_.set_j_list().size() << std :: endl;
     }
@@ -68,51 +69,62 @@ public:
   this_type& operator&= ( this_type& rhs ) {
 
     std :: array< one_body_term_type, 2 > one_body_A_x_B = this->one_body_term_ | rhs.one_body_term();
-
     for( one_body_term_type :: iterator it = one_body_A_x_B[0].begin(); it != one_body_A_x_B[0].end(); ++it ) {
       one_body_term_type :: op_term_info_type op_term_info = *it;
       if( this->term_fit_constraint_one_body( op_term_info ) ) {
         operator_type* op_a_ptr = op_term_info.first();
         operator_type* op_b_ptr = op_term_info.second();
+//std :: cout << op_a_ptr->site_ind() << " " << (*it).spin_type_0() << " " << op_b_ptr->site_ind() << " " << (*it).spin_type_1() << std :: endl;
         operator_type op_a_x_op_b = (*op_a_ptr) * (*op_b_ptr);
+//std :: cout << (*integral_ptr_)( (*it).ind_0(), (*it).ind_1() ) << std :: endl;
+        op_a_x_op_b = (*integral_ptr_)( (*it).ind_0(), (*it).ind_1() ) * op_a_x_op_b;
         operator_type& this_ref = *this;
         this_ref = this_ref + op_a_x_op_b; // need to pay attention to operator += in the base class OperatorBase...
       }
     }
+
 
     for( one_body_term_type :: iterator it = one_body_A_x_B[1].begin(); it != one_body_A_x_B[1].end(); ++it ) {
       one_body_term_type :: op_term_info_type op_term_info = *it;
       if( this->term_fit_constraint_one_body( op_term_info ) ) {
         operator_type* op_a_ptr = op_term_info.first();
         operator_type* op_b_ptr = op_term_info.second();
+//std :: cout << op_a_ptr->site_ind() << " " << (*it).spin_type_0() << " " << op_b_ptr->site_ind() << " " << (*it).spin_type_1() << std :: endl;
         operator_type op_a_x_op_b = (*op_a_ptr) * (*op_b_ptr);
+        op_a_x_op_b = (*integral_ptr_)( (*it).ind_0(), (*it).ind_1() ) * op_a_x_op_b;
         operator_type& this_ref = *this;
         this_ref = this_ref + op_a_x_op_b;
       }
     }
 
-    std :: array< two_body_term_type, 14 > two_body_A_x_B = this->two_body_term_ | rhs.two_body_term();
-    for( two_body_term_type :: iterator it = two_body_A_x_B[0].begin(); it != two_body_A_x_B[0].end(); ++it ) {
-      two_body_term_type :: op_term_info_type op_term_info = *it;
-      if( this->term_fit_constraint_two_body( op_term_info ) == true ) {
-        operator_type* op_a_ptr = op_term_info.first( two_body_A_x_B[0].middle() );
-        operator_type* op_b_ptr = op_term_info.second( two_body_A_x_B[0].middle() );
-        operator_type op_a_x_op_b = (*op_a_ptr) * (*op_b_ptr);
-        operator_type& this_ref = *this;
-        this_ref = this_ref + op_a_x_op_b;
-      }
-    }
+  /* currently pure hubbard model, there is no interblock term */
 
-    for( two_body_term_type :: iterator it = two_body_A_x_B[1].begin(); it != two_body_A_x_B[1].end(); ++it ) {
-      two_body_term_type :: op_term_info_type op_term_info = *it;
-      if( this->term_fit_constraint_two_body( op_term_info ) == true ) {
-        operator_type* op_a_ptr = op_term_info.first( two_body_A_x_B[1].middle() );
-        operator_type* op_b_ptr = op_term_info.second( two_body_A_x_B[1].middle() );
-        operator_type op_a_x_op_b = (*op_a_ptr) * (*op_b_ptr);
-        operator_type& this_ref = *this;
-        this_ref = this_ref + op_a_x_op_b;
-      }
-    }
+//    std :: array< two_body_term_type, 14 > two_body_A_x_B = this->two_body_term_ | rhs.two_body_term();
+//    for( two_body_term_type :: iterator it = two_body_A_x_B[0].begin(); it != two_body_A_x_B[0].end(); ++it ) {
+//      two_body_term_type :: op_term_info_type op_term_info = *it;
+//      if( this->term_fit_constraint_two_body( op_term_info ) == true ) {
+//        operator_type* op_a_ptr = op_term_info.first( two_body_A_x_B[0].middle() );
+//        operator_type* op_b_ptr = op_term_info.second( two_body_A_x_B[0].middle() );
+//std :: cout << op_a_ptr->site_ind() << " " << (*it).spin_type_0() << " " << op_b_ptr->site_ind() << " " << (*it).spin_type_1() << std :: endl;
+//        operator_type op_a_x_op_b = (*op_a_ptr) * (*op_b_ptr);
+//        op_a_x_op_b = ((*integral_ptr_)( (*it).ind_0(), (*it).ind_1(), (*it).ind_2(), (*it).ind_3() ) * 0.5e0 ) * op_a_x_op_b;
+//        operator_type& this_ref = *this;
+//        this_ref = this_ref + op_a_x_op_b;
+//      }
+//    }
+//
+//    for( two_body_term_type :: iterator it = two_body_A_x_B[1].begin(); it != two_body_A_x_B[1].end(); ++it ) {
+//      two_body_term_type :: op_term_info_type op_term_info = *it;
+//      if( this->term_fit_constraint_two_body( op_term_info ) == true ) {
+//        operator_type* op_a_ptr = op_term_info.first( two_body_A_x_B[1].middle() );
+//        operator_type* op_b_ptr = op_term_info.second( two_body_A_x_B[1].middle() );
+//std :: cout << op_a_ptr->site_ind() << " " << (*it).spin_type_0() << " " << op_b_ptr->site_ind() << " " << (*it).spin_type_1() << std :: endl;
+//        operator_type op_a_x_op_b = (*op_a_ptr) * (*op_b_ptr);
+//        op_a_x_op_b = ((*integral_ptr_)( (*it).ind_0(), (*it).ind_1(), (*it).ind_2(), (*it).ind_3() ) * 0.5e0 ) * op_a_x_op_b;
+//        operator_type& this_ref = *this;
+//        this_ref = this_ref + op_a_x_op_b;
+//      }
+//    }
 
     return *this;
 
@@ -132,21 +144,35 @@ public:
       abort();
     }
 
+//    this_type ha_x_hb = *this;
+//    ha_x_hb &= rhs;
+     *this &= rhs;
+
+//    ha_x_hb.full_matrix().print();
+
     this->site_indices_.insert( this->site_indices_.end(), rhs.site_indices().begin(), rhs.site_indices().end() );
     //this->formula_ += rhs.formula();
     this->one_body_term_ += rhs.one_body_term();
     this->two_body_term_ += rhs.two_body_term();
 
     operator_type& this_ref = *this;
-    Iden iden_op( rhs.site_ind() );
-    Iden iden_this( this->site_ind() );
-    operator_type ha_x_ib = this_ref * iden_op;
-    operator_type ia_x_hb = iden_this * this_ref;
-    this_type ha_x_hb = *this;
-    ha_x_hb &= rhs;
-    operator_type& ha_x_hb_ref = ha_x_hb;
-    this_ref =  ha_x_ib + ia_x_hb;
-    this_ref = this_ref + ha_x_hb_ref; 
+    Iden iden_op( rhs );
+    Iden iden_this( *this );
+
+//    std :: cout << rhs.block_indices().size() << std :: endl;
+//    std :: cout << iden_op.site_ind() << std :: endl;
+//    std :: cout << iden_this.site_ind() << std :: endl;
+
+    operator_type ha_x_ib =  this_ref  * iden_op;
+//ha_x_ib.full_matrix().print();
+    operator_type ia_x_hb =  iden_this * rhs;
+//ia_x_hb.full_matrix().print();
+//exit(0);
+    this_ref = ha_x_ib + ia_x_hb;
+//    this_ref = ia_x_hb;
+
+//    operator_type& ha_x_hb_ref = ha_x_hb;
+//    this_ref = this_ref + ha_x_hb_ref; 
 
     return *this;
 
@@ -207,13 +233,13 @@ public:
     for( one_body_term_type :: iterator it = this->one_body_term().begin(); it != one_body_term().end(); ++it ) {
       if( this->term_fit_constraint_one_body( *it ) ) {
         operator_type* op_ptr_0 = factory.get_op( (*it).op_type_0(), (*it).ind_0(), (*it).spin_type_0() );
-//        std :: cout << (*it).ind_0() << " " << (*it).spin_type_0() << " "; 
-//        std :: cout << (*it).ind_1() << " " << (*it).spin_type_1() << std :: endl; 
+//std :: cout << (*it).ind_0() << " " << (*it).spin_type_0() << " "; 
+//std :: cout << (*it).ind_1() << " " << (*it).spin_type_1() << std :: endl; 
         operator_type* op_ptr_1 = factory.get_op( (*it).op_type_1(), (*it).ind_1(), (*it).spin_type_1() );
         operator_type op_0_x_op_1 = ( *op_ptr_0 ) * ( *op_ptr_1 );
-//        std :: cout << "value: "<< (*integral_ptr_)( (*it).ind_0(), (*it).ind_1() ) << std :: endl;
+//std :: cout << "value: "<< (*integral_ptr_)( (*it).ind_0(), (*it).ind_1() ) << std :: endl;
         op_0_x_op_1 = (*integral_ptr_)( (*it).ind_0(), (*it).ind_1() ) * op_0_x_op_1;
-//          std :: cout << " " << "H[" << this_ref.site_ind() << "] " << this_ref.n_qn_row() << "x" << this_ref.n_qn_col() << " += " 
+//std :: cout << " " << "H[" << this_ref.site_ind() << "] " << this_ref.n_qn_row() << "x" << this_ref.n_qn_col() << " += " 
 //                                    << " op[" << op_ptr_0->site_ind() << "] " << op_ptr_0->n_qn_row() << "x" << op_ptr_0->n_qn_col() 
 //                                    << " op[" << op_ptr_1->site_ind() << "] " << op_ptr_1->n_qn_row() << "x" << op_ptr_1->n_qn_col() 
 //                                    << " op_M[" << op_0_x_op_1.site_ind() << "] " << op_0_x_op_1.n_qn_row() << "x" << op_0_x_op_1.n_qn_col();
@@ -223,20 +249,23 @@ public:
         } else {
           this_ref = this_ref + op_0_x_op_1;
         }
-//        cout << "    done: H[" << this_ref.site_ind() << "] " << this_ref.n_qn_row() << "x" << this_ref.n_qn_col() << endl;
+//cout << "    done: H[" << this_ref.site_ind() << "] " << this_ref.n_qn_row() << "x" << this_ref.n_qn_col() << endl;
         delete op_ptr_0;
         delete op_ptr_1;
       }
     }
 //    exit(0);
 ////    int j = 0;
+
+//    this->full_matrix().print();
+
     for( two_body_term_type :: iterator it = this->two_body_term().begin(); it != two_body_term().end(); ++it ) {
       if( this->term_fit_constraint_two_body( *it ) ) {
         operator_type* op_ptr_0 = factory.get_op( (*it).op_type_0(), (*it).ind_0(), (*it).spin_type_0() );
         operator_type* op_ptr_1 = factory.get_op( (*it).op_type_1(), (*it).ind_1(), (*it).spin_type_1() );
         operator_type* op_ptr_2 = factory.get_op( (*it).op_type_2(), (*it).ind_2(), (*it).spin_type_2() );
         operator_type* op_ptr_3 = factory.get_op( (*it).op_type_3(), (*it).ind_3(), (*it).spin_type_3() );
-//        std :: cout << this_ref.site_ind() << ":" << (*it).ind_0() << " " << (*it).ind_1() << " " << (*it).ind_2() << " " << (*it).ind_3() << std :: endl;
+//std :: cout << this_ref.site_ind() << ":" << (*it).ind_0() << " " << (*it).ind_1() << " " << (*it).ind_2() << " " << (*it).ind_3() << std :: endl;
         operator_type op_0_x_op_1 = ( ( *op_ptr_0 ) * ( *op_ptr_1 ) );
         operator_type op_2_x_op_3 = ( ( *op_ptr_2 ) * ( *op_ptr_3 ) );
         operator_type total_op = op_0_x_op_1 * op_2_x_op_3;
@@ -255,6 +284,7 @@ public:
         delete op_ptr_3; 
       }
     }
+//    this->full_matrix().print();
 
 //    this->print();
     this->computed_ = true;

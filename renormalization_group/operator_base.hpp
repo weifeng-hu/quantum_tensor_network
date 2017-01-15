@@ -68,18 +68,18 @@ public:
   typedef OpMatrix :: sub_matrix_type sub_matrix_type;
 
 public:
-  OperatorBase() : site_ind_( 0 ) { 
+  OperatorBase() : site_ind_( 0 ), delta_qn_( 0, 0 ) { 
     block_indices_.resize(0); 
     block_indices_.push_back(0);
   }
 
-  OperatorBase( const int& site_ind ) { 
+  OperatorBase( const int& site_ind ) : delta_qn_( 0, 0 ) { 
     this->site_ind_ = site_ind;
     this->block_indices_.push_back( site_ind );
   }
 
   OperatorBase( const op_matrix_type& op_matrix_obj ) : 
-    op_matrix_ ( op_matrix_obj ),
+    op_matrix_ ( op_matrix_obj ), delta_qn_( 0, 0 ), 
     site_ind_( 0 ) { 
       block_indices_.resize(0); 
       block_indices_.push_back(0);
@@ -107,6 +107,11 @@ public:
     { return this->op_matrix_.nrow_; }
   size_t n_qn_col() const
     { return this->op_matrix_.ncol_; }
+
+  QuantumNumber delta_qn() 
+    { return delta_qn_; }
+  QuantumNumber& set_delta_qn()
+    { return delta_qn_; }
 
   int site_ind() const
     { return this->site_ind_; }
@@ -229,16 +234,23 @@ public:
 
   }
 
-  int ndim() {
+  int ndim_row() {
     int dim = 0;
-    for( int i = 0; i < n_qn_row(); i++ ) { dim += this->at(i,i).first.first.dim(); }
+    for( int i = 0; i < n_qn_row(); i++ ) { dim += this->at(i,0).first.first.dim(); }
+    return dim;
+  }
+  int ndim_col() {
+    int dim = 0;
+    for( int i = 0; i < n_qn_col(); i++ ) { dim += this->at(0,i).first.second.dim(); }
     return dim;
   }
 
+
   matrix_type full_matrix() {
-    int dim = ndim();
+    int dim_row = ndim_row();
+    int dim_col = ndim_col();
     matrix_type retval;
-    retval.resize( dim, dim );
+    retval.resize( dim_row, dim_col );
 
     for( int i = 0; i < n_qn_row(); i++ ) {
       for( int j = 0; j < n_qn_col(); j++ ) {
@@ -248,8 +260,8 @@ public:
         bool mat_valid = mat_ij.nrow() == 0 ? false : true;
         for( int k = 0; k < nrow; k++ ) {
           for( int l = 0; l < ncol; l++ ) {
-            int ind_i = ind_start(i) + k;
-            int ind_j = ind_start(j) + l;
+            int ind_i = ind_start_row(i) + k;
+            int ind_j = ind_start_col(j) + l;
             retval( ind_i, ind_j ) = mat_valid ? mat_ij( k, l ) : 0.0e0;
           }
         }
@@ -258,17 +270,30 @@ public:
     return retval;
   }
 
-  int ind_start( int i_qn ) {
+  int ind_start_row( int i_qn ) {
     int retval = 0;
     if( i_qn >= n_qn_row() ) {
       std :: cout << "row_start() i_qn > size " << std :: endl;
       abort();
     }
     for( int i = 0; i < i_qn; i++ ) {
-      retval += at( i, i ).first.first.dim();
+      retval += at( i, 0 ).first.first.dim();
     }
     return retval;
   }
+
+  int ind_start_col( int i_qn ) {
+    int retval = 0;
+    if( i_qn >= n_qn_col() ) {
+      std :: cout << "row_start() i_qn > size " << std :: endl;
+      abort();
+    }
+    for( int i = 0; i < i_qn; i++ ) {
+      retval += at( 0, i ).first.second.dim();
+    }
+    return retval;
+  }
+
 
   std :: vector< space_type > qn_series_row( int x = 0 ) {
     std :: vector< space_type > retval;
@@ -304,6 +329,7 @@ public:
   op_matrix_type op_matrix_;
   int site_ind_;
   std :: vector<int> block_indices_;
+  QuantumNumber delta_qn_;
 //  std :: array< size_t, Order > indices_;
 
 }; // end of OperatorBase

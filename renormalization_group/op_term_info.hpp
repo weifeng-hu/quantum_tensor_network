@@ -60,9 +60,9 @@ public:
   operator_pointer second() {
     switch( spin_type_0_ ) {
       case( up ):
-        return new DUp( ind_0_ );
+        return new DUp( ind_1_ );
       case( down ):
-        return new DDw( ind_0_ );
+        return new DDw( ind_1_ );
     }
   }
 

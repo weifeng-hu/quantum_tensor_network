@@ -26,7 +26,7 @@ public:
     }
     this->j_bounds_ = std :: make_pair( lower_j, upper_j );
     this->j_list_.resize(0);
-    for( int j = lower_i; j <= upper_j; j++ ) {
+    for( int j = lower_j; j <= upper_j; j++ ) {
       j_list_.push_back(j);
     }
     this->begin_ = iterator( (this->i_list_), (this->j_list_), op_term_info_type( c_dagger, i_list_.front(), up, c,  j_list_.front(), up ), 0, 0 ) ;
@@ -58,34 +58,39 @@ public:
     this->i_list_ = i_list;
     this->j_list_ = j_list;
     this->begin_ = iterator( (this->i_list_), (this->j_list_), op_term_info_type( c_dagger, i_list_.front(), up, c, j_list_.front(), up ), 0, 0 );
-    this->end_ = iterator( (this->i_list_), (this->j_list_), op_term_info_type( c_dagger, std :: numeric_limits<int> :: max() , down , c, std :: numeric_limits<int> :: max() , down  ), i_list_.size(), j_list_.size() );
+    this->end_   = iterator( (this->i_list_), (this->j_list_), op_term_info_type( c_dagger, std :: numeric_limits<int> :: max() , down , c, std :: numeric_limits<int> :: max() , down  ), i_list_.size(), j_list_.size() );
   }
 
   ~OneBodyTerm() {}
 
 public:
   friend 
-    std :: array< this_type, 2 >& operator| ( this_type& term_a, this_type& term_b ) {
+    std :: array< this_type, 2 > operator| ( this_type& term_a, this_type& term_b ) {
+//      std :: cout << term_a.i_lower_bound() << " " << term_a.i_upper_bound() << std :: endl;
+//      std :: cout << term_b.i_lower_bound() << " " << term_b.i_upper_bound() << std :: endl;
       if( ( term_a & term_b ) == true ) {
         abort();
       }
       std :: array< this_type, 2 > retval; 
       retval[0] = this_type( term_a.i_lower_bound(), term_a.i_upper_bound(), term_b.j_lower_bound(), term_b.j_upper_bound() );
       retval[1] = this_type( term_b.i_lower_bound(), term_b.i_upper_bound(), term_a.j_lower_bound(), term_a.j_upper_bound() );
+      return retval;
     }  // end of friend operator ||
 
   this_type& operator+= ( this_type& rhs ) {
     if( ( *this & rhs ) == true ) {
       abort();
     }
-    this->i_bounds_ = std :: make_pair( std :: min( this->i_lower_bound(), rhs.i_lower_bound() ), std :: max( this->i_upper_bound(), rhs.i_upper_bound() ) );
-    this->j_bounds_ = std :: make_pair( std :: min( this->j_lower_bound(), rhs.j_lower_bound() ), std :: max( this->j_upper_bound(), rhs.j_upper_bound() ) );
     this->i_upper_bound() < rhs.i_lower_bound() ? 
       this->i_list_.insert( this->i_list_.end(), rhs.set_i_list().begin(), rhs.set_i_list().end() ) : 
       rhs.set_i_list().insert( rhs.set_i_list().end(), this->i_list_.begin(), this->i_list_.end() );
     this->j_upper_bound() < rhs.j_lower_bound() ?
       this->j_list_.insert( this->j_list_.end(), rhs.set_j_list().begin(), rhs.set_j_list().end() ) : 
       rhs.set_j_list().insert( rhs.set_j_list().end(), this->j_list_.begin(), this->j_list_.end() );
+    this->i_bounds_ = std :: make_pair( std :: min( this->i_lower_bound(), rhs.i_lower_bound() ), std :: max( this->i_upper_bound(), rhs.i_upper_bound() ) );
+    this->j_bounds_ = std :: make_pair( std :: min( this->j_lower_bound(), rhs.j_lower_bound() ), std :: max( this->j_upper_bound(), rhs.j_upper_bound() ) );
+    this->begin_ = iterator( (this->i_list_), (this->j_list_), op_term_info_type( c_dagger, i_list_.front(), up, c,  j_list_.front(), up ), 0, 0 ) ;
+    this->end_   = iterator( (this->i_list_), (this->j_list_), op_term_info_type( c_dagger, std :: numeric_limits<int> :: max() , down , c, std :: numeric_limits<int> :: max() , down  ), i_list_.size(), j_list_.size() );
     return *this;
   }  // end of operator+= 
 

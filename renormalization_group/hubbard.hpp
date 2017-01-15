@@ -14,10 +14,14 @@ public:
 
 public:
   Hubbard( const std :: vector<int>& site_indices,
+           integral_type* integral_pointer ) :
+    HamiltonianBase( site_indices, integral_pointer )
+    {} 
+  Hubbard( const std :: vector<int>& site_indices,
            integral_type* integral_pointer,
-           const double& on_site_hopping_val,
-           const double& neighbour_hopping_val, 
-           const double& on_site_coulomb_val ) :
+           const double on_site_hopping_val,
+           const double neighbour_hopping_val, 
+           const double on_site_coulomb_val ) :
     HamiltonianBase( site_indices, integral_pointer ),
     hamiltonian_type_  ( HUBBARD ),
     on_site_hopping_   ( on_site_hopping_val ),
