@@ -168,7 +168,9 @@ public:
     operator_type ia_x_hb =  iden_this * rhs;
 //ia_x_hb.full_matrix().print();
 //exit(0);
-    this_ref = ha_x_ib + ia_x_hb;
+
+//    this_ref = ha_x_ib + ia_x_hb;
+    this_ref = this_ref + ia_x_hb;
 //    this_ref = ia_x_hb;
 
 //    operator_type& ha_x_hb_ref = ha_x_hb;

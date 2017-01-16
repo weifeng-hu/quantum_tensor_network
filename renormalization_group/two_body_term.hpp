@@ -208,6 +208,7 @@ public:
     if( this->k_upper_bound() >= rhs.k_lower_bound() && this->k_upper_bound() <= rhs.k_upper_bound() ) return true;
     if( this->l_lower_bound() >= rhs.l_lower_bound() && this->l_lower_bound() <= rhs.l_upper_bound() ) return true;
     if( this->l_upper_bound() >= rhs.l_lower_bound() && this->l_upper_bound() <= rhs.l_upper_bound() ) return true;
+    return false;
   } // end of operator& 
 
   class iterator {

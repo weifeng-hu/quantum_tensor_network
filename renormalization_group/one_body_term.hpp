@@ -66,9 +66,10 @@ public:
 public:
   friend 
     std :: array< this_type, 2 > operator| ( this_type& term_a, this_type& term_b ) {
-//      std :: cout << term_a.i_lower_bound() << " " << term_a.i_upper_bound() << std :: endl;
-//      std :: cout << term_b.i_lower_bound() << " " << term_b.i_upper_bound() << std :: endl;
       if( ( term_a & term_b ) == true ) {
+        std :: cout << " two term site indices intersect" << std :: endl;
+        std :: cout << term_a.i_lower_bound() << " " << term_a.i_upper_bound() << std :: endl;
+        std :: cout << term_b.i_lower_bound() << " " << term_b.i_upper_bound() << std :: endl;
         abort();
       }
       std :: array< this_type, 2 > retval; 
@@ -95,10 +96,11 @@ public:
   }  // end of operator+= 
 
   bool operator& ( this_type& rhs ) {
-    if( this->i_lower_bound() >= rhs.i_lower_bound() && this->i_lower_bound() <= rhs.i_upper_bound() ) return true;
-    if( this->i_upper_bound() >= rhs.i_lower_bound() && this->i_upper_bound() <= rhs.i_upper_bound() ) return true;
-    if( this->j_lower_bound() >= rhs.j_lower_bound() && this->j_lower_bound() <= rhs.j_upper_bound() ) return true;
-    if( this->j_upper_bound() >= rhs.j_lower_bound() && this->j_upper_bound() <= rhs.j_upper_bound() ) return true;
+    if( this->i_lower_bound() >= rhs.i_lower_bound() & this->i_lower_bound() <= rhs.i_upper_bound() ) return true;
+    if( this->i_upper_bound() >= rhs.i_lower_bound() & this->i_upper_bound() <= rhs.i_upper_bound() ) return true;
+    if( this->j_lower_bound() >= rhs.j_lower_bound() & this->j_lower_bound() <= rhs.j_upper_bound() ) return true;
+    if( this->j_upper_bound() >= rhs.j_lower_bound() & this->j_upper_bound() <= rhs.j_upper_bound() ) return true;
+    return false;
   }  // end of operator& 
 
   class iterator {
