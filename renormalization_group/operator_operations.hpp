@@ -411,7 +411,7 @@ namespace renormalization_group {
     int n_qn_row_rot = rot.n_qn_row();
     int n_qn_col_rot = rot.n_qn_col();
 
-    std :: cout << n_qn_row_op << " " << n_qn_col_op << std :: endl;
+//    std :: cout << n_qn_row_op << " " << n_qn_col_op << std :: endl;
 
     if( n_qn_col_op != n_qn_row_rot ) {
       std :: cout << "n_qn_col_op != n_qn_row_rot" << std :: endl;
@@ -541,10 +541,67 @@ namespace renormalization_group {
       }
     }
 
- 
     return new_op;
 
   }
+
+  operator_type get_current_rep( operator_type& op, std :: vector<RotationMatrix>& rot_map ) {
+
+    operator_type& op = *this;
+
+    int site_ind = op.site_ind();
+    space_type space = op.space();
+
+    // I(renormalized) * op 
+    operator_type op_exp = op;
+    if( site_ind > 0 ) {
+      RotationMatrix rot_before = rot_map[ site_ind - 1 ];
+      int n_qn_col_rot = rot_before.n_qn_col();
+      std :: vector< space_type > qn_col = rot_before.qn_series_col();
+      operator_type* x; 
+      if( space.n() % 2 == 0 ) {
+        x = new Iden( qn_col, qn_col );
+      } else {
+        x = new Parity( qn_col, qn_col );
+      }
+      x->set_site_ind() = site_ind - 1;
+      x->block_indices().resize( site_ind );
+      for( int i = 0; i < site_ind; i++ ) {
+        x->block_indices()[i] = i;
+      }
+
+      operator_type new_op = direct_product( x, op_exp );
+
+      new_op.set_site_ind()  = op_exp.site_ind();
+      new_op.block_indices() = x.block_indices() + op_exp.block_indices();
+
+      op_exp = new_op;
+    }
+
+    // project 
+    RotationMatrix rot_current = rot_map[ site_ind ];
+    operator_type projected_op_exp = transform( op_exp, rot );
+    op_exp = projected_op_exp;
+
+    // expand and project
+    int target_site = rot_map.size();
+    for( int i = site_ind + 1; <= target_site; i++ ) {
+
+      int product_site = i;
+      Iden iden_product( product_site );
+      operator_type new_op = direct_product( op_exp, iden_product );
+      new_op.set_site_ind() = op_exp.site_ind();
+      new_op.block_indices() = op_exp.block_indices() + iden_product.block_indices();
+
+      RotationMatrix rot_product = rot_map[product_site];
+      operator_type new_op_projected = transform( new_op, rot_i );
+      op_exp = new_op_projected;
+
+    }
+
+    return op_exp;
+  }
+
 
 } // end of namespace renormalization_group
 

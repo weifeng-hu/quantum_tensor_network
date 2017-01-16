@@ -111,6 +111,29 @@ public:
     site_ind_ = h_ref.set_site_ind();
   }
 
+  Iden( std :: vector<space_type>& qns_row, std :: vector<space_type>& qns_col ) {
+    int nrow = qns_row.size();
+    int ncol = qns_col.size();
+    if( nrow != ncol ) {
+      std :: cout << " nrow != ncol " << std :: endl;
+      abort();
+    }
+
+    this->op_matrix_.resize( qns_row, qns_col );
+    for( int i = 0; i < nrow; i++ ) {
+      int dim_i = qns_row[i].dim();
+      matrix_type mat;
+      mat.resize( dim_i, dim_i );
+      mat.clear();
+      for( int j = 0; j < dim_i; j++ ) { mat( j, j ) = 1.0e0; }
+      op_matrix_( i, i ).second = mat;
+    }
+
+//    block_indices_ = h_ref.block_indices();
+    delta_qn_ = QuantumNumber( 0, 0 );
+//    site_ind_ = h_ref.set_site_ind();
+  }
+
   ~Iden() {}
 
 }; // end of Identity Operator
@@ -157,6 +180,33 @@ public:
     block_indices_ = h_ref.block_indices();
     delta_qn_ = QuantumNumber( 0, 0 );
     site_ind_ = h_ref.set_site_ind();
+  }
+
+  Parity( std :: vector< space_type >& qns_row, std :: vector< space_type >& qns_col ) {
+    int nrow = qns_row.size();
+    int ncol = qns_col.size();
+    if( nrow != ncol ) {
+      std :: cout << " nrow != ncol " << std :: endl;
+      abort();
+    }
+
+    this->op_matrix_.resize( qns_row, qns_col );
+    for( int i = 0; i < nrow; i++ ) {
+      int dim_i = qns_row[i].dim();
+      matrix_type mat;
+      mat.resize( dim_i, dim_i );
+      mat.clear();
+      double val = ( qns_row[i].n() % 2 == 0 ) ? 1.0e0 : -1.0e0;
+      for( int j = 0; j < dim_i; j++ ) {
+        mat( j, j ) = val;
+      }
+      op_matrix_( i, i ).second = mat;
+    }
+
+//    block_indices_ = h_ref.block_indices();
+    delta_qn_ = QuantumNumber( 0, 0 );
+//    site_ind_ = h_ref.set_site_ind();
+ 
   }
  
   ~Parity() {}
