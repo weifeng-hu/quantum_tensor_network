@@ -27,7 +27,7 @@ fobjs		= $(fsrcs:.f=.o)
 flibs		= -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lgfortran
 
 # Target binary info
-target		= test_blocks
+target		= test_hubbard_add
 target_flags	= 
 target_opt	= -O0
 target_objs	= $(cobjs) $(cxxobjs) $(fobjs)

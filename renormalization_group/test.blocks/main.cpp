@@ -7,6 +7,7 @@
 #include "../operator_operations.hpp"
 #include "../rotation_matrix.hpp"
 #include "../accelerator.hpp"
+#include "../block.hpp"
 
 int main( int argc, char* argv[] ) {
 
@@ -18,6 +19,11 @@ int main( int argc, char* argv[] ) {
   integral.set_on_site_hopping( 1.0 );
   integral.set_neighbour_hopping( 1.0 );
   integral.set_on_site_coulomb( 1.0 );
+
+  Block block( 10, 0, 2, NORMAL );
+
+  std :: cout << block.n_site() << std :: endl;
+  std :: cout << block.site_indices().size() << std :: endl;
 
   return 0;
 

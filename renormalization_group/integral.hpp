@@ -24,6 +24,10 @@ public:
   ~Integral() {}
 
 public:
+  void resize( int nsite ) {
+    this->store_.resize( nsite*nsite*nsite*nsite + nsite * nsite );
+    this->nsite_ = nsite;
+  }
   double& operator() ( const int ind_i, const int ind_j ) {
 //    try {
 //      std :: array< int, 4 > key = { ind_i, ind_j, std :: numeric_limits<int> :: min(), std :: numeric_limits<int> :: min() };
@@ -108,7 +112,6 @@ public:
       (*this)( i, i, i, i ) = value;
     }
   }
-
 
 private:
   store_type store_;

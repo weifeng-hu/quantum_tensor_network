@@ -17,7 +17,7 @@
 
 namespace renormalization_group {
 
-enum HamType { UNSET, HUBBARD, ExHUBBARD };
+enum HamType { UNKNOWN, HUBBARD, ExHUBBARD };
 
 class HamiltonianBase : public OperatorBase {
 public:
@@ -208,7 +208,7 @@ public:
         }
         new_wavefunction.set_space() = SubSpace( this->qn_col( i, i ).n(), this->qn_col(i, i).s_z(), 1 );
         retval.push_back( std :: pair< double, Wavefunction> ( eigen_pair_i.second.at(j), new_wavefunction ) );
-        new_wavefunction.print();
+//        new_wavefunction.print();
       }
     }
     return retval;
@@ -300,6 +300,10 @@ public:
   two_body_term_type& two_body_term()
     { return this->two_body_term_; }
 
+  int n_states() const
+    { return pow( 4, n_site() ); }
+
+
 //  operator_array_type operator_array() const
 //    { return this->operator_array_; }
 //  operator_array_type& set_operator_array_type()
@@ -310,7 +314,7 @@ public:
 //  formula_type& set_formula() 
 //    { return this->formula_; }
 //
-  virtual HamType hamiltonian_type() { return UNSET; };
+  virtual HamType hamiltonian_type() { return UNKNOWN; };
 
 protected:
 //  formula_type         formula_;                 // stores ordinary operators

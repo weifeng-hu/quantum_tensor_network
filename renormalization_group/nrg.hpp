@@ -6,9 +6,9 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include "block.hpp"
-#include "hamiltonian_base.hpp"
-#include "renormalization_group.hpp"
+#include "./block.hpp"
+#include "./hamiltonian_base.hpp"
+#include "./renormalization_group.hpp"
 
 namespace renormalization_group {
 
@@ -20,7 +20,7 @@ public:
   NRG() :
    RenormalizationGroup(),
    increment_ (0),
-   routine_type_ ( LOOP_WHILE ),
+   routine_type_ ( LOOP_WHILE )
   {}
 
   NRG( const size_t n_site_value, 
@@ -28,11 +28,11 @@ public:
        const size_t M_value         = 10, 
        const HamType hamiltonian    = HUBBARD, 
        const StateSamplingMethod state_sampling_method = NORMAL, 
-       const on_site_hopping_value      = -5.0e0, 
-       const neighbour_hopping_value    = 1.0e0,
-       const on_site_coulomb_value      = 8.0e0,
+       const double on_site_hopping_value      = -5.0e0, 
+       const double neighbour_hopping_value    = 1.0e0,
+       const double on_site_coulomb_value      = 8.0e0,
        const size_t nroot               = 10,
-       const RoutineType routine_type_value = LOOP_WHILE,
+       const RoutineType routine_type_value = LOOP_WHILE
        ) : 
    RenormalizationGroup( n_site_value, 
      M_value,
@@ -40,10 +40,10 @@ public:
      state_sampling_method,
      on_site_hopping_value,
      neighbour_hopping_value,
-     one_site_coulomb_value,
+     on_site_coulomb_value,
      nroot ), 
    increment_ ( increment_value ),
-   routine_type_ ( routine_type_value ),
+   routine_type_ ( routine_type_value )
    {}
 
   ~NRG() {}
@@ -52,21 +52,23 @@ public:
   void run() {
 
     switch( this->routine_type_ ) {
-
       case( LOOP_WHILE ) :
-        block_type total_block = solve();
-        this->eigen_values_
-          = total_block.export_eigenvalues( this->eigen_values_.size() );
-        break;
-
-      case( RECUR ):
-        std :: vector< int > total_site_indices;
-        for( size_t i = 0; i < this->n_site_; i++ ) {
-          total_site_indices.push_back( this->site_lower_bound_ + i );
+        {
+          block_type total_block = solve();
+          this->eigen_values_
+            = total_block.export_eigenvalues( this->eigen_values_.size() );
         }
-        block_type total_block = this->solve_block( total_site_indices );
-        this->eigen_values_ 
-          = total_block.export_eigenvalues( this->eigen_values_.size() );
+        break;
+      case( RECUR ):
+        {
+          std :: vector< int > total_site_indices;
+          for( size_t i = 0; i < this->n_site_; i++ ) {
+            total_site_indices.push_back( this->site_lower_bound_ + i );
+          }
+          block_type total_block = this->solve_block( total_site_indices );
+          this->eigen_values_ 
+            = total_block.export_eigenvalues( this->eigen_values_.size() );
+        }
         break;
     }
 
@@ -80,19 +82,19 @@ private:
     std :: vector< int > starting_block_sites;
     for( size_t i = 0; i < site_indices.size() - this->increment_; i++ )
       { starting_block_sites.push_back( site_indices.at(i) ); }
-    block_type starting_block( this->M_, starting_sites, state_sampling_method_ );
+    block_type starting_block( this->M_, starting_block_sites, state_sampling_method_ );
 
     if( site_indices.size() <= this->increment_ ) {
-      Hubbard hubbard_start( start_block_sites, this->integral_ptr() );
+      Hubbard hubbard_start( starting_block_sites, this->integral_ptr() );
       starting_block.attach_hamiltonian( &hubbard_start );
     } else {
-      starting_block = solve_block( starting_sites );
+      starting_block = solve_block( starting_block_sites );
     }
 
     // increment block
     std :: vector<int> increment_sites;
-    for( size_t i = 0; i < increment_size; i++ )
-      { increment_block_sites.push_back( site_indices.at( starting_block_sites.size() + i ) ); }
+    for( size_t i = 0; i < increment_; i++ )
+      { increment_sites.push_back( site_indices.at( starting_block_sites.size() + i ) ); }
     block_type increment_block( this->M_, increment_sites, state_sampling_method_ );
     Hubbard hubbard_increment( increment_sites, this->integral_ptr() );
     increment_block.attach_hamiltonian( &hubbard_increment );
@@ -107,26 +109,36 @@ private:
   block_type solve() {
 
     size_t starting_size = this->get_starting_block_size();
+std :: cout << "starting size: "; std :: cout << starting_size << std :: endl;
+//exit(0);
     std :: vector< int > sum_block_sites;
     for( size_t i = 0; i < starting_size; i++ )
       {  sum_block_sites.push_back( this->site_lower_bound_ + i ); }
-
+std :: cout << "sum block sites: "; for( int i = 0; i < sum_block_sites.size(); i++ ) { std :: cout << sum_block_sites[i] << " "; } std :: cout << std :: endl;
+//exit(0);
+std :: cout << "M: " << M_ << std :: endl;
+//exit(0);
     block_type sum_block( this->M_, sum_block_sites, state_sampling_method_ );
     Hubbard hubbard_start( sum_block_sites, this->integral_ptr() );
+    hubbard_start.compute();
     sum_block.attach_hamiltonian( &hubbard_start );
 
-    while( sum_block_sites.size() <= this->n_sites_ ) {
+    while( sum_block_sites.size() < this->n_site_ ) {
 
       std :: vector< int > increment_sites;
-      for( size_t i = 0; i < increment_size; i++ )
+      for( size_t i = 0; i < increment_; i++ )
         { increment_sites.push_back( *sum_block_sites.rbegin() + i + 1 );  }
 
-      block_type increment_block( this->M_, increment_sites );
+std :: cout << "increment sites: " ; for( int i = 0; i < increment_sites.size(); i++ ) { std :: cout << increment_sites[i] << " "; }  std :: cout << std :: endl;
+//exit(0);
+      block_type increment_block( this->M_, increment_sites, state_sampling_method_ );
       Hubbard hubbard_increment( increment_sites, this->integral_ptr() );
-      increment_block.attach_hamiltonian( &hubbard_hamiltonian_increment );
+      hubbard_increment.compute();
+      increment_block.attach_hamiltonian( &hubbard_increment );
 
       sum_block += increment_block;
       sum_block_sites.insert( sum_block_sites.end(), increment_sites.begin(), increment_sites.end() );
+std :: cout << "sum block sites: "; for( int i = 0; i < sum_block_sites.size(); i++ ) { std :: cout << sum_block_sites[i] << " "; } std :: cout << std :: endl;
 
     } // end of while 
 
@@ -136,11 +148,11 @@ private:
 
 public:
   int get_starting_block_size() {
-    int size = this->n_sites_;
+    int size = this->n_site_;
     while( size >= this->increment_ ) {
       size -= this->increment_;
     }
-    return size;
+    return size + this->increment_;
   }
 
   void print_info_specific() {

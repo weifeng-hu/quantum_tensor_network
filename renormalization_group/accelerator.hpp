@@ -10,7 +10,7 @@
 #include "./rotation_matrix.hpp"
 
 namespace renormalization_group {
-enum StateSamplingMethod { NORMAL, STOCH_MIX };
+enum StateSamplingMethod { UNSET, NORMAL, STOCH_MIX };
 class Accelerator {
 public:
   typedef mat_stoch_diag :: SimpleMatrix matrix_type;
@@ -158,6 +158,19 @@ private:
   int M_;
 
 }; // end of class Accelerator
+
+std :: string state_sampling_method_name( const StateSamplingMethod method ) {
+
+  switch( method ) {
+    case( NORMAL ) :
+      return std :: string( "standard" );
+    case( STOCH_MIX ):
+      return std :: string( "stochastic mixture" );
+    default:
+      return std :: string( "unknown" );
+  }
+
+}
 
 } // end of namespace rg
 

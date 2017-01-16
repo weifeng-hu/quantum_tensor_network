@@ -26,7 +26,7 @@ int main( int argc, char* argv[] ) {
   for( int i = 0; i < eigen_spectrum.size(); i++ ) { std :: cout << "lala " << eigen_spectrum[i].first << std :: endl; }
 
 
-  Accelerator accelerator( &eigen_spectrum, NORMAL, 10 );
+  Accelerator accelerator( &eigen_spectrum, NORMAL, 16 );
 
   RotationMatrix rotmat_en = accelerator.energy_truncation();
 //  rotmat_en.full_matrix().print();

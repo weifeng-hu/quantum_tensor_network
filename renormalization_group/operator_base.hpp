@@ -62,6 +62,9 @@ public:
         }
       }
     }
+
+    store_type& set_store() 
+      { return this->store_; }
   };  // end of class OpMatrix
 
   typedef OpMatrix op_matrix_type;

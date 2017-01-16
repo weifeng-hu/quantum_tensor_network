@@ -32,14 +32,17 @@ public:
           case( down ):
             return new DDw( ind );
         }
+      case( num ):
+        return new Num( ind );
       case( i ):
         return new Iden( ind );
       case( p ):
         return new Parity( ind );
-      case( num ):
-        return new Num( ind );
     }
   } // end of get_op()
+
+private:
+
 
 }; // end of class OperatorFactory
 

@@ -310,6 +310,14 @@ public:
 
   }
 
+  store_type& set_store()
+    { return this->store_; }
+
+  int& set_n_qn_row()
+    { return n_qn_row_; }
+  int& set_n_qn_col()
+    { return n_qn_col_; }
+
 public:
   store_type store_;
   int n_qn_row_, n_qn_col_;

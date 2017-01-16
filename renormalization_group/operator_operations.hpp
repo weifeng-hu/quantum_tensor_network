@@ -156,11 +156,13 @@ namespace renormalization_group {
       if( op_a.n_qn_row() != op_b.n_qn_row() ) {
         std :: cout << "error: two operator matrices of the same site cannot add" << std :: endl;
         std :: cout << "n_qn_row of A != n_qn_row of B" << std :: endl;
+        std :: cout << op_a.n_qn_row() << " " << op_b.n_qn_row() << std :: endl;
         abort();
       }
       if( op_a.n_qn_col() != op_b.n_qn_col() ) {
         std :: cout << "error: two operator matrices of the same site cannot add" << std :: endl;
         std :: cout << "n_qn_col of A != n_qn_col of B" << std :: endl;
+        std :: cout << op_a.n_qn_col() << " " << op_b.n_qn_col() << std :: endl;
         abort();
       }
 
