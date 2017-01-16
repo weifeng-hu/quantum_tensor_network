@@ -3,6 +3,7 @@
 
 #include "./quantum_number.hpp"
 #include "./operator.hpp"
+#include "./operator_operations.hpp"
 
 namespace renormalization_group {
 
@@ -40,9 +41,6 @@ public:
         return new Parity( ind );
     }
   } // end of get_op()
-
-private:
-
 
 }; // end of class OperatorFactory
 
