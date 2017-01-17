@@ -16,6 +16,7 @@ namespace renormalization_group {
 
   using namespace std ;
 
+  op_type get_current_rep( op_type& op );
   inline op_type on_block_multiply( op_type& op_a, op_type& op_b ) {
 
     op_type retval;
@@ -23,6 +24,7 @@ namespace renormalization_group {
     if( op_a.n_qn_col() != op_b.n_qn_row() ) {
       std :: cout << "error: two operator matrices of the same site cannot multiply" << std :: endl;
       std :: cout << "n_qn_col of A != n_qn_row of B" << std :: endl;
+      std :: cout << op_a.n_qn_col() << " " <<  op_b.n_qn_row() << std :: endl;
       abort();
     }
     retval.resize( op_a.n_qn_row(), op_b.n_qn_col() );
@@ -39,9 +41,10 @@ namespace renormalization_group {
           if( ( qn_k != qn_k_ref ) | ( qn_k.dim() != qn_k.dim() ) ) {
             std :: cout << "error: two qn not equal for k when multiplying same site operators" << std :: endl;
             cout << i_qn << " " << j_qn << " " << k_qn << endl;
-            qn_k.print(); cout << flush << " | ";
+            qn_k.print(); std :: cout << std :: flush << " | ";
             qn_k_ref.print();
-            exit(0);
+            std :: cout << std :: flush;
+            abort();
           }
  
           matrix_type matrix_ik = op_a( i_qn, k_qn ).second;
@@ -216,10 +219,14 @@ namespace renormalization_group {
 
     op_type retval;
     if( ( op_a.block_indices() == op_b.block_indices() ) ) {
+//op_a.full_matrix().print();
+//op_b.full_matrix().print();
         retval = on_block_add( op_a, op_b );
         retval.set_site_ind() = op_a.site_ind();
         retval.block_indices() = op_a.block_indices();
     } else {
+      if( global_rot_map_.size() == 0 ) {
+
         std :: vector<int> combined = op_a.block_indices() + op_b.block_indices();
         int site_a = op_a.site_ind();
         int site_b = op_b.site_ind();
@@ -282,13 +289,113 @@ namespace renormalization_group {
         retval = on_block_add( op_a_exp, op_b_exp );
         retval.set_site_ind() = std :: max( op_a.site_ind(), op_b.site_ind() );
         retval.block_indices() = combined;
+        QuantumNumber delta_qn_a = op_a.delta_qn();
+        QuantumNumber delta_qn_b = op_b.delta_qn();
+        QuantumNumber delta_qn_a_x_b = delta_qn_a + delta_qn_b;
+        retval.set_delta_qn() = delta_qn_a_x_b;
+
+    } else {
+
+        // rg is used op_a and op_b are two 1-body prelimiary ops
+        int approximated_block_size = global_rot_map_.size();
+        int approximated_block_largest_site = approximated_block_size - 1;
+        std :: vector<int> combined;
+        for( int i = 0; i < approximated_block_size; i++ ) { combined.push_back(i); }
+        int site_a = op_a.site_ind();
+        int site_b = op_b.site_ind();
+        if( find( combined.begin(), combined.end(), site_a ) == combined.end() ) combined.push_back( site_a );
+        if( find( combined.begin(), combined.end(), site_b ) == combined.end() ) combined.push_back( site_b );
+
+        op_type op_a_exp = op_a;
+if( op_a_exp.block_indices() != combined ) {
+        if( site_a <= approximated_block_largest_site ) {
+//op_a_exp.full_matrix().print();
+//          op_a_exp = get_current_rep( op_a_exp );
+
+          if( site_b > approximated_block_largest_site ) {
+            Iden iden( site_b );
+            op_type new_op = direct_product( op_a_exp, iden );
+            new_op.set_site_ind() = op_a.site_ind();
+            new_op.block_indices() = op_a_exp.block_indices() + iden.block_indices();
+            op_a_exp = new_op;
+          }
+
+        } else {
+
+          RotationMatrix rot_before = global_rot_map_.back();
+          int n_qn_col_rot = rot_before.n_qn_col();
+          std :: vector< space_type > qn_col = rot_before.qn_series_col();
+          op_type* x;
+          if( op_a.delta_qn().n() % 2 == 0 ) {
+            x = new Iden( qn_col, qn_col );
+          } else {
+            x = new Parity( qn_col, qn_col );
+          }
+          x->set_site_ind() = global_rot_map_.size() - 1;
+          x->block_indices().resize( global_rot_map_.size() );
+          for( int i = 0; i < x->block_indices().size(); i++ ) {
+            x->block_indices()[i] = i;
+          }
+
+          op_type new_op = direct_product( *x, op_a_exp );
+          new_op.set_site_ind() = op_a_exp.site_ind();;
+          new_op.block_indices() = x->block_indices() + op_a_exp.block_indices();
+
+          op_a_exp = new_op;
+
+        }
+   }
+        op_type op_b_exp = op_b;
+   if( op_b_exp.block_indices() != combined ) {
+        if( site_b <= approximated_block_largest_site ) {
+//          op_b_exp = get_current_rep( op_b_exp );
+          if( site_a > approximated_block_largest_site ) {
+            Iden iden( site_a );
+            op_type new_op = direct_product( op_b_exp, iden );
+            new_op.set_site_ind() = op_b.site_ind();
+            new_op.block_indices() = op_b_exp.block_indices() + iden.block_indices();
+            op_b_exp = new_op;
+          }
+
+       } else {
+
+          RotationMatrix rot_before = global_rot_map_.back();
+          int n_qn_col_rot = rot_before.n_qn_col();
+          std :: vector< space_type > qn_col = rot_before.qn_series_col();
+          op_type* x;
+          if( op_b.delta_qn().n() % 2 == 0 ) {
+            x = new Iden( qn_col, qn_col );
+          } else {
+            x = new Parity( qn_col, qn_col );
+          }
+          x->set_site_ind() = global_rot_map_.size() - 1;
+          x->block_indices().resize( global_rot_map_.size() );
+          for( int i = 0; i < x->block_indices().size(); i++ ) {
+            x->block_indices()[i] = i;
+          }
+
+          op_type new_op = direct_product( *x, op_b_exp );
+          new_op.set_site_ind() = op_b_exp.site_ind();;
+          new_op.block_indices() = x->block_indices() + op_b_exp.block_indices();
+
+          op_b_exp = new_op;
+
+        }
+   }
+//op_a_exp.full_matrix().print();
+//op_b.full_matrix().print();
+
+        retval = on_block_add( op_a_exp, op_b_exp );
+        retval.set_site_ind() = std :: max( op_a.site_ind(), op_b.site_ind() );
+        retval.block_indices() = combined;
+
+        QuantumNumber delta_qn_a = op_a.delta_qn();
+        QuantumNumber delta_qn_b = op_b.delta_qn();
+        QuantumNumber delta_qn_a_x_b = delta_qn_a + delta_qn_b;
+        retval.set_delta_qn() = delta_qn_a_x_b;
+
     }
-
-    QuantumNumber delta_qn_a = op_a.delta_qn();
-    QuantumNumber delta_qn_b = op_b.delta_qn();
-    QuantumNumber delta_qn_a_x_b = delta_qn_a + delta_qn_b;
-    retval.set_delta_qn() = delta_qn_a_x_b;
-
+   }
     return retval;
 
   }
@@ -297,13 +404,15 @@ namespace renormalization_group {
 
     op_type retval;
 
-    if( (  op_a.block_indices() == op_b.block_indices() ) ) {
+    if( ( op_a.block_indices() == op_b.block_indices() ) ) {
 
         retval = renormalization_group :: on_block_multiply( op_a, op_b );
         retval.set_site_ind() = std :: max( op_a.site_ind(), op_b.site_ind() );
         retval.block_indices() = op_a.block_indices();
 
     } else {
+
+      if( global_rot_map_.size() == 0 ) {
 
         std :: vector<int> combined = op_a.block_indices() + op_b.block_indices();
         int site_a = op_a.site_ind();
@@ -383,6 +492,109 @@ namespace renormalization_group {
         retval.set_site_ind() = std :: max( op_a.site_ind(), op_b.site_ind() );
         retval.block_indices() = combined;
 
+      } else {
+
+        // rg is used op_a and op_b are two 1-body prelimiary ops
+        int approximated_block_size = global_rot_map_.size();
+        int approximated_block_largest_site = approximated_block_size - 1;
+        std :: vector<int> combined;
+        for( int i = 0; i < approximated_block_size; i++ ) { combined.push_back(i); }
+        int site_a = op_a.site_ind();
+        int site_b = op_b.site_ind();
+        if( find( combined.begin(), combined.end(), site_a ) == combined.end() ) combined.push_back( site_a );
+        if( find( combined.begin(), combined.end(), site_b ) == combined.end() ) combined.push_back( site_b );
+
+        op_type op_a_exp = op_a;
+    if( op_a.block_indices() != combined ) {
+        if( site_a <= approximated_block_largest_site ) {
+          //op_a_exp = get_current_rep( op_a_exp );
+
+          if( site_b > approximated_block_largest_site ) {
+            Iden iden( site_b );
+            op_type new_op = direct_product( op_a_exp, iden );
+            new_op.set_site_ind() = op_a.site_ind();
+            new_op.block_indices() = op_a_exp.block_indices() + iden.block_indices();
+            op_a_exp = new_op;
+          }
+
+        } else {
+
+          RotationMatrix rot_before = global_rot_map_.back();
+          int n_qn_col_rot = rot_before.n_qn_col();
+          std :: vector< space_type > qn_col = rot_before.qn_series_col();
+          op_type* x;
+          if( op_a.delta_qn().n() % 2 == 0 ) {
+            x = new Iden( qn_col, qn_col );
+          } else {
+            x = new Parity( qn_col, qn_col );
+          }
+          x->set_site_ind() = global_rot_map_.size() - 1;
+          x->block_indices().resize( global_rot_map_.size() );
+          for( int i = 0; i < x->block_indices().size(); i++ ) {
+            x->block_indices()[i] = i;
+          }
+
+          op_type new_op = direct_product( *x, op_a_exp );
+          new_op.set_site_ind() = op_a_exp.site_ind();;
+          new_op.block_indices() = x->block_indices() + op_a_exp.block_indices();
+
+          op_a_exp = new_op;
+
+        }
+    }
+
+        op_type op_b_exp = op_b;
+    if( op_b.block_indices() != combined ) {
+        if( site_b <= approximated_block_largest_site ) {
+//          op_b_exp = get_current_rep( op_b_exp );
+          if( site_a > approximated_block_largest_site ) {
+            Iden iden( site_a );
+            op_type new_op = direct_product( op_b_exp, iden );
+            new_op.set_site_ind() = op_b.site_ind();
+            new_op.block_indices() = op_b_exp.block_indices() + iden.block_indices();
+            op_b_exp = new_op;
+          }
+
+       } else {
+//std :: cout << "opb from here " << op_b_exp.site_ind() << std :: endl;
+          RotationMatrix rot_before = global_rot_map_.back();
+
+//rot_before.print();
+          int n_qn_col_rot = rot_before.n_qn_col();
+          std :: vector< space_type > qn_col = rot_before.qn_series_col();
+//for( int i = 0; i < qn_col.size(); i++ ) { qn_col[i].print(); std :: cout << " | "; } std :: cout << std :: endl;
+//exit(0);
+          op_type* x;
+          if( op_b.delta_qn().n() % 2 == 0 ) {
+            x = new Iden( qn_col, qn_col );
+          } else {
+            x = new Parity( qn_col, qn_col );
+          }
+          x->set_site_ind() = global_rot_map_.size() - 1;
+          x->block_indices().resize( global_rot_map_.size() );
+          for( int i = 0; i < x->block_indices().size(); i++ ) {
+            x->block_indices()[i] = i;
+          }
+//x->print(); std :: cout << "xxxxx" << std :: endl;
+          op_type new_op = direct_product( *x, op_b_exp );
+          new_op.set_site_ind() = op_b_exp.site_ind();;
+          new_op.block_indices() = x->block_indices() + op_b_exp.block_indices();
+
+          op_b_exp = new_op;
+
+        }
+    }
+//op_a_exp.print();
+//std :: cout << "------------------------------" << std :: endl;
+//op_b_exp.print();
+        // this code cannot do op x op of different sites from the untruncated side
+
+//for( int i = 0; i < combined.size(); i++ ) { std :: cout << combined[i] << " "; } std :: cout << std :: endl;
+        retval = on_block_multiply( op_a_exp, op_b_exp );
+        retval.set_site_ind() = std :: max( op_a.site_ind(), op_b.site_ind() );
+        retval.block_indices() = combined;
+      }
+
     }
 
     return retval;
@@ -453,12 +665,16 @@ namespace renormalization_group {
             std :: cout << "k = " << k << std :: endl;
             space_k.print();  std :: cout << " | " << std :: endl;
             space_k_ref.print();
+            std :: cout << std :: flush;
+            abort();
           }
           if( space_k.dim() != space_k_ref.dim() ) {                                  
             std :: cout << "space_k.dim() != space_k_ref.dim() in op * R " << std :: endl;
             std :: cout << "k = " << k << std :: endl;
             space_k.print();  std :: cout << " | " << std :: endl;
             space_k_ref.print();
+            std :: cout << std :: flush;
+            abort();
           }
 
           matrix_type mat_op_ik = op.matrix( i, k );
@@ -517,12 +733,16 @@ namespace renormalization_group {
             std :: cout << "k = " << k << std :: endl;
             space_k.print();  std :: cout << " | " << std :: endl;
             space_k_ref.print();
+            std :: cout << std :: flush;
+            abort();
           }
           if( space_k.dim() != space_k_ref.dim() ) {                                  
             std :: cout << "space_k.dim() != space_k_ref.dim() in Rt * (op*R) " << std :: endl;
             std :: cout << "k = " << k << std :: endl;
             space_k.print();  std :: cout << " | " << std :: endl;
             space_k_ref.print();
+            std :: cout << std :: flush;
+            abort();
           }
 
 //          matrix_type rot_ki  = rot( k, i );
@@ -545,20 +765,19 @@ namespace renormalization_group {
 
   }
 
-  operator_type get_current_rep( operator_type& op, std :: vector<RotationMatrix>& rot_map ) {
+  op_type get_current_rep( op_type& op ) {
 
-    operator_type& op = *this;
-
+    int total_nsite_ = global_rot_map_.size();
     int site_ind = op.site_ind();
-    space_type space = op.space();
+    QuantumNumber space = op.delta_qn();
 
     // I(renormalized) * op 
-    operator_type op_exp = op;
+    op_type op_exp = op;
     if( site_ind > 0 ) {
-      RotationMatrix rot_before = rot_map[ site_ind - 1 ];
+      RotationMatrix rot_before = global_rot_map_[ site_ind - 1 ];
       int n_qn_col_rot = rot_before.n_qn_col();
       std :: vector< space_type > qn_col = rot_before.qn_series_col();
-      operator_type* x; 
+      op_type* x; 
       if( space.n() % 2 == 0 ) {
         x = new Iden( qn_col, qn_col );
       } else {
@@ -570,38 +789,46 @@ namespace renormalization_group {
         x->block_indices()[i] = i;
       }
 
-      operator_type new_op = direct_product( x, op_exp );
+//x->full_matrix().print();
+//op_exp.full_matrix().print();
+      op_type new_op = direct_product( *x, op_exp );
 
       new_op.set_site_ind()  = op_exp.site_ind();
-      new_op.block_indices() = x.block_indices() + op_exp.block_indices();
+      new_op.block_indices() = x->block_indices() + op_exp.block_indices();
 
       op_exp = new_op;
     }
 
+//std :: cout << "site ind: " << site_ind << std :: endl;
+//std :: cout << "n rot: "  << global_rot_map_.size() << std :: endl;
+ if( site_ind > 0 & (site_ind <= global_rot_map_.size() - 1) ) {
     // project 
-    RotationMatrix rot_current = rot_map[ site_ind ];
-    operator_type projected_op_exp = transform( op_exp, rot );
+    RotationMatrix rot_current = global_rot_map_[ site_ind ];
+    op_exp.sort_qn();
+//op_exp.full_matrix().print();
+//rot_current.full_matrix().print();
+    op_type projected_op_exp = transform( op_exp, rot_current );
     op_exp = projected_op_exp;
 
     // expand and project
-    int target_site = rot_map.size();
-    for( int i = site_ind + 1; <= target_site; i++ ) {
+    int target_site = global_rot_map_.size() - 1;
+    for( int i = site_ind + 1; i <= target_site; i++ ) {
 
       int product_site = i;
       Iden iden_product( product_site );
-      operator_type new_op = direct_product( op_exp, iden_product );
+      op_type new_op = direct_product( op_exp, iden_product );
       new_op.set_site_ind() = op_exp.site_ind();
       new_op.block_indices() = op_exp.block_indices() + iden_product.block_indices();
+      new_op.sort_qn();
 
-      RotationMatrix rot_product = rot_map[product_site];
-      operator_type new_op_projected = transform( new_op, rot_i );
+      RotationMatrix rot_product = global_rot_map_[product_site];
+      op_type new_op_projected = transform( new_op, rot_product );
       op_exp = new_op_projected;
 
     }
-
+ }
     return op_exp;
   }
-
 
 } // end of namespace renormalization_group
 

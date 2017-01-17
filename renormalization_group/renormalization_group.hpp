@@ -8,6 +8,7 @@
 #include <string>
 #include "./integral.hpp"
 #include "./hamiltonian_base.hpp"
+//#include "./rotation_matrix.hpp"
 #include "./accelerator.hpp"
 #include "./block.hpp"
 
@@ -53,6 +54,7 @@ public:
     neighbour_hopping_ ( neighbour_hopping_value ),
     on_site_coulomb_ ( on_site_coulomb_value )  
   {
+    global_rot_map_.resize(0);
     this->set_n_site            ( this->n_site_ );
     this->integral_.resize( n_site_ );
     this->set_on_site_hopping   ( this->on_site_hopping_   );
@@ -115,6 +117,7 @@ public:
 //    this->site_upper_bound_ = this->site_lower_bound_ + value - 1;
     this->site_lower_bound_ = 0;
     this->site_upper_bound_ = value - 1;
+//    global_rot_mat_.resize( value );
   }
   int& set_increment()
     { return this->increment_; }

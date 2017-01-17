@@ -20,6 +20,16 @@ public:
 
 public:
   RotationMatrix() { n_qn_row_ = 0; n_qn_col_ = 0; store_.resize(0); }
+  RotationMatrix( Iden iden ) {
+
+    resize( iden.n_qn_row(), iden.n_qn_col() );
+    for( int i = 0; i < n_qn_row_; i++ ) {
+      for( int j = 0; j < n_qn_col_; j++ ) {
+        sub_matrix( i, j ) = std :: make_pair( std :: make_pair( iden.qn_row( i, j ), iden.qn_col( i, j ) ), iden.matrix( i, j ) );
+      }
+    }
+
+  }
   ~RotationMatrix() {}
 
 public:
@@ -286,6 +296,19 @@ public:
     }
     return qn_series;
   }
+  void print() {
+    for( int i = 0; i < n_qn_row_ ; i++ ) {
+       for( int j = 0; j < n_qn_col_ ; j++ ) {
+//          if( (*this)(i,j).second.nrow() != 0 ) {
+          printf( "  qn row: " ); this->sub_matrix(i,j).first.first.print();
+          printf( "  qn col: " ); this->sub_matrix(i,j).first.second.print();
+          printf( "\n" );
+          (*this)(i,j).print();
+          printf( "\n" );
+//          }
+      }
+    }
+  }
 
   void orthogonalize() {
 
@@ -323,6 +346,8 @@ public:
   int n_qn_row_, n_qn_col_;
 
 }; // end of OperatorBase
+
+std :: vector< RotationMatrix > global_rot_map_;
 
 } // end of namespace renormalization_group
 

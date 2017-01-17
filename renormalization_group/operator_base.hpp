@@ -38,13 +38,16 @@ public:
       for( int i = 0; i < nrow * ncol; i++ ) { store_[i].second.resize(0,0); }
     }
 
-    void resize( std :: vector< space_type >& qn_row, std :: vector< space_type > qn_col ) {
+    void resize( std :: vector< space_type >& qn_row, std :: vector< space_type >& qn_col ) {
       size_t nrow = qn_row.size();
       size_t ncol = qn_col.size();
       this->resize( nrow, ncol );
       for( size_t i_qn = 0; i_qn < nrow; i_qn++ ) {
         for( size_t j_qn = 0; j_qn < ncol; j_qn++ ) {
           (*this)( i_qn, j_qn ).first = std :: make_pair ( qn_row[i_qn], qn_col[j_qn] );
+//qn_row[i_qn].print();
+//qn_col[j_qn].print();
+//std :: cout << std :: endl;
         }
       }
     }
@@ -63,7 +66,7 @@ public:
       }
     }
 
-    store_type& set_store() 
+    store_type store() 
       { return this->store_; }
   };  // end of class OpMatrix
 

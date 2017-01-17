@@ -12,7 +12,7 @@ clibs		=
 
 cxx		= g++
 cxxflags	= -g -std=c++11
-cxxopt		= -O3
+cxxopt		= -O0
 cxxinclude	= -I./
 cxxsrcs		= main.cpp
 cxxobjs		= $(cxxsrcs:.cpp=.o)
@@ -20,7 +20,7 @@ cxxlibs		=
 
 fc		= gfortran
 fflags		= -g
-fopt		= -O3
+fopt		= -O0
 finclude	= -I./
 fsrcs		= symdiag.f
 fobjs		= $(fsrcs:.f=.o)

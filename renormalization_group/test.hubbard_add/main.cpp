@@ -43,16 +43,16 @@ int main( int argc, char* argv[] ) {
   hubbard_site_3.compute();
   hubbard_site_0 += hubbard_site_3;
 
-  vector<int> site_4 = { 4 };
-  Hubbard hubbard_site_4( site_4, &integral );
-  hubbard_site_4.compute();
-  hubbard_site_0 += hubbard_site_4;
+//  vector<int> site_4 = { 4 };
+//  Hubbard hubbard_site_4( site_4, &integral );
+//  hubbard_site_4.compute();
+//  hubbard_site_0 += hubbard_site_4;
 
 std :: cout << "plus" << std :: endl;
 mat_stoch_diag :: SimpleMatrix h1 = hubbard_site_0.full_matrix();
 h1.print();
 //  vector<int> site_01 = { 0, 1, 2 };
-  vector<int> site_01 = { 0, 1, 2, 3, 4};
+  vector<int> site_01 = { 0, 1, 2, 3};
   Hubbard hubbard_site_01( site_01, &integral );
   hubbard_site_01.compute();
 

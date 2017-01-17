@@ -17,6 +17,7 @@ public:
 
 public:
   Block() {}
+
   Block( const size_t M_value, const int site_lower_bound, const int site_upper_bound, StateSamplingMethod state_sampling_method ) {
     this->M_ = M_value;
     for( int i = site_lower_bound; i <= site_upper_bound; i++ ) {
@@ -24,11 +25,13 @@ public:
     }
     state_sampling_method_ = state_sampling_method;
   }
+
   Block( const size_t M_value, const std :: vector< int > site_indices, StateSamplingMethod state_sampling_method ) :
     M_ (M_value),
     site_indices_ ( site_indices ),
     state_sampling_method_ ( state_sampling_method )
     {}
+
   ~Block() {}
 
 public:
@@ -48,14 +51,19 @@ public:
       std :: cout << " New Hamiltonian n_states " << this->hamiltonian_ptr_->n_states() << " exceeds threshold " << M_ << std ::endl; 
       std :: cout << " Renormalizing: " << std :: endl;
       rotation_matrix_ = this->renormalize();
+      global_rot_map_.push_back( rotation_matrix_ );
     } else {
       this->direct_diagonalise();
       Iden iden( current_size_ );
-      rotation_matrix_.set_store() = iden.op_matrix().set_store();
-      rotation_matrix_.set_n_qn_row() = iden.n_qn_row();
-      rotation_matrix_.set_n_qn_col() = iden.n_qn_col();
+      rotation_matrix_ = RotationMatrix( iden );
+//      rotation_matrix_.set_store() = iden.op_matrix().store();
+//      rotation_matrix_.set_n_qn_row() = iden.n_qn_row();
+//      rotation_matrix_.set_n_qn_col() = iden.n_qn_col();
+      global_rot_map_.push_back( rotation_matrix_ );
 //std :: cout << "rotation matrix:" << std :: endl; rotation_matrix_.full_matrix().print();
     }
+    OperatorBase& h_ref = this->hamiltonian();
+    h_ref = transform( h_ref, rotation_matrix_ );
     current_size_++;
     return *this;
   } // end of operator+=

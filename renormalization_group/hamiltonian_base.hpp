@@ -73,28 +73,40 @@ public:
       one_body_term_type :: op_term_info_type op_term_info = *it;
       if( this->term_fit_constraint_one_body( op_term_info ) ) {
         operator_type* op_a_ptr = op_term_info.first();
-//        *op_a_ptr = get_current_rep( *op_a_ptr, rotation_matrices_ );
-
+        *op_a_ptr = get_current_rep( *op_a_ptr );
+//std :: cout << "op_a: " << std :: endl;
+//op_a_ptr->full_matrix().print();
 
         operator_type* op_b_ptr = op_term_info.second();
+//std :: cout << "op_b: " << std :: endl;
+//op_b_ptr->full_matrix().print();
 //std :: cout << op_a_ptr->site_ind() << " " << (*it).spin_type_0() << " " << op_b_ptr->site_ind() << " " << (*it).spin_type_1() << std :: endl;
+
         operator_type op_a_x_op_b = (*op_a_ptr) * (*op_b_ptr);
 //std :: cout << (*integral_ptr_)( (*it).ind_0(), (*it).ind_1() ) << std :: endl;
         op_a_x_op_b = (*integral_ptr_)( (*it).ind_0(), (*it).ind_1() ) * op_a_x_op_b;
         operator_type& this_ref = *this;
-        this_ref = this_ref + op_a_x_op_b; // need to pay attention to operator += in the base class OperatorBase...
+
+//std :: cout << this_ref.block_indices().size() << std :: endl;
+//std :: cout << op_a_x_op_b.block_indices().size() << std :: endl;
+
+//std :: cout << "h" << std :: endl;
+//this_ref.full_matrix().print();
+//std :: cout << "op_a_x_op_b" << std :: endl;
+//op_a_x_op_b.full_matrix().print();
+        this_ref = this_ref + op_a_x_op_b; // need to pay attention to operator += in the base class OperatorBase..
         delete op_a_ptr;
         delete op_b_ptr;
       }
     }
-
+//exit(0);
     for( one_body_term_type :: iterator it = one_body_A_x_B[1].begin(); it != one_body_A_x_B[1].end(); ++it ) {
       one_body_term_type :: op_term_info_type op_term_info = *it;
       if( this->term_fit_constraint_one_body( op_term_info ) ) {
         operator_type* op_a_ptr = op_term_info.first();
-//        *op_a_ptr = get_current_rep( *op_a_ptr, rotation_matrices_ );
 
         operator_type* op_b_ptr = op_term_info.second();
+        *op_b_ptr = get_current_rep( *op_b_ptr );
 //std :: cout << op_a_ptr->site_ind() << " " << (*it).spin_type_0() << " " << op_b_ptr->site_ind() << " " << (*it).spin_type_1() << std :: endl;
         operator_type op_a_x_op_b = (*op_a_ptr) * (*op_b_ptr);
         op_a_x_op_b = (*integral_ptr_)( (*it).ind_0(), (*it).ind_1() ) * op_a_x_op_b;
@@ -170,8 +182,9 @@ public:
 //    std :: cout << rhs.block_indices().size() << std :: endl;
 //    std :: cout << iden_op.site_ind() << std :: endl;
 //    std :: cout << iden_this.site_ind() << std :: endl;
+//this_ref.full_matrix().print();
 
-    operator_type ha_x_ib =  this_ref  * iden_op;
+    operator_type ha_x_ib =  this_ref * iden_op;
 //ha_x_ib.full_matrix().print();
     operator_type ia_x_hb =  iden_this * rhs;
 //ia_x_hb.full_matrix().print();

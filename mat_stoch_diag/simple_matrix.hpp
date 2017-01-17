@@ -170,7 +170,7 @@ public:
         //std :: cout <<  std :: fixed << std :: setprecision(7) << std :: setw(10) << (*this)( j, i ) << " ";
 if( fabs((*this)( j, i) ) < 1.0e-5 ) {
 
-        printf( "  " );
+        printf( "0 " );
 } else {
 
         printf( "%1.0f ", fabs((*this)( j, i )) );
