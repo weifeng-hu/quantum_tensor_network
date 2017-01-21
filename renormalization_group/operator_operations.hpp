@@ -804,7 +804,9 @@ if( op_a_exp.block_indices() != combined ) {
  if( site_ind > 0 & (site_ind <= global_rot_map_.size() - 1) ) {
     // project 
     RotationMatrix rot_current = global_rot_map_[ site_ind ];
-    op_exp.sort_qn();
+/* A hot fix */
+if( op_exp.n_qn_col() > rot_current.n_qn_row() ) {
+    op_exp.sort_qn(); }
 //op_exp.full_matrix().print();
 //rot_current.full_matrix().print();
     op_type projected_op_exp = transform( op_exp, rot_current );

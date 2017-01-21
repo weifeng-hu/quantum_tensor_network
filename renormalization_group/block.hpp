@@ -45,6 +45,8 @@ public:
 
   Block& operator+= ( Block& rhs ) {
     this->site_indices_.insert( this->site_indices_.end(), rhs.site_indices().begin(), rhs.site_indices().end() );
+for( int i = 0; i < site_indices_.size(); i++ ) { std :: cout << site_indices_[i] << " "; }
+//std :: cout << std :: endl;
     this->hamiltonian() += rhs.hamiltonian();
 //    RotationMatrix rotation_matrix;
     if( M_ < this->hamiltonian_ptr_->n_states() ) {
@@ -54,8 +56,12 @@ public:
       global_rot_map_.push_back( rotation_matrix_ );
     } else {
       this->direct_diagonalise();
-      Iden iden( current_size_ );
+//      Iden iden( current_size_ );
+//std :: cout << this->hamiltonian().n_qn_row() << " " << this->hamiltonian().n_qn_col() << std :: endl;
+      Iden iden( this->hamiltonian() );
       rotation_matrix_ = RotationMatrix( iden );
+//      rotation_matrix_.sort_qn();
+//std :: cout << rotation_matrix_.n_qn_row() << " " << rotation_matrix_.n_qn_col() << std :: endl;
 //      rotation_matrix_.set_store() = iden.op_matrix().store();
 //      rotation_matrix_.set_n_qn_row() = iden.n_qn_row();
 //      rotation_matrix_.set_n_qn_col() = iden.n_qn_col();
@@ -64,6 +70,7 @@ public:
     }
     OperatorBase& h_ref = this->hamiltonian();
     h_ref = transform( h_ref, rotation_matrix_ );
+//std :: cout << this->hamiltonian().n_qn_row() << " " << this->hamiltonian().n_qn_col() << std :: endl;
     current_size_++;
     return *this;
   } // end of operator+=

@@ -52,7 +52,7 @@ public:
   }
 
   void generate_space( size_t size_of_base, size_t dimension ) {
-    std :: cout << "Generating space ... ";
+//    std :: cout << "Generating space ... ";
     size_t count = 0;
     while( this->store_.size() < size_of_base ) {
 //    for( size_t i = 0; i < size_of_base; i++ ) {
@@ -62,9 +62,9 @@ public:
 //      }
       count++;
     }
-    std :: cout << " done" << std :: endl;
-    std :: cout << "Number of basis: " << this->store_.size() << std :: endl;
-    std :: cout << "Time of trial: " << count << std :: endl;
+//    std :: cout << " done" << std :: endl;
+//    std :: cout << "Number of basis: " << this->store_.size() << std :: endl;
+//    std :: cout << "Time of trial: " << count << std :: endl;
   }
 
   /* maybe we don't need this for now*/
