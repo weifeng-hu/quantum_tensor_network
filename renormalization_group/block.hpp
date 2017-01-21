@@ -1,6 +1,7 @@
 #ifndef BLOCK_HPP
 #define BLOCK_HPP
 
+#include <utility>
 #include <memory>
 #include <algorithm>
 #include "./rotation_matrix.hpp"
@@ -85,11 +86,10 @@ for( int i = 0; i < site_indices_.size(); i++ ) { std :: cout << site_indices_[i
   RotationMatrix renormalize() {
     std :: vector< std :: pair < double, Wavefunction > > eigenspectrum 
       = this->hamiltonian_ptr_->eigen_spectrum();
-    eigen_values_.resize(0);
+
     for( int i = 0; i < eigenspectrum.size(); i++ ) {
-      eigen_values_.push_back( eigenspectrum[i].first );
+      eigen_values_.insert( std :: make_pair( eigenspectrum[i].first, eigenspectrum[i].second.space() ) );
     }
-    std :: sort( eigen_values_.begin(), eigen_values_.end() );
     Accelerator accelerator( &eigenspectrum, state_sampling_method_, M_ );
     RotationMatrix rotation_matrix = accelerator.perform();
 
@@ -98,15 +98,17 @@ for( int i = 0; i < site_indices_.size(); i++ ) { std :: cout << site_indices_[i
 
   std :: vector<int>& site_indices() { return this->site_indices_; }
 
-  std :: vector<double> export_eigenvalues( int nroot ) {
-    std :: vector<double> retval;
+  std :: vector< std :: pair< double, SubSpace > > export_eigenvalues( int nroot ) {
+    std :: vector< std :: pair< double, SubSpace > > retval;
     if( nroot > eigen_values_.size() ) {
       std :: cout << "requested nroot > eigenvalue spectrum size" << std :: endl;
       std :: cout << nroot << " " << eigen_values_.size() << std :: endl;
       abort();
     }
-    for( int i = 0; i < nroot; i++ ) {
-      retval.push_back( eigen_values_[i] );
+    int count = 0;
+    for( std :: multimap< double, SubSpace > :: iterator it = eigen_values_.begin(); it != eigen_values_.end(); ++it ) {
+      if( count <= nroot )retval.push_back( std :: make_pair( it->first, it->second ) );
+      count++;
     }
     return retval;
   }
@@ -117,7 +119,9 @@ for( int i = 0; i < site_indices_.size(); i++ ) { std :: cout << site_indices_[i
     mat_stoch_diag :: SimpleMatrix h_mat = hamiltonian_ptr_->full_matrix();
     mat_stoch_diag :: EigenpairProcessor :: eigen_pair_type eigen_pair = eigen_processor.diagonalise( h_mat );
 
-    this->eigen_values_ = eigen_pair.second;
+    for( int i = 0; i < eigen_pair.second.size(); i++ ) {
+      this->eigen_values_.insert( std :: make_pair( eigen_pair.second[i], SubSpace( 0, 0, 1 ) ) );
+    }
 
   }
 
@@ -129,7 +133,7 @@ private:
   size_t M_;
   size_t current_size_;
   StateSamplingMethod state_sampling_method_;
-  std :: vector< double > eigen_values_;
+  std :: multimap< double, SubSpace > eigen_values_;
 
 }; // end of class Block
 

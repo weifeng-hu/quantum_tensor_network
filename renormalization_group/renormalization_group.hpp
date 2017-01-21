@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits>
+#include <utility>
 #include <iostream>
 #include <string>
 #include "./integral.hpp"
@@ -19,7 +20,7 @@ public:
   typedef Integral                integral_type;
   typedef Block                   block_type;
   typedef HamiltonianBase         hamiltonian_class;
-  typedef std :: vector< double > eigen_spectrum_type;
+  typedef std :: vector< std :: pair< double, SubSpace > > eigen_spectrum_type;
 
 public:
   RenormalizationGroup() :
@@ -106,7 +107,7 @@ public:
   double neighbour_hopping() const
     { return this->neighbour_hopping_; }
   double lowest_eigenvalue() const
-    { return this->eigen_values_[0]; }
+    { return this->eigen_values_[0].first; }
 
   eigen_spectrum_type& eigen_spectrum()
     { return this->eigen_values_; }
