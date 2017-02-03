@@ -12,7 +12,7 @@ clibs		=
 
 cxx		= g++
 cxxflags	= -g -std=c++11
-cxxopt		= -O0
+cxxopt		= -O3
 cxxinclude	= -I./
 cxxsrcs		= main.cpp
 cxxobjs		= $(cxxsrcs:.cpp=.o)
@@ -20,11 +20,11 @@ cxxlibs		=
 
 fc		= gfortran
 fflags		= -g
-fopt		= -O0
+fopt		= -O3
 finclude	= -I./
 fsrcs		= symdiag.f
 fobjs		= $(fsrcs:.f=.o)
-flibs		= -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lgfortran
+flibs		= -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lgfortran
 
 # Target binary info
 target		= test_hubbard

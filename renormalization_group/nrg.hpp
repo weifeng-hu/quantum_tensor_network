@@ -124,8 +124,8 @@ private:
     sum_block.attach_hamiltonian( &hubbard_start );
     RotationMatrix rotation_matrix_;
     if( M_ < hubbard_start.n_states() ) {
-      std :: cout << " New Hamiltonian n_states " << hubbard_start.n_states() << " exceeds threshold " << M_ << std ::endl; 
-      std :: cout << " Renormalizing: " << std :: endl;
+//      std :: cout << " New Hamiltonian n_states " << hubbard_start.n_states() << " exceeds threshold " << M_ << std ::endl; 
+//      std :: cout << " Renormalizing: " << std :: endl;
       rotation_matrix_ = sum_block.renormalize();
       global_rot_map_.push_back( rotation_matrix_ );
     } else {

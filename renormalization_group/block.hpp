@@ -46,13 +46,13 @@ public:
 
   Block& operator+= ( Block& rhs ) {
     this->site_indices_.insert( this->site_indices_.end(), rhs.site_indices().begin(), rhs.site_indices().end() );
-for( int i = 0; i < site_indices_.size(); i++ ) { std :: cout << site_indices_[i] << " "; }
+//for( int i = 0; i < site_indices_.size(); i++ ) { std :: cout << site_indices_[i] << " "; }
 //std :: cout << std :: endl;
     this->hamiltonian() += rhs.hamiltonian();
 //    RotationMatrix rotation_matrix;
     if( M_ < this->hamiltonian_ptr_->n_states() ) {
-      std :: cout << " New Hamiltonian n_states " << this->hamiltonian_ptr_->n_states() << " exceeds threshold " << M_ << std ::endl; 
-      std :: cout << " Renormalizing: " << std :: endl;
+//      std :: cout << " New Hamiltonian n_states " << this->hamiltonian_ptr_->n_states() << " exceeds threshold " << M_ << std ::endl; 
+//      std :: cout << " Renormalizing: " << std :: endl;
       rotation_matrix_ = this->renormalize();
       global_rot_map_.push_back( rotation_matrix_ );
     } else {
@@ -87,6 +87,7 @@ for( int i = 0; i < site_indices_.size(); i++ ) { std :: cout << site_indices_[i
     std :: vector< std :: pair < double, Wavefunction > > eigenspectrum 
       = this->hamiltonian_ptr_->eigen_spectrum();
 
+    this->eigen_values_.clear();
     for( int i = 0; i < eigenspectrum.size(); i++ ) {
       eigen_values_.insert( std :: make_pair( eigenspectrum[i].first, eigenspectrum[i].second.space() ) );
     }

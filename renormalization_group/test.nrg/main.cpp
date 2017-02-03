@@ -1,51 +1,35 @@
 #include <stdlib.h>
-#include <cmath>
-#include "../../mat_stoch_diag/eigenpair_processor.hpp"
-#include "../hamiltonian_base.hpp"
-#include "../hubbard.hpp"
-#include "../operator.hpp"
-#include "../operator_operations.hpp"
-#include "../rotation_matrix.hpp"
-#include "../accelerator.hpp"
-#include "../block.hpp"
-#include "../renormalization_group.hpp"
 #include "../nrg.hpp"
 
 int main( int argc, char* argv[] ) {
 
-  using namespace mat_stoch_diag ;
   using namespace renormalization_group ;
-  using namespace std ;
 
-//  Block block( 10, 0, 2, NORMAL );
-//
-//  std :: cout << block.n_site() << std :: endl;
-//  std :: cout << block.site_indices().size() << std :: endl;
+//  int n_sites   = atoi( argv[2] );
+//  int increment = atoi( argv[3] );
+//  int M         = atoi( argv[4] );
 
-//  RenormalizationGroup rg( 2, 10, HUBBARD, NORMAL, 1.0, 1.0, 1.0, 1 );
-//  rg.print_info();
+  int n_sites   = 4;
+  int increment = 1;
+  int M = 1000;
 
+  NRG nrg_instance;
+  std :: vector< int > starting_sites;
 
+  nrg_instance.set_nsites( n_sites );
+  nrg_instance.set_increment()          = increment;
+  nrg_instance.set_M()                  = M;
+  nrg_instance.set_hamiltonian()        = HUBBARD;
+  nrg_instance.set_state_sampling_method() = STOCH_MIX;
+  nrg_instance.set_on_site_hopping( on_site_hopping );
+  nrg_instance.set_neighbour_hopping( neighbour_hopping );
+  nrg_instance.set_onsite_coulomb( on_site_coulomb );
 
-  {
-    NRG nrg_normal( 6, 1, 32, HUBBARD, NORMAL, 1.0, 1.0, 1.0, 10, NRG :: LOOP_WHILE );
-    nrg_normal.print_info();
-    nrg_normal.run();
-    for( int i = 0; i < nrg_normal.eigen_spectrum().size(); i++ ) {
-      std :: cout << nrg_normal.eigen_spectrum()[i].first; std :: cout << " "; nrg_normal.eigen_spectrum()[i].second.print(); std :: cout << std :: endl;
-    }
-  }
+  nrg_instance.print_info();
+  nrg_instance.run();
 
-  {
-    NRG nrg_stoch( 6, 1, 32, HUBBARD, STOCH_MIX, 1.0, 1.0, 1.0, 10, NRG :: LOOP_WHILE );
-    nrg_stoch.print_info();
-    nrg_stoch.run();
-  
-    for( int i = 0; i < nrg_stoch.eigen_spectrum().size(); i++ ) {
-      std :: cout << nrg_stoch.eigen_spectrum()[i].first; std :: cout << " "; nrg_stoch.eigen_spectrum()[i].second.print(); std :: cout << std :: endl;
-    }
-  }
+  std :: cout << "lowest eigenvalue: " << nrg_instance.lowest_eigenvalue() << std :: endl;
 
   return 0;
 
-}
+} // end of main()
