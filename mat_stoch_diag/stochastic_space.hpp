@@ -18,6 +18,10 @@ public:
   StochasticSpace( size_t nbasis, size_t nrowA ) {
     this->generate_space( nbasis, nrowA );
   }
+  StochasticSpace( size_t nbasis, size_t nrowA, unsigned seed_val ) {
+    this->generator.seed( val );
+    this->generate_space( nbasis, nrowA );
+  }
   ~StochasticSpace() {}
 
   StochasticSpace( SimpleMatrix& eigenvec ) {
@@ -46,7 +50,7 @@ public:
 
   bool no_duplicate( StochasticBasis& basis ) {
     for( size_t i = 0; i < this->size(); i++ ) {
-      if( fabs(  fabs(basis * (*this)(i))  - (double)( basis.size() ) ) < 1.0e-5 ) return false;
+      if( fabs( fabs(basis * (*this)(i))  - (double)( basis.size() ) ) < 1.0e-5 ) return false;
     }
     return true;
   }

@@ -114,7 +114,8 @@ public:
       int truncated_size = (int) ( (double) (ind_group[i].size()) / (double)(ordered_wavefunction.size()) * (double)(n_need_vector) );
       if( truncated_size == 0 ) truncated_size = 1;
 //      std :: cout << sub_space_size << " " << truncated_size << std :: endl;
-      mat_stoch_diag :: StochasticSpace new_coeffs( truncated_size, sub_space_size );
+//      mat_stoch_diag :: StochasticSpace new_coeffs( truncated_size, sub_space_size );
+      mat_stoch_diag :: StochasticSpace new_coeffs( truncated_size, sub_space_size, seed_val );
       new_coeffs.orthogonalization();
 //      new_coeffs.print();
 
