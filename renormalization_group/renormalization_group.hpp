@@ -144,6 +144,8 @@ public:
 public:
   size_t nroot() const 
     { return this->eigen_values_.size(); }
+  unsigned& set_seed()
+    { return this->seed_; }
 
 protected:
 //  Hamiltonian hamiltonian_;
@@ -159,6 +161,7 @@ protected:
   integral_type        integral_;
   eigen_spectrum_type  eigen_values_;
   int                  increment_;
+  unsigned             seed_;
 
 }; // end of RenormalizationGroup
 

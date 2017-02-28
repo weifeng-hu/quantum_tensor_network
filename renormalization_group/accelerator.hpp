@@ -20,10 +20,12 @@ public:
   Accelerator() {}
   Accelerator( eigen_spectrum_type* eigen_spectrum_ptr,
                StateSamplingMethod state_sampling_method, 
-               const int M ) :
+               const int M, 
+               unsigned seed = 2017 ) :
     eigen_spectrum_ptr_ ( eigen_spectrum_ptr ),
     state_sampling_method_ ( state_sampling_method ),
-    M_ ( M )
+    M_ ( M ),
+    seed_value_( seed )
     {} 
   ~Accelerator() {}
 
@@ -57,6 +59,7 @@ public:
   }
 
   RotationMatrix stochastic_equal_prob_residual() {
+
     std :: multimap< double, Wavefunction > sorted_eigen_spectrum = this->sort_energy();
     typedef std :: multimap< double, Wavefunction > :: iterator map_iter;
     typedef std :: multimap< space_type, Wavefunction > :: iterator map_qn_iter;
@@ -70,7 +73,7 @@ public:
       nwf++;
     }
 
-    // start of strochastic mixing, see algorithm in mat_stoch_Diag :: equal_prob_residual_space()
+    // start of stochastic mixing, see algorithm in mat_stoch_Diag :: equal_prob_residual_space()
     int n_need_vector = M_ - nwf;
     int n_residual_vector = sorted_eigen_spectrum.size();
 
@@ -109,6 +112,7 @@ public:
 
 //   std :: cout << n_need_vector << " " << n_residual_vector << std :: endl;
 
+    unsigned seed_val = this->seed_value_;
     for( int i = 0; i < ind_group.size(); i++ ) {
       int sub_space_size = ind_group[i].size();
       int truncated_size = (int) ( (double) (ind_group[i].size()) / (double)(ordered_wavefunction.size()) * (double)(n_need_vector) );
@@ -157,6 +161,7 @@ private:
   eigen_spectrum_type* eigen_spectrum_ptr_; 
   StateSamplingMethod state_sampling_method_;
   int M_;
+  unsigned seed_value_;
 
 }; // end of class Accelerator
 

@@ -19,16 +19,16 @@ public:
     this->generate_space( nbasis, nrowA );
   }
   StochasticSpace( size_t nbasis, size_t nrowA, unsigned seed_val ) {
-    this->generator.seed( val );
+//std :: cout << "seed " << seed_val << std :: endl;
+    this->generator.seed( seed_val );
     this->generate_space( nbasis, nrowA );
   }
-  ~StochasticSpace() {}
-
   StochasticSpace( SimpleMatrix& eigenvec ) {
     for( size_t i = 0; i < eigenvec.ncol(); i++ ) {
       this->push_back( StochasticBasis( eigenvec.row(i) ) );
     }
   }
+  ~StochasticSpace() {}
 
 public:
   void generate_simple_orth_space( size_t size_of_basis, size_t dimension ) {

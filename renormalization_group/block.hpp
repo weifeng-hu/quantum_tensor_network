@@ -46,19 +46,15 @@ public:
 
   Block& operator+= ( Block& rhs ) {
     this->site_indices_.insert( this->site_indices_.end(), rhs.site_indices().begin(), rhs.site_indices().end() );
-//for( int i = 0; i < site_indices_.size(); i++ ) { std :: cout << site_indices_[i] << " "; }
-//std :: cout << std :: endl;
+
     this->hamiltonian() += rhs.hamiltonian();
 //    RotationMatrix rotation_matrix;
     if( M_ < this->hamiltonian_ptr_->n_states() ) {
-//      std :: cout << " New Hamiltonian n_states " << this->hamiltonian_ptr_->n_states() << " exceeds threshold " << M_ << std ::endl; 
-//      std :: cout << " Renormalizing: " << std :: endl;
       rotation_matrix_ = this->renormalize();
       global_rot_map_.push_back( rotation_matrix_ );
     } else {
       this->direct_diagonalise();
 //      Iden iden( current_size_ );
-//std :: cout << this->hamiltonian().n_qn_row() << " " << this->hamiltonian().n_qn_col() << std :: endl;
       Iden iden( this->hamiltonian() );
       rotation_matrix_ = RotationMatrix( iden );
 //      rotation_matrix_.sort_qn();
@@ -67,11 +63,9 @@ public:
 //      rotation_matrix_.set_n_qn_row() = iden.n_qn_row();
 //      rotation_matrix_.set_n_qn_col() = iden.n_qn_col();
       global_rot_map_.push_back( rotation_matrix_ );
-//std :: cout << "rotation matrix:" << std :: endl; rotation_matrix_.full_matrix().print();
     }
     OperatorBase& h_ref = this->hamiltonian();
     h_ref = transform( h_ref, rotation_matrix_ );
-//std :: cout << this->hamiltonian().n_qn_row() << " " << this->hamiltonian().n_qn_col() << std :: endl;
     current_size_++;
     return *this;
   } // end of operator+=
@@ -91,7 +85,7 @@ public:
     for( int i = 0; i < eigenspectrum.size(); i++ ) {
       eigen_values_.insert( std :: make_pair( eigenspectrum[i].first, eigenspectrum[i].second.space() ) );
     }
-    Accelerator accelerator( &eigenspectrum, state_sampling_method_, M_ );
+    Accelerator accelerator( &eigenspectrum, state_sampling_method_, M_, seed_ );
     RotationMatrix rotation_matrix = accelerator.perform();
 
     return rotation_matrix;
@@ -126,6 +120,9 @@ public:
 
   }
 
+  unsigned& set_seed()
+   { return seed_; }
+
 private:
   hamiltonian_type* hamiltonian_ptr_;
   std :: vector<int> site_indices_;
@@ -135,6 +132,7 @@ private:
   size_t current_size_;
   StateSamplingMethod state_sampling_method_;
   std :: multimap< double, SubSpace > eigen_values_;
+  unsigned seed_;
 
 }; // end of class Block
 

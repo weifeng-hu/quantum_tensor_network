@@ -1,22 +1,33 @@
 import subprocess;
 import linecache;
+import calendar;
+import time;
+import datetime;
 
 #nsites = [ 6, 8, 10, 12];
-nsites = [ 14, 16, 18, 20 ];
-M      = [ 25, 50, 100, 200, 400 ];
+#nsites = [ 14, 16, 18, 20 ];
+#M      = [ 25, 50, 100, 200, 400 ];
+nsites = [ 6, 8 ];
+M      = [ 100, 200 ];
 nroot  = 0;
 e = -1.0;
 t = -0.5;
 u = 1.0;
 collect = False;
+repeat = 2;
 
-for iM in range( 0, len(M) ):
-  for isite in range( 0, len(nsites) ) :
-    nroot = M[iM];
-    output = "test" + ".n." + str( nsites[isite] ) + ".M." + str( M[iM] ) + ".nroot." + str( nroot ) + ".e." + str( e ) + ".t." + str( t ) + ".u." + str( u ) + ".out";
-    command = "./test_blocks " + str( nsites[isite] ) + " " +  str( M[iM] ) + " " + str( nroot ) + " " + str( e ) + " " + str( t ) + " " + str( u ) + " > " + output;
-    print command;
-    subprocess.call( command, shell = True );
+for ir in range( 0, repeat ):
+  for iM in range( 0, len(M) ) :
+    for isite in range( 0, len(nsites) ) :
+      nroot = M[iM];
+      d = datetime.datetime.now();
+      seed = calendar.timegm( d.timetuple() );
+      output = "test" + ".n." + str( nsites[isite] ) + ".M." + str( M[iM] ) + ".nroot." + str( nroot ) + ".e." + str( e ) + ".t." + str( t ) + ".u." + str( u ) + ".repeat." + str( ir ) + ".out";
+      command = "./test_blocks " + str( nsites[isite] ) + " " +  str( M[iM] ) + " " + str( nroot ) + " " + str( e ) + " " + str( t ) + " " + str( u ) + " 1 " + str( seed ) + " > " + output;
+      print command;
+#      print seed;
+#      time.sleep(5);
+      subprocess.call( command, shell = True );
 
 if collect == False:
     quit();

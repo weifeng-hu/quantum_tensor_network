@@ -109,23 +109,21 @@ private:
   block_type solve() {
 
     size_t starting_size = this->get_starting_block_size();
-//std :: cout << "starting size: "; std :: cout << starting_size << std :: endl;
-//exit(0);
+
     std :: vector< int > sum_block_sites;
     for( size_t i = 0; i < starting_size; i++ )
       {  sum_block_sites.push_back( this->site_lower_bound_ + i ); }
-//std :: cout << "sum block sites: "; for( int i = 0; i < sum_block_sites.size(); i++ ) { std :: cout << sum_block_sites[i] << " "; } std :: cout << std :: endl;
-//exit(0);
-//std :: cout << "M: " << M_ << std :: endl;
-//exit(0);
+
     block_type sum_block( this->M_, sum_block_sites, state_sampling_method_ );
+// newly added
+    sum_block.set_seed() = seed_;
+
     Hubbard hubbard_start( sum_block_sites, this->integral_ptr() );
     hubbard_start.compute();
+
     sum_block.attach_hamiltonian( &hubbard_start );
     RotationMatrix rotation_matrix_;
     if( M_ < hubbard_start.n_states() ) {
-//      std :: cout << " New Hamiltonian n_states " << hubbard_start.n_states() << " exceeds threshold " << M_ << std ::endl; 
-//      std :: cout << " Renormalizing: " << std :: endl;
       rotation_matrix_ = sum_block.renormalize();
       global_rot_map_.push_back( rotation_matrix_ );
     } else {
@@ -135,11 +133,9 @@ private:
 //      rotation_matrix_.set_n_qn_row() = iden.n_qn_row();
 //      rotation_matrix_.set_n_qn_col() = iden.n_qn_col();
 //      rotation_matrix_.set_store() = iden.op_matrix().store();
-      rotation_matrix_ = RotationMatrix( iden );      
-//rotation_matrix_.print();
+      rotation_matrix_ = RotationMatrix( iden );
 
       global_rot_map_.push_back( rotation_matrix_ );
-//std :: cout << "rotation matrix:" << std :: endl; rotation_matrix_.full_matrix().print();
     }
 
     OperatorBase& sum_block_h_ref = sum_block.hamiltonian();
@@ -149,10 +145,8 @@ private:
 
       std :: vector< int > increment_sites;
       for( size_t i = 0; i < increment_; i++ )
-        { increment_sites.push_back( *sum_block_sites.rbegin() + i + 1 );  }
+        { increment_sites.push_back( *sum_block_sites.rbegin() + i + 1 ); }
 
-//std :: cout << "increment sites: " ; for( int i = 0; i < increment_sites.size(); i++ ) { std :: cout << increment_sites[i] << " "; }  std :: cout << std :: endl;
-//exit(0);
       block_type increment_block( this->M_, increment_sites, state_sampling_method_ );
       Hubbard hubbard_increment( increment_sites, this->integral_ptr() );
       hubbard_increment.compute();
@@ -160,7 +154,6 @@ private:
 
       sum_block += increment_block;
       sum_block_sites.insert( sum_block_sites.end(), increment_sites.begin(), increment_sites.end() );
-//std :: cout << "sum block sites: "; for( int i = 0; i < sum_block_sites.size(); i++ ) { std :: cout << sum_block_sites[i] << " "; } std :: cout << std :: endl;
 
     } // end of while 
 
