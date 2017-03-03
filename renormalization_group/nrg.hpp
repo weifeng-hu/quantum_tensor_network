@@ -20,7 +20,8 @@ public:
   NRG() :
    RenormalizationGroup(),
    increment_ (0),
-   routine_type_ ( LOOP_WHILE )
+   routine_type_ ( LOOP_WHILE ),
+   compact_stochastic_mode_ ( false )
   {}
 
   NRG( const size_t n_site_value, 
@@ -32,7 +33,8 @@ public:
        const double neighbour_hopping_value    = 1.0e0,
        const double on_site_coulomb_value      = 8.0e0,
        const size_t nroot               = 10,
-       const RoutineType routine_type_value = LOOP_WHILE
+       const RoutineType routine_type_value = LOOP_WHILE,
+       const bool is_compact_stochastic_mode = false
        ) : 
    RenormalizationGroup( n_site_value, 
      M_value,
@@ -44,6 +46,7 @@ public:
      nroot ), 
    increment_ ( increment_value ),
    routine_type_ ( routine_type_value )
+   compact_stochastic_mode_ ( is_compact_stochastic_mode )
    {}
 
   ~NRG() {}
@@ -117,8 +120,10 @@ private:
     block_type sum_block( this->M_, sum_block_sites, state_sampling_method_ );
 // newly added
     sum_block.set_seed() = seed_;
+    sum_block.set_compact_stochastic_mode() = this->compact_stochastic_mode_;
 
     Hubbard hubbard_start( sum_block_sites, this->integral_ptr() );
+    hubbard_start.set_compact_stochastic_mode() = this->compact_stochastic_mode_;
     hubbard_start.compute();
 
     sum_block.attach_hamiltonian( &hubbard_start );
@@ -127,7 +132,11 @@ private:
       rotation_matrix_ = sum_block.renormalize();
       global_rot_map_.push_back( rotation_matrix_ );
     } else {
-      sum_block.direct_diagonalise();
+      if( compact_stochastic_mode_ == false ) {
+        sum_block.direct_diagonalise();
+      } else {
+        sum_block.direct_diagonalise_general();
+      }
       Iden iden(0);   // this will also break if starting size != 1;
 //iden.print();
 //      rotation_matrix_.set_n_qn_row() = iden.n_qn_row();
@@ -139,7 +148,12 @@ private:
     }
 
     OperatorBase& sum_block_h_ref = sum_block.hamiltonian();
-    sum_block_h_ref = transform( sum_block_h_ref , rotation_matrix_ );
+
+    if( compact_stochastic_mode_ == false ) {
+      sum_block_h_ref = transform( sum_block_h_ref , rotation_matrix_ );
+    } else {
+      sum_block_h_ref = general_transform( sum_block_h_ref, rotation_matrix_ );
+    }
 
     while( sum_block_sites.size() < this->n_site_ ) {
 
@@ -148,7 +162,11 @@ private:
         { increment_sites.push_back( *sum_block_sites.rbegin() + i + 1 ); }
 
       block_type increment_block( this->M_, increment_sites, state_sampling_method_ );
+      increment_block.set_compact_stochastic_mode() = this->compact_stochastic_mode_;
+
       Hubbard hubbard_increment( increment_sites, this->integral_ptr() );
+
+      hubbard_increment.set_compact_stochastic_mode() = this->compact_stochastic_mode_;
       hubbard_increment.compute();
       increment_block.attach_hamiltonian( &hubbard_increment );
 
@@ -189,9 +207,13 @@ public:
     } // end of switch()
   } // end of routine_name()
 
+  bool& set_compact_stochastic_mode()
+    { return compact_stochastic_mode_; }
+
 private:
   size_t               increment_;
   RoutineType          routine_type_;
+  bool                 compact_stochastic_mode_;
 
 }; // end of namespace NRG
 

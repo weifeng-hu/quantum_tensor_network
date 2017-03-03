@@ -49,6 +49,7 @@ public:
       this->initialized_ = false;
       this->integral_ptr_ = integral_pointer;
       this->delta_qn_ = QuantumNumber( 0 , 0 );
+      this->compact_stochastic_mode_ = false;
 //      std :: cout << one_body_term_.set_i_list().size() << std :: endl;
 //      std :: cout << one_body_term_.set_j_list().size() << std :: endl;
     }
@@ -73,7 +74,11 @@ public:
       one_body_term_type :: op_term_info_type op_term_info = *it;
       if( this->term_fit_constraint_one_body( op_term_info ) ) {
         operator_type* op_a_ptr = op_term_info.first();
-        *op_a_ptr = get_current_rep( *op_a_ptr );
+        if( compact_stochastic_mode_ == false ) {
+          *op_a_ptr = get_current_rep( *op_a_ptr );
+        else {
+          *op_a_ptr = get_current_rep_general( *op_a_ptr );
+        }
 //std :: cout << "op_a: " << std :: endl;
 //op_a_ptr->full_matrix().print();
 
@@ -106,7 +111,11 @@ public:
         operator_type* op_a_ptr = op_term_info.first();
 
         operator_type* op_b_ptr = op_term_info.second();
-        *op_b_ptr = get_current_rep( *op_b_ptr );
+        if( compact_stochastic_mode_ == false ) {
+          *op_b_ptr = get_current_rep( *op_b_ptr );
+        } else {
+          *op_b_ptr = get_current_rep_general( *op_b_ptr );
+        }
 //std :: cout << op_a_ptr->site_ind() << " " << (*it).spin_type_0() << " " << op_b_ptr->site_ind() << " " << (*it).spin_type_1() << std :: endl;
         operator_type op_a_x_op_b = (*op_a_ptr) * (*op_b_ptr);
         op_a_x_op_b = (*integral_ptr_)( (*it).ind_0(), (*it).ind_1() ) * op_a_x_op_b;
@@ -235,7 +244,41 @@ public:
       }
     }
     return retval;
+
   } // end of eigen_system()
+
+
+  eigen_spectrum_type eigen_spectrum_general() {
+
+    eigen_spectrum_type retval;
+    this->sort_qn();
+    mat_stoch_diag :: EigenpairProcessor eigen_processor;
+    for( size_t i = 0; i < n_qn_row(); i++ ) {
+      matrix_type sub_matrix = this->matrix( i, i );
+      mat_stoch_diag :: EigenpairProcessor :: eigen_pair_type eigen_pair_i;
+      if( sub_matrix.nrow() > 1 ) { eigen_pair_i = eigen_processor.general_diagonalise( sub_matrix ); }
+      else {
+        eigen_pair_i.first.resize( 1, 1 );
+        eigen_pair_i.second.resize( 1 );
+        if( sub_matrix.nrow() == 1 ){ eigen_pair_i.first(0,0) = 1.0e0; eigen_pair_i.second[0] = sub_matrix(0,0); }
+        else { eigen_pair_i.first(0,0) = 1.0e0; eigen_pair_i.second[0] = 0.0e0; }
+      }
+//      for( int j = 0; j < eigen_pair_i.second.size(); j++ ) std :: cout << eigen_pair_i.second[j] << std :: endl;
+      for( size_t j = 0; j < eigen_pair_i.second.size(); j++ ) {
+        Wavefunction new_wavefunction( *this );
+        new_wavefunction( i ).second.resize( eigen_pair_i.second.size(), 1 );
+        for( size_t k = 0; k < eigen_pair_i.second.size(); k++ ) {
+          new_wavefunction( i ).second( k, 0 ) = eigen_pair_i.first( k, j );
+        }
+        new_wavefunction.set_space() = SubSpace( this->qn_col( i, i ).n(), this->qn_col(i, i).s_z(), 1 );
+        retval.push_back( std :: pair< double, Wavefunction> ( eigen_pair_i.second.at(j), new_wavefunction ) );
+//        new_wavefunction.print();
+      }
+    }
+    return retval;
+
+  } // end of eigen_system()
+
 
   static std :: string hamiltonian_name( const HamType hamiltonian_type ) {
 
@@ -339,6 +382,9 @@ public:
 //
   virtual HamType hamiltonian_type() { return UNKNOWN; };
 
+  bool& set_compact_stochastic_mode()
+    { return this->compact_stochastic_mode_; }
+
 protected:
 //  formula_type         formula_;                 // stores ordinary operators
   one_body_term_type     one_body_term_;
@@ -348,6 +394,8 @@ protected:
   std :: vector<int>     site_indices_;
   bool computed_;
   bool initialized_;
+
+  bool compact_stochastic_mode_;
 
 }; // end of class HamiltonianBase
 

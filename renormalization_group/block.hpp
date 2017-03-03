@@ -21,6 +21,7 @@ public:
 
   Block( const size_t M_value, const int site_lower_bound, const int site_upper_bound, StateSamplingMethod state_sampling_method ) {
     this->M_ = M_value;
+    this->compact_stochastic_mode_ = false;
     for( int i = site_lower_bound; i <= site_upper_bound; i++ ) {
       this->site_indices_.push_back( i ); 
     }
@@ -30,7 +31,8 @@ public:
   Block( const size_t M_value, const std :: vector< int > site_indices, StateSamplingMethod state_sampling_method ) :
     M_ (M_value),
     site_indices_ ( site_indices ),
-    state_sampling_method_ ( state_sampling_method )
+    state_sampling_method_ ( state_sampling_method ),
+    compact_stochastic_mode_ ( false )
     {}
 
   ~Block() {}
@@ -48,12 +50,18 @@ public:
     this->site_indices_.insert( this->site_indices_.end(), rhs.site_indices().begin(), rhs.site_indices().end() );
 
     this->hamiltonian() += rhs.hamiltonian();
+
+    this->hamiltonian()->set_compact_stochastic_mode() = this->compact_stochastic_mode_;
 //    RotationMatrix rotation_matrix;
     if( M_ < this->hamiltonian_ptr_->n_states() ) {
       rotation_matrix_ = this->renormalize();
       global_rot_map_.push_back( rotation_matrix_ );
     } else {
-      this->direct_diagonalise();
+      if( this->compact_stochastic_mode_ == true ) {
+        this->direct_diagonalise_general();
+      } else {
+        this->direct_diagonalise();
+      }
 //      Iden iden( current_size_ );
       Iden iden( this->hamiltonian() );
       rotation_matrix_ = RotationMatrix( iden );
@@ -120,8 +128,23 @@ public:
 
   }
 
+  void direct_diagonalise_general() {
+
+    mat_stoch_diag :: EigenpairProcessor eigen_processor;
+    mat_stoch_diag :: SimpleMatrix h_mat = hamiltonian_ptr_->full_matrix();
+    mat_stoch_diag :: EigenpairProcessor :: eigen_pair_type eigen_pair = eigen_processor.general_diagonalise( h_mat );
+
+    for( int i = 0; i < eigen_pair.second.size(); i++ ) {
+      this->eigen_values_.insert( std :: make_pair( eigen_pair.second[i], SubSpace( 0, 0, 1 ) ) );
+    }
+
+  }
+
   unsigned& set_seed()
    { return seed_; }
+
+  bool& set_compact_stochastic_mode() 
+    { return compact_stochastic_mode_; }
 
 private:
   hamiltonian_type* hamiltonian_ptr_;
@@ -133,6 +156,7 @@ private:
   StateSamplingMethod state_sampling_method_;
   std :: multimap< double, SubSpace > eigen_values_;
   unsigned seed_;
+  bool compact_stochastic_mode_;
 
 }; // end of class Block
 
