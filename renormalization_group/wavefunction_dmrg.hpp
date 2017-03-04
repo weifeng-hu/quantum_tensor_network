@@ -77,8 +77,38 @@ public:
 
   }
 
+
+  void shuffle( const int increment ) {
+
+    int start_site = this->i_site_;
+    int end_site   = start_site + increment;
+    int delta      = increment/( abs( increment ) );
+
+    int isite = start_site;
+    while( true ) {
+
+      const int left = min( isite, isite + delta );
+      const int right = max( isite, isite + delta );
+      rotation_matrix_type left_rotation_matrix  = rotation_matrix_[ left ];
+      rotation_matrix_type right_rotation_matrix = rotation_matrix_[ right ];
+
+      if( delta > 0 ) {
+        *this = *this * left_rotation_matrix;
+        *this = Transpose( Transpose( *this ) * Inverse( right_rotation_matrix ) );
+      } else {
+        *this = *this * Inverse( left_rotation_matrix );
+        *this = Transpose( Transpose( *this ) * right_rotation_matrix );
+      }
+
+      if( isite == end_site ) break;
+      isite += delta;
+    }
+
+  }
+
 private:
   bool compute_left_dm_;
+  int  i_site_;
 
 };
 
