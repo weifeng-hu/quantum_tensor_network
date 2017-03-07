@@ -11,65 +11,12 @@
 namespace renormalization_group {
 
 //template < size_t Order >
-class OperatorBase {
+class OperatorBase : public OpMatrix {
 public:
   typedef OperatorBase this_type;
   typedef mat_stoch_diag :: SimpleMatrix matrix_type;
   typedef SubSpace space_type;
 //  typedef std :: unordered_map< std :: pair< space_type, space_type >, matrix_type > op_matrix_type;
-
-/*
-  struct OpMatrix {
-    typedef std :: pair< std :: pair< space_type, space_type >, matrix_type > sub_matrix_type;
-    typedef std :: vector< std :: pair< std :: pair< space_type, space_type >, matrix_type > > store_type;
-
-    OpMatrix() : nrow_(0), ncol_(0) { store_.resize(0); }
-
-    size_t nrow_, ncol_;
-    store_type store_;
-    sub_matrix_type& operator() ( const size_t i_qn, const size_t j_qn )
-      { return this->store_[ i_qn * this->ncol_ + j_qn ]; }
-    sub_matrix_type& at( const size_t i_qn, const size_t j_qn )
-      { return this->store_.at( i_qn * this->ncol_ + j_qn ); }
-    void resize( const size_t nrow, const size_t ncol ) { 
-      this->nrow_ = nrow;
-      this->ncol_ = ncol;
-      this->store_.resize( nrow * ncol );
-      for( int i = 0; i < nrow * ncol; i++ ) { store_[i].second.resize(0,0); }
-    }
-
-    void resize( std :: vector< space_type >& qn_row, std :: vector< space_type >& qn_col ) {
-      size_t nrow = qn_row.size();
-      size_t ncol = qn_col.size();
-      this->resize( nrow, ncol );
-      for( size_t i_qn = 0; i_qn < nrow; i_qn++ ) {
-        for( size_t j_qn = 0; j_qn < ncol; j_qn++ ) {
-          (*this)( i_qn, j_qn ).first = std :: make_pair ( qn_row[i_qn], qn_col[j_qn] );
-//qn_row[i_qn].print();
-//qn_col[j_qn].print();
-//std :: cout << std :: endl;
-        }
-      }
-    }
-
-    void print() {
-      for( int i = 0; i < nrow_ ; i++ ) {
-        for( int j = 0; j < ncol_ ; j++ ) {
-//          if( (*this)(i,j).second.nrow() != 0 ) {
-            printf( "  qn row: " ); (*this)(i,j).first.first.print();
-            printf( "  qn col: " ); (*this)(i,j).first.second.print();
-            printf( "\n" );
-            (*this)(i,j).second.print();
-            printf( "\n" );
-//          }
-        }
-      }
-    }
-
-    store_type store() 
-      { return this->store_; }
-  };  // end of class OpMatrix
-*/
 
   typedef OpMatrix op_matrix_type;
   typedef OpMatrix :: sub_matrix_type sub_matrix_type;
@@ -95,26 +42,6 @@ public:
   virtual ~OperatorBase() {}
 
 public:
-  op_matrix_type& op_matrix()
-    { return this->op_matrix_; }
-
-  sub_matrix_type& operator() ( size_t i_qn, size_t j_qn )
-    { return this->op_matrix_( i_qn, j_qn ); }
-  sub_matrix_type& at( size_t i_qn, size_t j_qn )
-    { return this->op_matrix_.at( i_qn, j_qn ); }
-  matrix_type& matrix( const size_t i_qn, const size_t j_qn )
-    { return (*this)( i_qn, j_qn ).second; }
-
-  space_type qn_row( const int i_qn, const size_t j_qn )
-    { return (*this)( i_qn, j_qn ).first.first; }
-  space_type qn_col( const int i_qn, const size_t j_qn )
-    { return (*this)( i_qn, j_qn ).first.second; }
-
-  size_t n_qn_row() const
-    { return this->op_matrix_.nrow_; }
-  size_t n_qn_col() const
-    { return this->op_matrix_.ncol_; }
-
   QuantumNumber delta_qn() 
     { return delta_qn_; }
   QuantumNumber& set_delta_qn()
@@ -134,103 +61,12 @@ public:
   int block_size() 
     { return this->block_indices_.size(); }
 
-  void sort_qn() {
-    op_matrix_.sort_qn();
-  }
-
-  int ndim_row() {
-    int dim = 0;
-    for( int i = 0; i < n_qn_row(); i++ ) { dim += this->at(i,0).first.first.dim(); }
-    return dim;
-  }
-  int ndim_col() {
-    int dim = 0;
-    for( int i = 0; i < n_qn_col(); i++ ) { dim += this->at(0,i).first.second.dim(); }
-    return dim;
-  }
-
-
-  matrix_type full_matrix() {
-    int dim_row = ndim_row();
-    int dim_col = ndim_col();
-    matrix_type retval;
-    retval.resize( dim_row, dim_col );
-
-    for( int i = 0; i < n_qn_row(); i++ ) {
-      for( int j = 0; j < n_qn_col(); j++ ) {
-        int nrow = at(i,j).first.first.dim();
-        int ncol = at(i,j).first.second.dim();
-        matrix_type mat_ij = this->at(i,j).second;
-        bool mat_valid = mat_ij.nrow() == 0 ? false : true;
-        for( int k = 0; k < nrow; k++ ) {
-          for( int l = 0; l < ncol; l++ ) {
-            int ind_i = ind_start_row(i) + k;
-            int ind_j = ind_start_col(j) + l;
-            retval( ind_i, ind_j ) = mat_valid ? mat_ij( k, l ) : 0.0e0;
-          }
-        }
-      }
-    }
-    return retval;
-  }
-
-  int ind_start_row( int i_qn ) {
-    int retval = 0;
-    if( i_qn >= n_qn_row() ) {
-      std :: cout << "row_start() i_qn > size " << std :: endl;
-      abort();
-    }
-    for( int i = 0; i < i_qn; i++ ) {
-      retval += at( i, 0 ).first.first.dim();
-    }
-    return retval;
-  }
-
-  int ind_start_col( int i_qn ) {
-    int retval = 0;
-    if( i_qn >= n_qn_col() ) {
-      std :: cout << "row_start() i_qn > size " << std :: endl;
-      abort();
-    }
-    for( int i = 0; i < i_qn; i++ ) {
-      retval += at( 0, i ).first.second.dim();
-    }
-    return retval;
-  }
-
-
-  std :: vector< space_type > qn_series_row( int x = 0 ) {
-    std :: vector< space_type > retval;
-    retval.resize(0);
-    for( size_t i = 0; i < this->op_matrix_.ncol_; i++ ) {
-      retval.push_back( op_matrix_( x, i ).first.second );
-    }
-    return retval;
-  }
-
-  std :: vector< space_type > qn_series_col( int x = 0 ) {
-    std :: vector< space_type > retval;
-    retval.resize(0);
-    for( size_t i = 0; i < this->op_matrix_.nrow_; i++ ) {
-      retval.push_back( op_matrix_( i, x ).first.first );
-    }
-    return retval;
-  }
-
-  void resize( const size_t nrow, const size_t ncol ) 
-    {  this->op_matrix_.resize( nrow, ncol ); }
-
-  void resize( std :: vector< space_type >& qn_row, std :: vector< space_type >& qn_col ) {
-    this->op_matrix_.resize( qn_row, qn_col );
-  }
-
   void print() {
     printf( "site index: %i\n", site_ind_ );
     this->op_matrix_.print();
   }
 
 public:
-  op_matrix_type op_matrix_;
   int site_ind_;
   std :: vector<int> block_indices_;
   QuantumNumber delta_qn_;
