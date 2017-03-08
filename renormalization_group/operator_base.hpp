@@ -13,63 +13,62 @@ namespace renormalization_group {
 //template < size_t Order >
 class OperatorBase : public OpMatrix {
 public:
-  typedef OperatorBase this_type;
-  typedef mat_stoch_diag :: SimpleMatrix matrix_type;
-  typedef SubSpace space_type;
+  typedef OperatorBase  this_type;
+  typedef QuantumNumber qn_type;
 //  typedef std :: unordered_map< std :: pair< space_type, space_type >, matrix_type > op_matrix_type;
 
-  typedef OpMatrix op_matrix_type;
-  typedef OpMatrix :: sub_matrix_type sub_matrix_type;
-
 public:
-  OperatorBase() : site_ind_( 0 ), delta_qn_( 0, 0 ) { 
-    block_indices_.resize(0); 
+  OperatorBase() : site_ind_( 0 ), delta_qn_( 0, 0 ) {
+    block_indices_.resize(0);
     block_indices_.push_back(0);
   }
-
-  OperatorBase( const int& site_ind ) : delta_qn_( 0, 0 ) { 
+  OperatorBase( const int& site_ind ) : delta_qn_( 0, 0 ) {
     this->site_ind_ = site_ind;
     this->block_indices_.push_back( site_ind );
   }
-
   OperatorBase( const op_matrix_type& op_matrix_obj ) : 
-    op_matrix_ ( op_matrix_obj ), delta_qn_( 0, 0 ), 
-    site_ind_( 0 ) { 
+    OpMatrix ( op_matrix_obj ),
+    delta_qn_( 0, 0 ), 
+    site_ind_( 0 )
+  { 
       block_indices_.resize(0); 
       block_indices_.push_back(0);
   }
-
   virtual ~OperatorBase() {}
 
+  // I/O
 public:
-  QuantumNumber delta_qn() 
-    { return delta_qn_; }
-  QuantumNumber& set_delta_qn()
-    { return delta_qn_; }
-
-  int site_ind() const
-    { return this->site_ind_; }
-
-  std :: pair< space_type, space_type>& set_qn_pair( size_t i_qn, size_t j_qn )
-    { return (*this)( i_qn, j_qn ).first; }
-
-  int& set_site_ind() 
-    { return this->site_ind_; }
-
-  std :: vector<int>& block_indices() 
-    { return this->block_indices_; }
-  int block_size() 
-    { return this->block_indices_.size(); }
-
+  friend 
+    std :: ostream& operator<< ( std :: ostream& os, this_type& obj ) {
+      this->print();
+      return os;
+    }
   void print() {
     printf( "site index: %i\n", site_ind_ );
     this->op_matrix_.print();
   }
 
+  // Accessors & Modifiers
 public:
+  qn_type delta_qn() const 
+    { return delta_qn_; }
+  qn_type& set_delta_qn()
+    { return delta_qn_; }
+
+  int site_ind() const
+    { return this->site_ind_; }
+  int& set_site_ind() 
+    { return this->site_ind_; }
+
+  std :: vector<int>& block_indices() 
+    { return this->block_indices_; }
+  size_t block_size() const 
+    { return this->block_indices_.size(); }
+
+public:
+  qn_type delta_qn_;
   int site_ind_;
   std :: vector<int> block_indices_;
-  QuantumNumber delta_qn_;
 //  std :: array< size_t, Order > indices_;
 
 }; // end of OperatorBase

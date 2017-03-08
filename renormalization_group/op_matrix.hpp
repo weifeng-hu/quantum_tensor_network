@@ -1,6 +1,7 @@
 #ifndef OP_MATRIX_HPP
 #define OP_MATRIX_HPP
 
+#include <stdlib.h>
 #include <vector>
 #include <utility>
 #include <iostream>
@@ -23,7 +24,7 @@ public:
   virtual ~OpMatrix() {}
 
 public:
-  void resize( const size_t nrow, const size_t ncol ) { 
+  void resize( const size_t nrow, const size_t ncol ) {
     this->nrow_ = nrow;
     this->ncol_ = ncol;
     this->store_.resize( nrow * ncol );
@@ -197,6 +198,7 @@ public:
 
   // Matrix operations, *, +, x
 public:
+  // Operation * scalar
   this_type& operator*= ( const double& coeff ) {
     for( size_t i_qn = 0; i_qn < n_qn_row(); i_qn++ ) {
       for( size_t j_qn = 0; j_qn < n_qn_col(); j_qn++ ) {
@@ -221,6 +223,8 @@ public:
       return retval;
     } // end of operator*
 
+  // Operation * matrix
+  // Note we only implement friend functions since we do not allow input op_matrices get changed
   friend
     this_type operator* ( this_type& op_a, this_type& op_b ) {
 
@@ -268,6 +272,8 @@ public:
       return retval;
     } // end of operator* for matrix * matrix 
 
+  // Operation + matrix
+  // Note we only implement friend functions since we do not allow input op_matrices get changed
   friend
     this_type operator+ ( this_type& op_a, this_type& op_b ) {
       this_type retval;
@@ -320,66 +326,68 @@ public:
 
     } // end of operator+ of matrix + matrix 
 
-    friend
-      this_type operator^ ( this_type& op_a, this_type& op_b ) {
+  // Operation + matrix
+  // Note we only implement friend functions since we do not allow input op_matrices get changed
+  friend
+    this_type operator^ ( this_type& op_a, this_type& op_b ) {
 
-    this_type op_c;
+      this_type op_c;
+    
+      int n_qn_row_a = op_a.n_qn_row();
+      int n_qn_col_a = op_a.n_qn_col();
+      int n_qn_row_b = op_b.n_qn_row();
+      int n_qn_col_b = op_b.n_qn_col();
+  
+      int n_qn_row_c = n_qn_row_a * n_qn_row_b;
+      int n_qn_col_c = n_qn_col_a * n_qn_col_b;
+  
+      op_c.resize( n_qn_row_c, n_qn_col_c );
+  
+      for( size_t i = 0; i < n_qn_row_b; i++ ) {
+        for( size_t j = 0; j < n_qn_col_b; j++ ) {
+  
+          const space_type qn_i_b = op_b.set_qn_pair( i, j ).first;
+          const space_type qn_j_b = op_b.set_qn_pair( i, j ).second;
+          matrix_type mat_ij = op_b.matrix( i, j );
+  
+          for( size_t k = 0; k < n_qn_row_a; k++ ) {
+            for( size_t l = 0; l < n_qn_col_a; l++ ) {
+  
+              const space_type qn_k_a = op_a.set_qn_pair( k, l ).first;
+              const space_type qn_l_a = op_a.set_qn_pair( k, l ).second;
+              matrix_type mat_kl = op_a.matrix( k, l );
+  
+              space_type qn_row = qn_i_b + qn_k_a;
+              space_type qn_col = qn_j_b + qn_l_a;
+              qn_row.set_dim()  = qn_i_b.dim() * qn_k_a.dim();
+              qn_col.set_dim()  = qn_j_b.dim() * qn_l_a.dim();
 
-    int n_qn_row_a = op_a.n_qn_row();
-    int n_qn_col_a = op_a.n_qn_col();
-    int n_qn_row_b = op_b.n_qn_row();
-    int n_qn_col_b = op_b.n_qn_col();
-
-    int n_qn_row_c = n_qn_row_a * n_qn_row_b;
-    int n_qn_col_c = n_qn_col_a * n_qn_col_b;
-
-    op_c.resize( n_qn_row_c, n_qn_col_c );
-
-    for( size_t i = 0; i < n_qn_row_b; i++ ) {
-      for( size_t j = 0; j < n_qn_col_b; j++ ) {
-
-        space_type qn_i_second = op_b.set_qn_pair( i, j ).first;
-        space_type qn_j_second = op_b.set_qn_pair( i, j ).second;
-        matrix_type mat_ij = op_b( i, j ).second;
-
-        for( size_t k = 0; k < n_qn_row_a; k++ ) {
-          for( size_t l = 0; l < n_qn_col_a; l++ ) {
-
-            space_type qn_k_a = op_a.set_qn_pair( k, l ).first;
-            space_type qn_l_a = op_a.set_qn_pair( k, l ).second;
-            matrix_type mat_kl = op_a( k, l ).second;
-
-            space_type qn_row = qn_i_b + qn_k_a;
-            space_type qn_col = qn_j_b + qn_l_a;
-            qn_row.set_dim() = qn_i_b.dim() * qn_k_a.dim();
-            qn_col.set_dim() = qn_j_b.dim() * qn_l_a.dim();
-
-            matrix_type mat_ij_kl;
-            if( mat_ij.nrow() != 0 & mat_kl.nrow() != 0 ) {
-              int nrow_1 = mat_ij.nrow();
-              int ncol_1 = mat_ij.ncol();
-              int nrow_2 = mat_kl.nrow();
-              int ncol_2 = mat_kl.ncol();
-              mat_ij_kl.resize( nrow_1 * nrow_2, ncol_1 * ncol_2 );
-              for( size_t irow = 0; irow < nrow_1; irow++ ) {
-                for( size_t icol = 0; icol < ncol_1; icol++ ) {
-                  for( size_t jrow = 0; jrow < nrow_2; jrow++ ) {
-                    for( size_t jcol = 0; jcol < ncol_2; jcol++ ) {
-                      mat_ij_kl( irow * nrow_1 + jrow, icol * ncol_1 + jcol ) = mat_ij( irow, icol ) * mat_kl( jrow, jcol );
+              matrix_type mat_ij_kl;
+              if( mat_ij.nrow() != 0 & mat_kl.nrow() != 0 ) {
+                const size_t nrow_1 = mat_ij.nrow();
+                const size_t ncol_1 = mat_ij.ncol();
+                const size_t nrow_2 = mat_kl.nrow();
+                const size_t ncol_2 = mat_kl.ncol();
+                mat_ij_kl.resize( nrow_1 * nrow_2, ncol_1 * ncol_2 );
+                for( size_t irow = 0; irow < nrow_1; irow++ ) {
+                  for( size_t icol = 0; icol < ncol_1; icol++ ) {
+                    for( size_t jrow = 0; jrow < nrow_2; jrow++ ) {
+                      for( size_t jcol = 0; jcol < ncol_2; jcol++ ) {
+                        mat_ij_kl( irow * nrow_1 + jrow, icol * ncol_1 + jcol ) = mat_ij( irow, icol ) * mat_kl( jrow, jcol );
+                      }
                     }
                   }
                 }
               }
+              op_c( i * n_qn_row_a + k, j * n_qn_col_a + l ) = std :: make_pair( std :: make_pair( qn_row, qn_col ), mat_ij_kl );
             }
-            op_c( i * n_qn_row_a + k, j * n_qn_col_a + l ) = std :: make_pair( std :: make_pair( qn_row, qn_col ), mat_ij_kl );
           }
         }
       }
-    }
+  
+      return op_c;
 
-    return op_c;
-
-      } // end of operator^ matrix x matrix, tensor product
+    } // end of operator^ matrix x matrix, tensor product
 
 public:
   // Accessors & modifiers
@@ -436,21 +444,21 @@ public:
   }
 
   matrix_type full_matrix() const {
-    int dim_row = ndim_row();
-    int dim_col = ndim_col();
+    int dim_row = this->ndim_row();
+    int dim_col = this->ndim_col();
     matrix_type retval;
     retval.resize( dim_row, dim_col );
 
-    for( int i = 0; i < n_qn_row(); i++ ) {
-      for( int j = 0; j < n_qn_col(); j++ ) {
-        int nrow = at(i,j).first.first.dim();
-        int ncol = at(i,j).first.second.dim();
-        matrix_type mat_ij = this->at(i,j).second;
-        bool mat_valid = mat_ij.nrow() == 0 ? false : true;
-        for( int k = 0; k < nrow; k++ ) {
-          for( int l = 0; l < ncol; l++ ) {
-            int ind_i = ind_start_row(i) + k;
-            int ind_j = ind_start_col(j) + l;
+    for( size_t i = 0; i < n_qn_row(); i++ ) {
+      for( size_t j = 0; j < n_qn_col(); j++ ) {
+        const int nrow = at(i,j).first.first.dim();
+        const int ncol = at(i,j).first.second.dim();
+        matrix_type mat_ij = (*this)(i,j).second;
+        const bool mat_valid = mat_ij.nrow() == 0 ? false : true;
+        for( size_t k = 0; k < nrow; k++ ) {
+          for( size_t l = 0; l < ncol; l++ ) {
+            const int ind_i = ind_start_row(i) + k;
+            const int ind_j = ind_start_col(j) + l;
             retval( ind_i, ind_j ) = mat_valid ? mat_ij( k, l ) : 0.0e0;
           }
         }

@@ -1,6 +1,7 @@
 #ifndef SUB_SPACE_HPP
 #define SUB_SPACE_HPP
 
+#include <iostream>
 #include <utility>
 #include "./quantum_number.hpp"
 
@@ -17,6 +18,12 @@ public:
   void print() {
     printf( "n: %i   sz: %i  dim: %i", n_, s_z_, dim_ );
   }
+
+  friend
+    std :: ostream& operator<< ( std :: ostream& os, const this_type& obj ) {
+      obj.print();
+      return os;
+    }
 
   friend
     SubSpace operator+ ( SubSpace& lhs, SubSpace& rhs ) {
@@ -36,10 +43,10 @@ public:
       return false;
     }
 
-  friend
-    bool operator== (const  SubSpace& lhs, const SubSpace& rhs ) {
-      return ( lhs.n() == rhs.n() ) & ( lhs.s_z() == rhs.s_z() );
-    }
+//  friend
+//    bool operator== (const  SubSpace& lhs, const SubSpace& rhs ) {
+//      return ( lhs.n() == rhs.n() ) & ( lhs.s_z() == rhs.s_z() );
+//    }
 
   friend
     bool operator!= ( const SubSpace& lhs, const SubSpace& rhs ) {
@@ -57,7 +64,7 @@ public:
     }
 
   friend 
-    bool operator> ( const SubSpace& lhs,const  SubSpace& rhs ) {
+    bool operator> ( const SubSpace& lhs, const SubSpace& rhs ) {
       if( lhs.n() > rhs.n() ) return true;
       if( lhs.n() == rhs.n() ) {
         if( lhs.s_z() > rhs.s_z() ) return true;
@@ -68,9 +75,9 @@ public:
 }; // end of struct SubSpace
 
 std :: vector< SubSpace > site_space = { SubSpace(0, 0, 1),
-                                              SubSpace(1, 1, 1),
-                                              SubSpace(1, -1, 1),
-                                              SubSpace(2, 0, 1) };
+                                         SubSpace(1, 1, 1),
+                                         SubSpace(1, -1, 1),
+                                         SubSpace(2, 0, 1) };
 
 
 bool operator< ( std :: pair< SubSpace, int > obj_a, std :: pair< SubSpace, int > obj_b ) {

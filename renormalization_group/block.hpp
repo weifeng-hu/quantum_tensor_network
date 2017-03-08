@@ -18,7 +18,6 @@ public:
 
 public:
   Block() {}
-
   Block( const size_t M_value, const int site_lower_bound, const int site_upper_bound, StateSamplingMethod state_sampling_method ) {
     this->M_ = M_value;
     this->compact_stochastic_mode_ = false;
@@ -27,14 +26,12 @@ public:
     }
     state_sampling_method_ = state_sampling_method;
   }
-
   Block( const size_t M_value, const std :: vector< int > site_indices, StateSamplingMethod state_sampling_method ) :
     M_ (M_value),
     site_indices_ ( site_indices ),
     state_sampling_method_ ( state_sampling_method ),
     compact_stochastic_mode_ ( false )
     {}
-
   ~Block() {}
 
 public:

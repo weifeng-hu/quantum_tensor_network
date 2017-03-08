@@ -20,7 +20,7 @@ public:
     n_ (n_value),
     s_z_( s_z_value ) 
     {}
-  ~QuantumNumber(){}
+  virtual ~QuantumNumber() {}
 
 public:
   int n() const
@@ -77,7 +77,13 @@ public:
     if( n_ == 2 & s_z_ == 0 ) return 3;
   }
 
-  virtual void print() {
+  friend 
+    std :: ostream& operator<<( std :: ostream& os, const this_type& obj ) {
+      obj.print();
+      return os;
+    }
+
+  virtual void print() const {
     printf( "n: %i   sz: %i  ", n_, s_z_ );
   }
 

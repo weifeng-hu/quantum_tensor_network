@@ -16,7 +16,7 @@ public:
     OperatorBase( site_ind ) {
     this->resize( site_space, site_space );
     this->op_matrix_( space_type( 1, 1, 1 ).ind(), space_type( 0, 0, 1 ).ind() )
-      = std :: make_pair( std :: make_pair( space_type( 1, 1, 1 ), space_type( 0, 0, 1 ) ), matrix_type( std :: vector<double> {1.0e0}, 1, 1 ) ); 
+      = std :: make_pair( std :: make_pair( space_type( 1, 1, 1 ), space_type( 0, 0, 1 ) ), matrix_type( std :: vector<double> {1.0e0}, 1, 1 ) );
     this->op_matrix_( space_type( 2, 0, 1 ).ind(), space_type( 1, -1, 1 ).ind() )
       = std :: make_pair( std :: make_pair( space_type( 2, 0, 1 ), space_type( 1, -1, 1 ) ), matrix_type( std :: vector<double> {1.0e0}, 1, 1 ) );
     this->delta_qn_ = QuantumNumber( 1, 1 );

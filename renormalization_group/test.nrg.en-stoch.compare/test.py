@@ -7,14 +7,14 @@ import datetime;
 #nsites = [ 6, 8, 10, 12];
 #nsites = [ 14, 16, 18, 20 ];
 #M      = [ 25, 50, 100, 200, 400 ];
-nsites = [ 6, 8 ];
-M      = [ 100, 200 ];
+nsites = [ 8 ];
+M      = [ 100, 200, 400];
 nroot  = 0;
-e = -1.0;
+e = -2.0;
 t = -0.5;
-u = 1.0;
+u = 6.0;
 collect = False;
-repeat = 2;
+repeat = 50;
 
 for ir in range( 0, repeat ):
   for iM in range( 0, len(M) ) :
