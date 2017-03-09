@@ -15,9 +15,9 @@ public:
   CUp( const int& site_ind ) :
     OperatorBase( site_ind ) {
     this->resize( site_space, site_space );
-    this->op_matrix_( space_type( 1, 1, 1 ).ind(), space_type( 0, 0, 1 ).ind() )
+    (*this)( space_type( 1, 1, 1 ).ind(), space_type( 0, 0, 1 ).ind() )
       = std :: make_pair( std :: make_pair( space_type( 1, 1, 1 ), space_type( 0, 0, 1 ) ), matrix_type( std :: vector<double> {1.0e0}, 1, 1 ) );
-    this->op_matrix_( space_type( 2, 0, 1 ).ind(), space_type( 1, -1, 1 ).ind() )
+    (*this)( space_type( 2, 0, 1 ).ind(), space_type( 1, -1, 1 ).ind() )
       = std :: make_pair( std :: make_pair( space_type( 2, 0, 1 ), space_type( 1, -1, 1 ) ), matrix_type( std :: vector<double> {1.0e0}, 1, 1 ) );
     this->delta_qn_ = QuantumNumber( 1, 1 );
   }
@@ -30,9 +30,9 @@ public:
   CDw( const int& site_ind ) :
     OperatorBase( site_ind ) {
     this->resize( site_space, site_space);
-    this->op_matrix_( space_type( 1, -1, 1 ).ind(), space_type( 0, 0, 1 ).ind() )
+    (*this)( space_type( 1, -1, 1 ).ind(), space_type( 0, 0, 1 ).ind() )
       = std :: make_pair( std :: make_pair( space_type( 1, -1, 1 ), space_type( 0, 0, 1 ) ), matrix_type( std :: vector<double> {1.0e0}, 1, 1 )  );
-    this->op_matrix_( space_type( 2, 0, 1 ).ind(), space_type( 1, 1, 1 ).ind() )
+    (*this)( space_type( 2, 0, 1 ).ind(), space_type( 1, 1, 1 ).ind() )
       = std :: make_pair( std :: make_pair( space_type( 2, 0, 1 ), space_type( 1, 1, 1 ) ), matrix_type( std :: vector<double> {-1.0e0}, 1, 1 )  );
     this->delta_qn_ = QuantumNumber( 1, -1 );
   }
@@ -45,9 +45,9 @@ public:
   DUp( const int& site_ind ):
     OperatorBase( site_ind ) {
     this->resize( site_space, site_space );
-    this->op_matrix_( space_type( 0, 0, 1 ).ind(), space_type( 1, 1, 1 ).ind() )
+    (*this)( space_type( 0, 0, 1 ).ind(), space_type( 1, 1, 1 ).ind() )
       = std :: make_pair( std :: make_pair( space_type( 0, 0, 1 ), space_type( 1, 1, 1 ) ), matrix_type( std :: vector<double> {1.0e0}, 1, 1 )  ); 
-    this->op_matrix_( space_type( 1, -1, 1 ).ind(), space_type( 2, 0, 1 ).ind() )
+    (*this)( space_type( 1, -1, 1 ).ind(), space_type( 2, 0, 1 ).ind() )
       = std :: make_pair( std :: make_pair( space_type( 1, -1, 1 ), space_type( 2, 0, 1 ) ), matrix_type( std :: vector<double> {1.0e0}, 1, 1 )  ) ;
     this->delta_qn_ = QuantumNumber( -1, -1 );
   }
@@ -60,9 +60,9 @@ public:
   DDw( const int& site_ind ) :
     OperatorBase( site_ind ) {
     this->resize( site_space, site_space);
-    this->op_matrix_( space_type( 0, 0, 1 ).ind(), space_type( 1, -1, 1 ).ind() )
+    (*this)( space_type( 0, 0, 1 ).ind(), space_type( 1, -1, 1 ).ind() )
       = std :: make_pair( std :: make_pair( space_type( 0, 0, 1 ), space_type( 1, -1, 1 ) ), matrix_type( std :: vector<double> {1.0e0}, 1, 1 )  ); 
-    this->op_matrix_( space_type( 1, 1, 1 ).ind(), space_type( 2, 0, 1 ).ind() )
+    (*this)( space_type( 1, 1, 1 ).ind(), space_type( 2, 0, 1 ).ind() )
       = std :: make_pair( std :: make_pair( space_type( 1, 1, 1 ), space_type( 2, 0, 1 ) ), matrix_type( std :: vector<double> {-1.0e0}, 1, 1 )  ) ;
     this->delta_qn_ = QuantumNumber( -1, 1 );
   }
@@ -75,13 +75,13 @@ public:
   Iden( const int& site_ind ) :
     OperatorBase( site_ind ) {
     this->resize( site_space, site_space);
-    this->op_matrix_( space_type( 0, 0, 1 ).ind(), space_type( 0, 0, 1 ).ind() )
+    (*this)( space_type( 0, 0, 1 ).ind(), space_type( 0, 0, 1 ).ind() )
       = std :: make_pair( std :: make_pair( space_type( 0, 0, 1 ), space_type( 0, 0, 1 ) ), matrix_type( std :: vector<double> {1.0e0}, 1, 1 )  ); 
-    this->op_matrix_( space_type( 1, 1, 1 ).ind(), space_type( 1, 1, 1 ).ind() )
+    (*this)( space_type( 1, 1, 1 ).ind(), space_type( 1, 1, 1 ).ind() )
       = std :: make_pair( std :: make_pair( space_type( 1, 1, 1 ), space_type( 1, 1, 1 ) ), matrix_type( std :: vector<double> {1.0e0}, 1, 1 )  ) ;
-    this->op_matrix_( space_type( 1, -1, 1 ).ind(), space_type( 1, -1, 1 ).ind() )
+    (*this)( space_type( 1, -1, 1 ).ind(), space_type( 1, -1, 1 ).ind() )
       = std :: make_pair( std :: make_pair( space_type( 1, -1, 1 ), space_type( 1, -1, 1 ) ), matrix_type( std :: vector<double> {1.0e0}, 1, 1 )  ); 
-    this->op_matrix_( space_type( 2, 0, 1 ).ind(), space_type( 2, 0, 1 ).ind() )
+    (*this)( space_type( 2, 0, 1 ).ind(), space_type( 2, 0, 1 ).ind() )
       = std :: make_pair( std :: make_pair( space_type( 2, 0, 1 ), space_type( 2, 0, 1 ) ), matrix_type( std :: vector<double> {1.0e0}, 1, 1 )  ) ;
     this->delta_qn_ = QuantumNumber( 0, 0 );
   }
@@ -96,14 +96,14 @@ public:
       abort();
     }
 
-    this->op_matrix_.resize( qns_row, qns_col );
+    (*this).resize( qns_row, qns_col );
     for( int i = 0; i < nrow; i++ ) {
       int dim_i = qns_row[i].dim();
       matrix_type mat;
       mat.resize( dim_i, dim_i );
       mat.clear();
       for( int j = 0; j < dim_i; j++ ) { mat( j, j ) = 1.0e0; }
-      op_matrix_( i, i ).second = mat;
+      this->matrix( i, i ) = mat;
     }
 
     block_indices_ = h_ref.block_indices();
@@ -119,14 +119,14 @@ public:
       abort();
     }
 
-    this->op_matrix_.resize( qns_row, qns_col );
+    (*this).resize( qns_row, qns_col );
     for( int i = 0; i < nrow; i++ ) {
       int dim_i = qns_row[i].dim();
       matrix_type mat;
       mat.resize( dim_i, dim_i );
       mat.clear();
       for( int j = 0; j < dim_i; j++ ) { mat( j, j ) = 1.0e0; }
-      op_matrix_( i, i ).second = mat;
+      matrix( i, i ) = mat;
     }
 
 //    block_indices_ = h_ref.block_indices();
@@ -143,13 +143,13 @@ public:
   Parity( const int& site_ind ) :
     OperatorBase( site_ind ) {
     this->resize( site_space, site_space);
-    this->op_matrix_( space_type( 0, 0, 1 ).ind(), space_type( 0, 0, 1 ).ind() )
+    (*this)( space_type( 0, 0, 1 ).ind(), space_type( 0, 0, 1 ).ind() )
       = std :: make_pair( std :: make_pair( space_type( 0, 0, 1 ), space_type( 0, 0, 1 ) ), matrix_type( std :: vector<double> {1.0e0}, 1, 1 )  ); 
-    this->op_matrix_( space_type( 1, 1, 1 ).ind(), space_type( 1, 1, 1 ).ind() )
+    (*this)( space_type( 1, 1, 1 ).ind(), space_type( 1, 1, 1 ).ind() )
       = std :: make_pair( std :: make_pair( space_type( 1, 1, 1 ), space_type( 1, 1, 1 ) ), matrix_type( std :: vector<double> {-1.0e0}, 1, 1 )  ) ;
-    this->op_matrix_( space_type( 1, -1, 1 ).ind(), space_type( 1, -1, 1 ).ind() )
+    (*this)( space_type( 1, -1, 1 ).ind(), space_type( 1, -1, 1 ).ind() )
       = std :: make_pair( std :: make_pair( space_type( 1, -1, 1 ), space_type( 1, -1, 1 ) ), matrix_type( std :: vector<double> {-1.0e0}, 1, 1 )  ); 
-    this->op_matrix_( space_type( 2, 0, 1 ).ind(), space_type( 2, 0, 1 ).ind() )
+    (*this)( space_type( 2, 0, 1 ).ind(), space_type( 2, 0, 1 ).ind() )
       = std :: make_pair( std :: make_pair( space_type( 2, 0, 1 ), space_type( 2, 0, 1 ) ), matrix_type( std :: vector<double> {1.0e0}, 1, 1 )  ) ;
     this->delta_qn_ = QuantumNumber( 0, 0 );
   }
@@ -164,7 +164,7 @@ public:
       abort();
     }
 
-    this->op_matrix_.resize( qns_row, qns_col );
+    (*this).resize( qns_row, qns_col );
     for( int i = 0; i < nrow; i++ ) {
       int dim_i = qns_row[i].dim();
       matrix_type mat;
@@ -190,7 +190,7 @@ public:
       abort();
     }
 
-    this->op_matrix_.resize( qns_row, qns_col );
+    (*this).resize( qns_row, qns_col );
     for( int i = 0; i < nrow; i++ ) {
       int dim_i = qns_row[i].dim();
       matrix_type mat;
@@ -220,13 +220,13 @@ public:
   Num( const int& site_ind ) :
     OperatorBase( site_ind ) {
     this->resize( site_space, site_space);
-    this->op_matrix_( space_type( 0, 0, 1 ).ind(), space_type( 0, 0, 1 ).ind() )
+    (*this)( space_type( 0, 0, 1 ).ind(), space_type( 0, 0, 1 ).ind() )
       = std :: make_pair( std :: make_pair( space_type( 0, 0, 1 ), space_type( 0, 0, 1 ) ), matrix_type( std :: vector<double> {0.0e0}, 1, 1 )  ); 
-    this->op_matrix_( space_type( 1, 1, 1 ).ind(), space_type( 1, 1, 1 ).ind() )
+    (*this)( space_type( 1, 1, 1 ).ind(), space_type( 1, 1, 1 ).ind() )
       = std :: make_pair( std :: make_pair( space_type( 1, 1, 1 ), space_type( 1, 1, 1 ) ), matrix_type( std :: vector<double> {1.0e0}, 1, 1 )  ) ;
-    this->op_matrix_( space_type( 1, -1, 1 ).ind(), space_type( 1, -1, 1 ).ind() )
+    (*this)( space_type( 1, -1, 1 ).ind(), space_type( 1, -1, 1 ).ind() )
       = std :: make_pair( std :: make_pair( space_type( 1, -1, 1 ), space_type( 1, -1, 1 ) ), matrix_type( std :: vector<double> {1.0e0}, 1, 1 )  ); 
-    this->op_matrix_( space_type( 2, 0, 1 ).ind(), space_type( 2, 0, 1 ).ind() )
+    (*this)( space_type( 2, 0, 1 ).ind(), space_type( 2, 0, 1 ).ind() )
       = std :: make_pair( std :: make_pair( space_type( 2, 0, 1 ), space_type( 2, 0, 1 ) ), matrix_type( std :: vector<double> {2.0e0}, 1, 1 )  ) ;
     this->delta_qn_ = QuantumNumber( 0, 0 );
   }

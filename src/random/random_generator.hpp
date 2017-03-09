@@ -4,7 +4,7 @@
 #include <vector>
 #include <cstdlib>
 
-namespace mat_stoch_diag {
+namespace random {
 
 class RandomGenerator {
 public: 
@@ -34,6 +34,6 @@ private:
 
 }; // end of class RandomGenerator
 
-}  // end of namespace mat_stoch_diag
+} // end of namespace random
 
 #endif

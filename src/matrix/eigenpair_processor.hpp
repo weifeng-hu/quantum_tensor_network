@@ -6,10 +6,10 @@
 #include <vector>
 #include <iostream>
 #include <algorithm>
-#include "simple_matrix.hpp"
-#include "blas_interface.h"
+#include "./simple_matrix.hpp"
+#include "./blas_interface.h"
 
-namespace mat_stoch_diag {
+namespace matrix {
 
 class EigenpairProcessor {
 public:
@@ -58,6 +58,6 @@ public:
 
 }; // end of class EigenpairProcessor
 
-} // end of namespace mat_stoch_diag
+} // end of namespace matrix
 
 #endif

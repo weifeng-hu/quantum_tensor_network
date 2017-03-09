@@ -1,5 +1,5 @@
-#ifndef ACCELERATOR_HPP
-#define ACCELERATOR_HPP
+#ifndef RENORMALIZER_EN_HPP
+#define RENORMALIZER_EN_HPP
 
 #include <stdio.h>
 #include <memory>
@@ -9,9 +9,12 @@
 #include "./wavefunction.hpp"
 #include "./rotation_matrix.hpp"
 
-namespace renormalization_group {
+namespace quantum_tensor_network {
 enum StateSamplingMethod { UNSET, NORMAL, STOCH_MIX };
-class Accelerator {
+
+namespace nrg { 
+
+class RenormaliserEn {
 public:
   typedef mat_stoch_diag :: SimpleMatrix matrix_type;
   typedef std :: vector< std :: pair< double, Wavefunction> > eigen_spectrum_type;
@@ -247,6 +250,8 @@ std :: string state_sampling_method_name( const StateSamplingMethod method ) {
 
 }
 
-} // end of namespace rg
+} // end of namespace nrg
+
+} // end of namespace quantum_tensor_network
 
 #endif

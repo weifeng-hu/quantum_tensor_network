@@ -467,7 +467,7 @@ public:
     return retval;
   } // end of function full_matrix()
 
-private:
+protected:
   size_t        n_qn_row_, n_qn_col_;
   store_type    store_;
 

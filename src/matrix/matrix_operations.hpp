@@ -5,7 +5,7 @@
 #include <vector>
 #include "simple_matrix.hpp"
 
-namespace mat_stoch_diag {
+namespace matrix {
 
 class Transpose : public SimpleMatrix {
 public:
@@ -48,6 +48,6 @@ private:
 
 }; // end of class Inverse
 
-} // end of namespace mat_stoch_diag
+} // end of namespace matrix
 
 #endif

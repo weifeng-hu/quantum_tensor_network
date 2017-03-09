@@ -1,11 +1,9 @@
 #ifndef OPERATOR_BASE_HPP
 #define OPERATOR_BASE_HPP
 
-#include <limits>
-#include <utility>
-#include <algorithm>
 #include <iostream>
-#include <unordered_map>
+//#include <unordered_map>
+#include "./quantum_number.hpp"
 #include "./op_matrix.hpp"
 #include "./shape_1d.hpp"
 
@@ -20,8 +18,16 @@ public:
 //  typedef std :: unordered_map< std :: pair< space_type, space_type >, matrix_type > op_matrix_type;
 
 public:
-  OperatorBase() : site_ind_( 0 ), delta_qn_( 0, 0 ), shape_( 0 ) { }
-  OperatorBase( const int& site_ind ) : delta_qn_( 0, 0 ), site_ind_ ( site_ind ), shape_( std :: vector< int > { site_ind } ) { }
+  OperatorBase() : 
+    site_ind_( 0 ), 
+    delta_qn_( 0, 0 ), 
+    shape_( 0 )
+  { }
+  OperatorBase( const int& site_ind ) : 
+    delta_qn_( 0, 0 ), 
+    site_ind_ ( site_ind ), 
+    shape_( std :: vector< int > { site_ind } ) 
+  { }
   OperatorBase( const op_matrix_type& op_matrix_obj ) : 
     OpMatrix ( op_matrix_obj ),
     delta_qn_( 0, 0 ), 
@@ -33,7 +39,7 @@ public:
   // I/O
 public:
   friend 
-    std :: ostream& operator<< ( std :: ostream& os, this_type& obj ) {
+    std :: ostream& operator<< ( std :: ostream& os, const this_type& obj ) {
       this->print();
       return os;
     }
@@ -59,7 +65,8 @@ public:
   size_t block_size() const 
     { return this->shape_.size(); }
 
-public:
+protected:
+  int site_ind_;
   qn_type delta_qn_;
   int site_ind_;
   shape_type shape_;  

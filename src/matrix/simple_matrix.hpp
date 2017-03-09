@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include "blas_interface.h"
 
-namespace mat_stoch_diag {
+namespace matrix {
 
 class SimpleMatrix {
   typedef SimpleMatrix this_type;
@@ -261,6 +261,6 @@ private:
 
 }; // end of class SimpleMatrix
 
-}  // end of namespace mat_stoch_diag
+}  // end of namespace matrix
 
 #endif

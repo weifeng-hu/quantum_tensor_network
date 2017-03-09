@@ -7,7 +7,7 @@
 #include <utility>
 #include <iostream>
 
-namespace mat_stoch_diag {
+namespace matrix {
 
 class MatrixInitializer {
 public:

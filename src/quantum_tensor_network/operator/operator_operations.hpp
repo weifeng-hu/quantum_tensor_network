@@ -20,48 +20,7 @@ namespace renormalization_group {
   op_type get_current_rep_general( op_type& op );
   inline op_type on_block_multiply( op_type& op_a, op_type& op_b ) {
 
-    op_type retval;
-
-    if( op_a.n_qn_col() != op_b.n_qn_row() ) {
-      std :: cout << "error: two operator matrices of the same site cannot multiply" << std :: endl;
-      std :: cout << "n_qn_col of A != n_qn_row of B" << std :: endl;
-      std :: cout << op_a.n_qn_col() << " " <<  op_b.n_qn_row() << std :: endl;
-      abort();
-    }
-    retval.resize( op_a.n_qn_row(), op_b.n_qn_col() );
-
-    for( size_t i_qn = 0; i_qn < op_a.n_qn_row(); i_qn++ ) {
-      for( size_t j_qn = 0; j_qn < op_b.n_qn_col(); j_qn++ ) {
-        space_type qn_i = op_a( i_qn, j_qn ).first.first;
-        space_type qn_j = op_b( i_qn, j_qn ).first.second;
-
-        matrix_type mat_ij;
-        for( size_t k_qn = 0; k_qn < op_a.n_qn_col() ; k_qn++ ) {
-           space_type qn_k     = op_a( i_qn, k_qn ).first.second;
-           space_type qn_k_ref = op_b( k_qn, j_qn ).first.first;
-          if( ( qn_k != qn_k_ref ) | ( qn_k.dim() != qn_k.dim() ) ) {
-            std :: cout << "error: two qn not equal for k when multiplying same site operators" << std :: endl;
-            cout << i_qn << " " << j_qn << " " << k_qn << endl;
-            qn_k.print(); std :: cout << std :: flush << " | ";
-            qn_k_ref.print();
-            std :: cout << std :: flush;
-            abort();
-          }
- 
-          matrix_type matrix_ik = op_a( i_qn, k_qn ).second;
-          matrix_type matrix_kj = op_b( k_qn, j_qn ).second;
-          if( matrix_ik.ncol() != 0 & matrix_kj.nrow() != 0 ) {
-            matrix_type new_matrix = matrix_ik * matrix_kj; // this operation will check the sanity
-            mat_ij                 = mat_ij + new_matrix;
-          }
-        } // end of for k_qn
-
-        retval( i_qn, j_qn ) 
-          = std :: make_pair( std :: make_pair( qn_i, qn_j ), mat_ij );
-
-      } // end of for j_qn
-    } // end of for i_qn
-
+    op_type retval = op_a * op_b;
     QuantumNumber delta_qn_a = op_a.delta_qn();
     QuantumNumber delta_qn_b = op_b.delta_qn();
     QuantumNumber delta_qn_a_x_b = delta_qn_a + delta_qn_b;
@@ -72,76 +31,9 @@ namespace renormalization_group {
   } // end of on_site_multiply()
 
 
-
   inline op_type direct_product( op_type& op_a, op_type& op_b ) {
 
-    op_type op_c;
-
-    int site_a = op_a.site_ind();
-    int site_b = op_b.site_ind();
-
-    int n_qn_row_a = op_a.n_qn_row();
-    int n_qn_col_a = op_a.n_qn_col();
-    int n_qn_row_b = op_b.n_qn_row();
-    int n_qn_col_b = op_b.n_qn_col();
-
-    int n_qn_row_c = n_qn_row_a * n_qn_row_b;
-    int n_qn_col_c = n_qn_col_a * n_qn_col_b;
-
-    op_c.resize( n_qn_row_c, n_qn_col_c );
-
-    op_type& op_first  = site_a < site_b ? op_a : op_b;
-    op_type& op_second = site_a < site_b ? op_b : op_a;
-
-    int& n_qn_row_first  = site_a < site_b ? n_qn_row_a : n_qn_row_b;
-    int& n_qn_row_second = site_a < site_b ? n_qn_row_b : n_qn_row_a;
-    int& n_qn_col_first  = site_a < site_b ? n_qn_col_a : n_qn_col_b;
-    int& n_qn_col_second = site_a < site_b ? n_qn_col_b : n_qn_col_a;
-
-//    std :: cout << n_qn_row_first << "x" << n_qn_col_first << " " << n_qn_row_second << "x" << n_qn_col_second << std :: endl;
-
-    for( size_t i = 0; i < n_qn_row_second; i++ ) {
-      for( size_t j = 0; j < n_qn_col_second; j++ ) {
-
-        space_type qn_i_second = op_second.set_qn_pair( i, j ).first;
-        space_type qn_j_second = op_second.set_qn_pair( i, j ).second;
-        matrix_type mat_ij = op_second( i, j ).second;
-
-        for( size_t k = 0; k < n_qn_row_first; k++ ) {
-          for( size_t l = 0; l < n_qn_col_first; l++ ) {
-
-            space_type qn_k_first = op_first.set_qn_pair( k, l ).first;
-            space_type qn_l_first = op_first.set_qn_pair( k, l ).second;
-            matrix_type mat_kl = op_first( k, l ).second;
-
-            space_type qn_row = qn_i_second + qn_k_first;
-            space_type qn_col = qn_j_second + qn_l_first;
-            qn_row.set_dim() = qn_i_second.dim() * qn_k_first.dim();
-            qn_col.set_dim() = qn_j_second.dim() * qn_l_first.dim();
-
-            matrix_type mat_ij_kl;
-            if( mat_ij.nrow() != 0 & mat_kl.nrow() != 0 ) {
-              int nrow_1 = mat_ij.nrow();
-              int ncol_1 = mat_ij.ncol();
-              int nrow_2 = mat_kl.nrow();
-              int ncol_2 = mat_kl.ncol();
-              mat_ij_kl.resize( nrow_1 * nrow_2, ncol_1 * ncol_2 );
-              for( size_t irow = 0; irow < nrow_1; irow++ ) {
-                for( size_t icol = 0; icol < ncol_1; icol++ ) {
-                  for( size_t jrow = 0; jrow < nrow_2; jrow++ ) {
-                    for( size_t jcol = 0; jcol < ncol_2; jcol++ ) {
-                      mat_ij_kl( irow * nrow_1 + jrow, icol * ncol_1 + jcol ) = mat_ij( irow, icol ) * mat_kl( jrow, jcol );
-                    }
-                  }
-                }
-              }
-            }
-            op_c( i * n_qn_row_first + k, j * n_qn_col_first + l ) = std :: make_pair( std :: make_pair( qn_row, qn_col ), mat_ij_kl );
-          }
-        }
-      }
-    }
-
+    op_type op_c = op_a * op_b;
     QuantumNumber delta_qn_a = op_a.delta_qn();
     QuantumNumber delta_qn_b = op_b.delta_qn();
     QuantumNumber delta_qn_a_x_b = delta_qn_a + delta_qn_b;
@@ -156,51 +48,8 @@ namespace renormalization_group {
 
     op_type retval;
 
-    if( op_a.block_indices() == op_b.block_indices() ) {
-      if( op_a.n_qn_row() != op_b.n_qn_row() ) {
-        std :: cout << "error: two operator matrices of the same site cannot add" << std :: endl;
-        std :: cout << "n_qn_row of A != n_qn_row of B" << std :: endl;
-        std :: cout << op_a.n_qn_row() << " " << op_b.n_qn_row() << std :: endl;
-        abort();
-      }
-      if( op_a.n_qn_col() != op_b.n_qn_col() ) {
-        std :: cout << "error: two operator matrices of the same site cannot add" << std :: endl;
-        std :: cout << "n_qn_col of A != n_qn_col of B" << std :: endl;
-        std :: cout << op_a.n_qn_col() << " " << op_b.n_qn_col() << std :: endl;
-        abort();
-      }
-
-      retval.resize( op_a.n_qn_row(), op_a.n_qn_col() );
-
-      for( size_t i_qn = 0; i_qn < op_a.n_qn_row(); i_qn++ ) {
-        for( size_t j_qn = 0; j_qn < op_a.n_qn_col(); j_qn++ ) {
-          const space_type qn_i     = op_a( i_qn, j_qn ).first.first;
-          const space_type qn_i_ref = op_b( i_qn, j_qn ).first.first;
-          if( qn_i != qn_i_ref | ( qn_i.dim() != qn_i_ref.dim() ) ) {
-            std :: cout << "qn_i != qn_i_ref in same_site_plus() " << std :: endl;
-            abort();
-          }
-
-          const space_type qn_j     = op_a( i_qn, j_qn ).first.second;
-          const space_type qn_j_ref = op_b( i_qn, j_qn ).first.second;
-          if( qn_j != qn_j_ref | ( qn_j.dim() != qn_j_ref.dim() ) ) {
-            std :: cout << "qn_j != qn_j_ref in same_site_plus() " << std :: endl;
-            abort();
-          }
-
-          matrix_type new_matrix;
-          if( op_a.matrix( i_qn, j_qn ).nrow() == 0 ) {
-            new_matrix = op_b.matrix( i_qn, j_qn );
-          } else if( op_b.matrix( i_qn, j_qn ).nrow() == 0 ) {
-            new_matrix = op_a.matrix( i_qn, j_qn );
-          } else if( op_a.matrix( i_qn, j_qn ).nrow() != 0 & op_b.matrix( i_qn, j_qn ).nrow() != 0 ) {
-            new_matrix = op_a.matrix( i_qn, j_qn ) + op_b.matrix( i_qn, j_qn );
-          }
-          retval( i_qn, j_qn ) = 
-            std :: pair< std :: pair< space_type, space_type>, matrix_type > ( std :: pair< space_type, space_type> ( qn_i, qn_j ), new_matrix );
-          
-        }
-      }
+    if( op_a.shape() == op_b.shape() ) {
+      retval = op_a ^ op_b;
     } else {
       std :: cout << "error: block indices not the same, cannot add two ops in block" << std :: endl;
       abort();
@@ -214,7 +63,7 @@ namespace renormalization_group {
     return retval;
 
   } // end of same_site_plus()
-
+////////////////////////////////////////////// BELOW ARE NOT AMENDED: TO DO ////////////////////
 
   op_type operator+ ( op_type& op_a, op_type& op_b ) {
 

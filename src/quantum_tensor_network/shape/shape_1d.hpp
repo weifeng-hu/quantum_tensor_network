@@ -5,7 +5,9 @@
 #include <vector>
 #include <iostream>
 
-namespace renormalization_group {
+namespace quantum_tensor_network {
+
+namespace shape {
 
 class Shape1D {
 public:
@@ -13,24 +15,26 @@ public:
   typedef std :: vector<int> store_type;
 
 public:
+  Shape1D(){}
   Shape1D( const store_type& store ) : store_ ( store ) {};
   Shape1D( const size_t size ) {
     for( size_t i = 0; i < size; i++ ) {
       this->store_.push_back( (int)(i) );
     }
   }
-  ~Shape1D();
+  ~Shape1D(){};
 
 public:
   this_type& operator|= ( const this_type& rhs ) {
     const int max_1 = *(std :: max_element( this->store_.begin(), this->store_.end() ));
     const int min_1 = *(std :: min_element( this->store_.begin(), this->store_.end() ));
-    const int max_2 = *(std :: max_element( rhs.store().begin(), rhs.store().end() ));
-    const int min_2 = *(std :: min_element( rhs.store().begin(), rhs.store().end() ));
+    store_type rhs_store = rhs.store();
+    const int max_2 = *(std :: max_element( rhs_store.begin(), rhs_store.end() ));
+    const int min_2 = *(std :: min_element( rhs_store.begin(), rhs_store.end() ));
     const int max = max_1 > max_2 ? max_1 : max_2;
     const int min = min_1 < min_2 ? min_1 : min_2;
     this->store().resize(0);
-    for( int i = min; i <= max; i++ ) { this->store().push_back(i); }
+    for( int i = min; i <= max; i++ ) { this->store_.push_back(i); }
     return *this;
   } // end of operator|=
 
@@ -50,23 +54,26 @@ public:
       retval_store.resize(0);
       int ind_a = 0;
       int ind_b = 0;
-      while( ind_a != lhs.store().size() & ind_b != rhs.store().size() ) {
-        if( lhs.store()[ind_a] < rhs.store()[ind_b] ) {
-          retval_store.push_back( lhs.store()[ind_a] );
+      while( ind_a != lhs.size() & ind_b != rhs.size() ) {
+        if( lhs[ind_a] < rhs[ind_b] ) {
+          retval_store.push_back( lhs[ind_a] );
           ind_a++;
         } else {
-          retval_store.push_back( rhs.store()[ind_b] );
+          retval_store.push_back( rhs[ind_b] );
           ind_b++;
         }
       }
-      if( ind_a != lhs.store().size() ) {
-        retval_store.insert( retval_store.end(), lhs.store().begin() + ind_a, lhs.store().end() );
-      } else if( ind_b != block_indices_b.size() ) {
-        retval_store.insert( retval_store.end(), rhs.store().begin() + ind_b, rhs.store().end() );
+
+      if( ind_a != lhs.size() ) {
+        store_type lhs_store = lhs.store();
+        retval_store.insert( retval_store.end(), lhs_store.begin() + ind_a, lhs_store.end() );
+      } else if( ind_b != rhs.size() ) {
+        store_type rhs_store = rhs.store();
+        retval_store.insert( retval_store.end(), rhs_store.begin() + ind_b, rhs_store.end() );
       }
     
       if( retval_store.size() == 0 ) {
-        retval.store() = retval_store;
+        retval.set_store() = retval_store;
         return retval;
       }
       int i = 0;
@@ -78,7 +85,7 @@ public:
       }
       retval_store.resize( i + 1 );
 
-      retval.store() = retval_store;
+      retval.set_store() = retval_store;
       return retval;
 
     } // end of operator+
@@ -92,10 +99,10 @@ public:
   friend 
     bool operator== ( this_type& lhs, this_type& rhs ) {
       if( lhs.size() != rhs.size() ) return false;
-      std :: sort( lhs.store().begin(), lhs.store().end() );
-      std :: sort( rhs.store().begin(), rhs.store().end() );
-      for( size_t i = 0; i < lhs.store().size(); i++ ) {
-        if( lhs.store()[i] != rhs.store()[i] ) return false;
+      std :: sort( lhs.set_store().begin(), lhs.set_store().end() );
+      std :: sort( rhs.set_store().begin(), rhs.set_store().end() );
+      for( size_t i = 0; i < lhs.size(); i++ ) {
+        if( lhs[i] != rhs[i] ) return false;
       }
       return true;
     }
@@ -107,11 +114,12 @@ public:
 
   friend 
     std :: ostream& operator<< ( std :: ostream& os, const this_type& obj ) {
-      this->print();
+      obj.print();
       return os;
     }
 
-  void print() {
+  void print() const {
+    std :: cout << "Shape [1D]: " << std :: endl;
     for( size_t i = 0; i < this->store_.size(); i++ ) {
       std :: cout << this->store_[i];
       if( i != this->store_.size()-1 ) std :: cout << "-";
@@ -120,20 +128,26 @@ public:
   }
 
 public:
-  store_type& store()
+  store_type store() const
+    { return this->store_; }
+  store_type& set_store()
     { return this->store_; }
   size_t size() const 
     { return this->store_.size(); } 
   int& at( const int ind )
-    { return this->store_.at(i); }
-  int& operator() ( const int ind )
-    { return this->store_[i]; }
+    { return this->store_.at(ind); }
+  int& operator[] ( const int ind )
+    { return this->store_[ind]; }
+  int operator[] ( const int ind ) const 
+    { return this->store_[ind];}
 
 private:
   store_type store_;
 
 }; // end of class Shape1D
 
-} // end of namespace renormalization_group
+} // end of shape
+
+} // end of namespace quantum_tensor_network
 
 #endif
