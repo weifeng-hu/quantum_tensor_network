@@ -1,10 +1,12 @@
 #ifndef WAVEFUNCTION_DMRG_HPP
 #define WAVEFUNCTION_DMRG_HPP
 
-#include "./op_matrix.hpp"
-#include "./density_matrix.hpp"
+#include "quantum_tensor_network/tensor/op_matrix.hpp"
+#include "quantum_tensor_network/dmrg/density_matrix.hpp"
 
-namespace renormalization_group {
+namespace quantum_tensor_network {
+
+namespace wavefunction {
 
 class WavefunctionDMRG : public OpMatrix {
 public:
@@ -112,6 +114,8 @@ private:
 
 };
 
-} // end of namespace renormalization_group
+} // end of namespace wavefunction
+
+} // end of namespace quantum_tensor_network
 
 #endif

@@ -6,11 +6,11 @@
 #include <random>
 #include "simple_matrix.hpp"
 
-namespace mat_stoch_diag {
+namespace stochastic_eigen {
 
 class SubMatrixSampler {
 public:
-  typedef mat_stoch_diag :: SimpleMatrix matrix_type;
+  typedef mat_stoch_diag :: Matrix matrix_type;
   typedef matrix_type* matrix_pointer;
 
 public:
@@ -33,7 +33,7 @@ public:
 
     std :: vector< int > choice_key = get_choice_key( this->original_matrix_ptr_->nrow(), target_matrix_size );
 
-    SimpleMatrix transform_mat;
+    Matrix transform_mat;
     transform_mat.resize( this->original_matrix_ptr_->nrow(), target_matrix_size );
 
     int icol = 0;
@@ -44,12 +44,12 @@ public:
       }
     }
 
-    SimpleMatrix mid_mat;
+    Matrix mid_mat;
     mid_mat.resize( this->original_matrix_ptr_->nrow(), target_matrix_size );
     mid_mat.clear();
     mid_mat = *(this->original_matrix_ptr_) * transform_mat;
 
-    SimpleMatrix transform_mat_t = transform_mat.transpose();
+    Matrix transform_mat_t = transform_mat.transpose();
     new_matrix = transform_mat_t * mid_mat;
 
     std :: vector<int> keys;
@@ -81,7 +81,7 @@ public:
       }
     }
 
-    SimpleMatrix transform_mat;
+    Matrix transform_mat;
     transform_mat.resize( this->original_matrix_ptr_->nrow(), target_matrix_size );
 
     int icol = 0;
@@ -92,12 +92,12 @@ public:
       }
     }
 
-    SimpleMatrix mid_mat;
+    Matrix mid_mat;
     mid_mat.resize( this->original_matrix_ptr_->nrow(), target_matrix_size );
     mid_mat.clear();
     mid_mat = *(this->original_matrix_ptr_) * transform_mat;
 
-    SimpleMatrix transform_mat_t = transform_mat.transpose();
+    Matrix transform_mat_t = transform_mat.transpose();
     new_matrix = transform_mat_t * mid_mat;
 
     std :: vector<int> keys;
@@ -194,6 +194,6 @@ private:
 
 }; // end of class SubMatrixSampler
 
-} // end of namespace mat_stoch_diag
+} // end of namespace stochastic_eigen
 
 #endif

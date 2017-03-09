@@ -3,7 +3,9 @@
 
 #include <vector>
 
-namespace renormalization_group {
+namespace quantum_tensor_network {
+
+namespace hamiltonian {
 
 class Formula {
 public:
@@ -47,6 +49,8 @@ private:
 
 }; // end of class Formula
 
-} // end of namespace renormalization_group
+} // end of hamiltonian
+
+} // end of namespace quantum_tensor_network
 
 #endif

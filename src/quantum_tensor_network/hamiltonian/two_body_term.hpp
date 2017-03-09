@@ -4,11 +4,13 @@
 #include <cmath>
 #include <utility>
 #include <limits>
-#include "./op_term_info.hpp"
-#include "./quantum_number.hpp"
-#include "./operator.hpp"
+#include "quantum_tensor_network/hamiltonian/op_term_info.hpp"
+#include "quantum_tensor_network/quantum_number/quantum_number.hpp"
+#include "quantum_tensor_network/quantum_operator/operator.hpp"
 
-namespace renormalization_group {
+namespace quantum_tensor_network {
+
+namespace hamiltonian {
 
 class TwoBodyTerm {
 public:
@@ -377,6 +379,8 @@ private:
 
 }; // end of class TwoBodyTerm
 
-} // end of namespace renormalization_group
+} // end of namespace hamiltonian
+
+} // end of namespace quantum_tensor_network
 
 #endif

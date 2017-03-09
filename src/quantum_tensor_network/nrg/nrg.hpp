@@ -10,7 +10,9 @@
 #include "./hamiltonian_base.hpp"
 #include "./renormalization_group.hpp"
 
-namespace renormalization_group {
+namespace quantum_tensor_network {
+
+namespace nrg {
 
 class NRG : public RenormalizationGroup {
 public:
@@ -215,8 +217,10 @@ private:
   RoutineType          routine_type_;
   bool                 compact_stochastic_mode_;
 
-}; // end of namespace NRG
+}; // end of class NRG
 
-} // end of namespace renormalization_group
+}; // end of namespace nrg
+
+} // end of namespace quantum_tensor_network
 
 #endif

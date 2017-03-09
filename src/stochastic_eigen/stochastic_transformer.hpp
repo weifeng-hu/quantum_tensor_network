@@ -4,17 +4,17 @@
 #include <utility>
 #include <vector>
 #include <iostream>
-#include "simple_matrix.hpp"
-#include "matrix_operations.hpp"
-#include "stochastic_basis.hpp"
-#include "stochastic_space.hpp"
-#include "stochastic_unity_operator.hpp"
+#include "matrix/matrix.hpp"
+#include "matrix/matrix_operations.hpp"
+#include "./stochastic_basis.hpp"
+#include "./stochastic_space.hpp"
+#include "./stochastic_unity_operator.hpp"
 
-namespace mat_stoch_diag {
+namespace stochastic_eigen {
 
 class StochasticTransformer {
 public:
-  typedef SimpleMatrix            matrix_type;
+  typedef Matrix            matrix_type;
   typedef matrix_type*            matrix_pointer;
   typedef StochasticBasis         basis_type;
   typedef basis_type*             basis_pointer;
@@ -122,12 +122,12 @@ public:
       }
     }
 
-    SimpleMatrix inverse_of_transform_matrix = this->space_transform_matrix_.inverse();
+    Matrix inverse_of_transform_matrix = this->space_transform_matrix_.inverse();
 //    std :: cout << "inverse:" << std :: endl;
 //    inverse_of_transform_matrix.print();
 
 //    std :: cout << "product:" << std :: endl;
-//    SimpleMatrix MiM = inverse_of_transform_matrix * this->space_transform_matrix_;
+//    Matrix MiM = inverse_of_transform_matrix * this->space_transform_matrix_;
 //    MiM.print();
 
     final_matrix = inverse_of_transform_matrix * mid_matrix;

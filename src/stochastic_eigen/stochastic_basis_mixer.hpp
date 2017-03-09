@@ -5,20 +5,20 @@
 #include <utility>
 #include <random>
 #include <cmath>
-#include "simple_matrix.hpp"
-#include "sub_matrix_sampler.hpp"
-#include "stochastic_basis.hpp"
-#include "stochastic_space_hashed.hpp"
-#include "stochastic_space_sorted.hpp"
-#include "stochastic_space.hpp"
+#include "matrix/matrix.hpp"
+#include "./sub_matrix_sampler.hpp"
+#include "./stochastic_basis.hpp"
+#include "./stochastic_space_hashed.hpp"
+#include "./stochastic_space_sorted.hpp"
+#include "./stochastic_space.hpp"
 
-namespace mat_stoch_diag {
+namespace stochastic_eigen {
 
 class StochasticBasisMixer {
 public:
   typedef StochasticSpace  space_type;
   typedef space_type*      space_pointer; 
-  typedef std :: pair< SimpleMatrix, std :: vector<double> > eigen_pair_type;
+  typedef std :: pair< Matrix, std :: vector<double> > eigen_pair_type;
   typedef eigen_pair_type* eigen_pair_pointer;
 
 public:
@@ -259,6 +259,6 @@ private:
 
 }; // end of class StochasticBasisMixter
 
-} // end of mat_stoch_diag
+} // end of stochastic_eigen
 
 #endif

@@ -13,7 +13,7 @@ namespace matrix {
 
 class EigenpairProcessor {
 public:
-  typedef SimpleMatrix matrix_type;
+  typedef Matrix matrix_type;
   typedef std :: vector< double > eigval_type;
   typedef std :: pair< matrix_type, eigval_type > eigen_pair_type;
   typedef eigen_pair_type* eigen_pair_pointer;

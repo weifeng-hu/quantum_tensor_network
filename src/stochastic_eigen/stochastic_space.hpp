@@ -5,8 +5,8 @@
 #include <vector>
 #include <iostream>
 #include <random>
-#include "stochastic_basis.hpp"
-#include "simple_matrix.hpp"
+#include "./stochastic_basis.hpp"
+#include "matrix/matrix.hpp"
 
 namespace mat_stoch_diag {
 
@@ -23,7 +23,7 @@ public:
     this->generator.seed( seed_val );
     this->generate_space( nbasis, nrowA );
   }
-  StochasticSpace( SimpleMatrix& eigenvec ) {
+  StochasticSpace( Matrix& eigenvec ) {
     for( size_t i = 0; i < eigenvec.ncol(); i++ ) {
       this->push_back( StochasticBasis( eigenvec.row(i) ) );
     }
@@ -136,8 +136,8 @@ public:
     std :: cout << std :: endl;
   }
 
-  SimpleMatrix export_rotmat() {
-    SimpleMatrix rotmat;
+  Matrix export_rotmat() {
+    Matrix rotmat;
     rotmat.resize( this->store_.at(0).size(), this->store_.size() );
     rotmat.clear();
     for( size_t i = 0; i < this->store_.size(); i++ ) {
@@ -152,6 +152,6 @@ private:
 
 }; // end of class StochasticSpace
 
-} // end of namespace mat_stoch_diag
+} // end of namespace stochastic_eigen
 
 #endif

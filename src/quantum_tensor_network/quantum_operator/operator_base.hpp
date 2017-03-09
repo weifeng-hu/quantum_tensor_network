@@ -3,11 +3,13 @@
 
 #include <iostream>
 //#include <unordered_map>
-#include "./quantum_number.hpp"
-#include "./op_matrix.hpp"
-#include "./shape_1d.hpp"
+#include "quantum_tensor_network/quantum_number/quantum_number.hpp"
+#include "quantum_tensor_network/tensor/op_matrix.hpp"
+#include "quantum_tensor_network/shape/shape_1d.hpp"
 
-namespace renormalization_group {
+namespace quantum_tensor_network {
+
+namespace quantum_operator {
 
 //template < size_t Order >
 class OperatorBase : public OpMatrix {
@@ -74,6 +76,8 @@ protected:
 
 }; // end of OperatorBase
 
-} // end of namespace renormalization_group
+} // end of quantum_operator
+
+} // end of namespace quantum_tensor_network
 
 #endif

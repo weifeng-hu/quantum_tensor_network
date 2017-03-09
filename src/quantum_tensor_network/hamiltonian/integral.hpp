@@ -8,7 +8,9 @@
 #include <vector>
 #include <unordered_map>
 
-namespace renormalization_group {
+namespace quantum_tensor_network {
+
+namespace hamiltonian {
 
 class Integral {
 public:
@@ -120,6 +122,8 @@ private:
 
 }; // end of class Integral
 
-} // end of namespace renormalization_group
+} // end of namespace hamiltonian
+
+} // end of namespace quantum_tensor_network
 
 #endif

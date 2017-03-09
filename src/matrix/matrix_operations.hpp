@@ -7,11 +7,11 @@
 
 namespace matrix {
 
-class Transpose : public SimpleMatrix {
+class Transpose : public Matrix {
 public:
-  Transpose( SimpleMatrix& matrix ) {
+  Transpose( Matrix& matrix ) {
 //    printf( "dimension: %lu %lu\n", matrix.nrow(),matrix.ncol() );
-    SimpleMatrix transposed_matrix = matrix.transpose();
+    Matrix transposed_matrix = matrix.transpose();
 ////    Transpose* x = new Transpose( transposed_matrix ) ;
     this->set_store() = transposed_matrix.store();
     this->set_nrow()  = transposed_matrix.nrow();
@@ -20,8 +20,8 @@ public:
   ~Transpose() {}
 
 public:
-  SimpleMatrix export_matrix() {
-    SimpleMatrix new_mat;
+  Matrix export_matrix() {
+    Matrix new_mat;
     new_mat.set_store() = this->store();
     new_mat.set_nrow()  = this->nrow();
     new_mat.set_ncol()  = this->ncol();
@@ -35,9 +35,9 @@ private:
 
 }; // end of class Transpose
 
-class Inverse : public SimpleMatrix {
+class Inverse : public Matrix {
 public:
-  Inverse( SimpleMatrix& matrix ) {
+  Inverse( Matrix& matrix ) {
 //    *this = matrix.inverse();
   }
   ~Inverse() {}

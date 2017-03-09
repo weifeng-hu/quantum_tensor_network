@@ -10,7 +10,9 @@
 #include "./hamiltonian_base.hpp"
 #include "./renormalization_group.hpp"
 
-namespace renormalization_group {
+namespace quantum_tensor_network {
+
+namespace dmrg {
 
 class DMRG : public RenormalizationGroup {
 public:
@@ -114,6 +116,8 @@ private:
 
 }; // end of class DMRG
 
-}  // end of namespace renormalization_group
+} // end of namespace dmrg
+
+} // end of namespace quantum_tensor_network
 
 #endif

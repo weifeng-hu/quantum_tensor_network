@@ -3,10 +3,10 @@
 
 #include <iostream>
 #include <utility>
-#include "stochastic_basis.hpp"
-#include "stochastic_space.hpp"
+#include "./stochastic_basis.hpp"
+#include "./stochastic_space.hpp"
 
-namespace mat_stoch_diag {
+namespace stochastic_eigen {
 
 //template < class DataType > 
 class DoubleNode {
@@ -292,6 +292,6 @@ private:
 
 }; // end of class StochasticSpaceHashed
 
-} // end of namespace mat_stoch_diag
+} // end of namespace stochastic_eigen
 
 #endif

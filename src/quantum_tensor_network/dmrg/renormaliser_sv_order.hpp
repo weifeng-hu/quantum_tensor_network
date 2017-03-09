@@ -1,11 +1,13 @@
 #ifndef DMRG_ACCERLATOR_HPP
 #define DMRG_ACCERLATOR_HPP
 
-#include "./rotation_matrix.hpp"
+#include "quantum_tensor_network/wavefunction/rotation_matrix.hpp"
 
-namespace renormalization_group {
+namespace quantum_tensor_network {
 
-class DMRG_Accerlerator {
+namespace dmrg {
+
+class RenormaliserSVOrder {
 public:
   typedef RotationMatrix rotation_matrix_type;
 
@@ -30,8 +32,10 @@ public:
 public:
   eigen_spectrum_type eigen_spectrum_ptr;
 
-};
+}; // end of class RenormaliserSVOrder
 
-} // end of namespace renormalization_group
+} // end of namespace dmrg
+
+} // end of namespace quantum_tensor_network
 
 #endif

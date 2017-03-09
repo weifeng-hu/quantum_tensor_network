@@ -1,11 +1,13 @@
 #ifndef DENSITY_MATRIX_HPP
 #define DENSITY_MATRIX_HPP
 
-#include "../mat_stoch_diag/eigenpair_processor.hpp"
-#include "./Wavefunction.hpp"
-#include "./op_matrix.hpp"
+#include "matrix/eigenpair_processor.hpp"
+#include "quantum_tensor_network/wavefunction/wavefunction.hpp"
+#include "quantum_tensor_network/tensor/op_matrix.hpp"
 
-namespace renormalization_group {
+namespace quantum_tensor_network {
+
+namespace dmrg {
 
 class DensityMatrix : public OpMatrix {
 public:
@@ -61,6 +63,8 @@ public:
 
 }; // end of class DensityMatrix
 
-} // end of namespace renormalization_group
+} // end of namespace dmrg
+
+} // end of namespace quantum_tensor_network
 
 #endif

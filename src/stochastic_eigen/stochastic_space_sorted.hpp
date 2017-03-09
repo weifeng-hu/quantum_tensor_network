@@ -5,7 +5,7 @@
 #include <utility>
 #include <algorithm>
 
-namespace mat_stoch_diag {
+namespace stochastic_eigen {
 
 class StochasticSpaceSorted {
 public:

@@ -3,10 +3,10 @@
 
 #include <iostream>
 #include <utility>
-#include "stochastic_basis.hpp"
-#include "stochastic_space.hpp"
+#include "./stochastic_basis.hpp"
+#include "./stochastic_space.hpp"
 
-namespace mat_stoch_diag {
+namespace stochastic_eigen {
 
 class BSTNode {
 public:

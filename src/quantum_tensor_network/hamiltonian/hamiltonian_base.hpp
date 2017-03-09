@@ -6,16 +6,18 @@
 #include <string>
 #include <memory>
 #include <array>
-#include "../mat_stoch_diag/eigenpair_processor.hpp"
-#include "./integral.hpp"
-#include "./one_body_term.hpp"
-#include "./two_body_term.hpp"
-#include "./operator_operations.hpp"
-#include "./operator_factory.hpp"
-#include "./wavefunction.hpp"
+#include "matrix/eigenpair_processor.hpp"
+#include "quantum_tensor_network/hamiltonian/integral.hpp"
+#include "quantum_tensor_network/hamiltonian/one_body_term.hpp"
+#include "quantum_tensor_network/hamiltonian/two_body_term.hpp"
+#include "quantum_tensor_network/quantum_operator/operator_operations.hpp"
+#include "quantum_tensor_network/quantum_operator/operator_factory.hpp"
+#include "quantum_tensor_network/wavefunction/wavefunction.hpp"
 //#include "formula.hpp"
 
-namespace renormalization_group {
+namespace quantum_tensor_network {
+
+namespace hamiltonian { 
 
 enum HamType { UNKNOWN, HUBBARD, ExHUBBARD };
 
@@ -402,6 +404,8 @@ protected:
 std :: string hamiltonian_name( const HamType hamiltonian_type )
   {  return HamiltonianBase :: hamiltonian_name( hamiltonian_type ); }
 
-} // end of namespace renormalization_group
+} // end of namespace hamiltonian
+
+} // end of namespace quantum_tensor_network
 
 #endif

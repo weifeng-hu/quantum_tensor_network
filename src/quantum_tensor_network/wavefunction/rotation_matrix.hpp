@@ -4,12 +4,14 @@
 #include <unordered_map>
 #include <vector>
 #include <utility>
-#include "../mat_stoch_diag/simple_matrix.hpp"
-#include "./sub_space.hpp"
-#include "./operator_base.hpp"
-#include "./wavefunction.hpp"
+#include "matrix/matrix.hpp"
+#include "quantum_tensor_network/quantum_number/sub_space.hpp"
+#include "quantum_tensor_network/quantum_operator/operator_base.hpp"
+#include "quantum_tensor_network/wavefunction/wavefunction.hpp"
 
-namespace renormalization_group {
+namespace quantum_tensor_network {
+
+namespace wavefunction {
 
 class RotationMatrix {
 public:
@@ -349,6 +351,8 @@ public:
 
 std :: vector< RotationMatrix > global_rot_map_;
 
-} // end of namespace renormalization_group
+} // end of namespace wavefunction
+
+} // end of namespace quantum_tensor_network
 
 #endif

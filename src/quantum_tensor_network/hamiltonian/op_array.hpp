@@ -4,7 +4,9 @@
 #include <vector>
 #include "operator_base.hpp"
 
-namespace renormalization_group {
+namespace quantum_tensor_network {
+
+namespace hamiltonian {
 
 template < size_t order >
 class OPArray {
@@ -18,6 +20,8 @@ private:
 
 }; // end of class OPArray
 
-} // end of namespace renormalization_group
+} // end of namespace hamiltonian
+
+} // end of namespace quantum_tensor_network
 
 #endif

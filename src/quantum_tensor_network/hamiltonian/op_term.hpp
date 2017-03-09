@@ -2,9 +2,11 @@
 #define TERM_HPP
 
 #include <list>
-#include "operator.hpp"
+#include "quantum_tensor_network/quantum_operator/operator.hpp"
 
-namespace renormalization_group {
+namespace quantum_tensor_network {
+
+namespace hamiltonian {
 
  // definition of Term 
  // Contains something like Ci Cj Ck... only multiply
@@ -76,6 +78,8 @@ private:
 
 }; // end of class Term 
 
-} // end of namespace renormalization_group
+} // end of namespace hamiltonian
+
+} // end of namespace quantum_tensor_network
 
 #endif

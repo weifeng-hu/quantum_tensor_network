@@ -4,11 +4,13 @@
 #include <iostream>
 #include <stdlib.h>
 #include <vector>
-#include "./sub_space.hpp"
-#include "../mat_stoch_diag/simple_matrix.hpp"
-#include "./operator_base.hpp"
+#include "quantum_tensor_network/quantum_number/sub_space.hpp"
+#include "matrix/matrix.hpp"
+#include "quantum_tensor_network/quantum_operator/operator_base.hpp"
 
-namespace renormalization_group {
+namespace quantum_tensor_network {
+
+namespace wavefunction {
 
 class Wavefunction {
 public:
@@ -244,6 +246,8 @@ public:
 
 }; // end of class Wavefunction
 
-} // end of renormalization_group
+} // end of namespace wavefunction
+
+} // end of namespace quantum_tensor_network
 
 #endif

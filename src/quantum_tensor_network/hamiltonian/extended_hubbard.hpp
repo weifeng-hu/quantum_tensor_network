@@ -2,10 +2,12 @@
 #define PPP_HPP
 
 #include <vector>
-#include "../mat_stoch_diag/simple_matrix.hpp"
-#include "hamiltonian_base.hpp"
+#include "matrix/matrix.hpp"
+#include "quantum_tensor_network/hamiltonian/hamiltonian_base.hpp"
 
-namespace renormalization_group {
+namespace quantum_tensor_network {
+
+namespace hamiltonian {
 
 class ExtendedHubbard : public HamiltonainBase {
 public:
@@ -34,6 +36,8 @@ private:
 
 }; // end of class ExtendedHubbard
 
-} // end of namespace renormalization_group
+} // end of namespace hamiltonian
+
+} // end of namespace quantum_tensor_network
 
 #endif

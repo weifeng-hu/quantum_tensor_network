@@ -4,9 +4,11 @@
 #include <unordered_map>
 #include <array>
 #include <utility>
-#include "./hamiltonian_base.hpp"
+#include "quantum_tensor_network/hamiltonian/hamiltonian_base.hpp"
 
-namespace renormalization_group {
+namespace quantum_tensor_network {
+
+namespace hamiltonian {
 
 class Hubbard : public HamiltonianBase {
 public:
@@ -71,6 +73,8 @@ private:
 
 }; // end of class Hubbard
 
-} // end of namespace renormalization_group
+} // end of namespace hamiltonian
+
+} // end of namespace quantum_tensor_network
 
 #endif

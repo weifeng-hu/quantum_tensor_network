@@ -6,8 +6,9 @@
 #include <utility>
 #include <vector>
 
-namespace renormalization_group {
+namespace quantum_tensor_network {
 
+namespace quantum_number {
 enum SpinType { up, down };
 
 class QuantumNumber {
@@ -116,6 +117,8 @@ bool equal( std :: vector< QuantumNumber> qa, std :: vector< QuantumNumber > qb 
 
 }
 
-} // end of namespace renormalization_group
+} // end of namespace quantum_number
+
+} // end of namespace quantum_tensor_network
 
 #endif

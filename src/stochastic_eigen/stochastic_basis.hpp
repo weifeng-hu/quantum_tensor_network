@@ -8,10 +8,10 @@
 #include <random>
 #include <iomanip>
 #include <chrono>
-#include "simple_matrix.hpp"
-#include "random_generator.hpp"
+#include "matrix/simple_matrix.hpp"
+#include "random/random_generator.hpp"
 
-namespace mat_stoch_diag {
+namespace stochastic_eigen {
 
 class StochasticBasis {
 public:
@@ -36,7 +36,7 @@ public:
     }
     this->normalise();
   }
-  StochasticBasis( const SimpleMatrix& vec ) {
+  StochasticBasis( const Matrix& vec ) {
     this->store_ = vec.set_store();
   }
   ~StochasticBasis() {}
@@ -178,12 +178,11 @@ private:
     return ( value % 2 ) == 1 ? 1.0e0 : -1.0e0;
   }
 
-
 private:
   std :: vector< double >  store_;
 
 }; // end of class StochasticBasis
 
-} // end of namespace mat_stoch_diag
+} // end of namespace stochastic_eigen
 
 #endif

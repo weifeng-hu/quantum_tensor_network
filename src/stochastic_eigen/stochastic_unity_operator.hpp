@@ -1,16 +1,16 @@
 #ifndef MAT_STOCH_DIAG_STOCH_UNITY_OP_HPP
 #define MAT_STOCH_DIAG_STOCH_UNITY_OP_HPP
 
-#include "simple_matrix.hpp"
-#include "stochastic_space.hpp"
+#include "matrix/matrix.hpp"
+#include "./stochastic_space.hpp"
 
-namespace mat_stoch_diag {
+namespace stochastic_eigen {
 
 class StochasticUnityOperator {
 public:
-  typedef mat_stoch_diag :: StochasticUnityOperator this_type;
-  typedef mat_stoch_diag :: SimpleMatrix      representation_type;
-  typedef mat_stoch_diag :: StochasticSpace   space_type;
+  typedef  StochasticUnityOperator this_type;
+  typedef  matrix :: Matrix      representation_type;
+  typedef  StochasticSpace   space_type;
   typedef space_type*                         space_pointer;
 
 public:
@@ -33,20 +33,20 @@ public:
       omp_set_dynamic(false);
       omp_set_num_threads(8);
 
-      std :: vector< SimpleMatrix* > pointers_to_matrices;
+      std :: vector< Matrix* > pointers_to_matrices;
       pointers_to_matrices.resize(8);
  
       #pragma omp parallel
       {
         const int thread_id = omp_get_thread_num();
-        SimpleMatrix sub_sum_of_tensor;
+        Matrix sub_sum_of_tensor;
         sub_sum_of_tensor.resize( length, length );
         sub_sum_of_tensor.clear();
         pointers_to_matrices.at(thread_id) = &sub_sum_of_tensor;
 
         #pragma omp for
         for( size_t i = 0; i < this->pointer_to_space_->size(); i++ ) {
-          SimpleMatrix tensor;
+          Matrix tensor;
           tensor.resize( length, length );
           tensor.clear();
           StochasticBasis base_i = (*(this->pointer_to_space_))(i);
@@ -108,7 +108,7 @@ public:
 
   friend
     StochasticBasis operator* ( const this_type& matrix, const StochasticBasis& basis ) {
-      SimpleMatrix mid_vec;
+      Matrix mid_vec;
       mid_vec.resize( matrix.rep().nrow(), 1 );
       mid_vec.clear();
       for( size_t irow = 0; irow < matrix.rep().nrow(); irow++ ) {
@@ -121,7 +121,7 @@ public:
 
   friend
     StochasticBasis operator* ( const StochasticBasis& basis, const this_type& matrix ) {
-      SimpleMatrix mid_vec;
+      Matrix mid_vec;
       mid_vec.resize( matrix.rep().nrow(), 1 );
       mid_vec.clear();
         for( size_t icol = 0; icol < matrix.rep().ncol(); icol++ ) {
@@ -138,6 +138,6 @@ private:
 
 };  // end of class StochasticUnityOperator
 
-}   // end of namespace mat_stoch_diag
+}   // end of namespace stochastic_eigen
 
 #endif

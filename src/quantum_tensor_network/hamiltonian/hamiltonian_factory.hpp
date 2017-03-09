@@ -2,11 +2,13 @@
 #define HAMILTONIAN_FACTORY_HPP
 
 #include <iostream>
-#include "hamiltonian_base.hpp"
-#include "hubbard.hpp"
-#include "ppp.hpp"
+#include "quantum_tensor_network/hamiltonian/hamiltonian_base.hpp"
+#include "quantum_tensor_network/hamiltonian/hubbard.hpp"
+#include "quantum_tensor_network/hamiltonian/ppp.hpp"
 
-namespace renormalization_group {
+namespace quantum_tensor_network {
+
+namespace hamiltonian {
 
 class HamiltonianFactory {
 public:
@@ -37,6 +39,8 @@ public:
 
 }; // end of class HamiltonianFactor
 
-} // end of namespace renormalization_group
+} // end of namespace hamiltonian
+
+} // end of namespace quantum_tensor_network
 
 #endif

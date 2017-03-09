@@ -5,17 +5,19 @@
 #include <vector>
 #include <utility>
 #include <iostream>
-#include "../mat_stoch_diag/simple_matrix.hpp"
-#include "../mat_stoch_diag/matrix_operations.hpp"
-#include "./sub_space.hpp"
+#include "matrix/matrix.hpp"
+#include "matrix/matrix_operations.hpp"
+#include "quantum_tensor_network/quantum_number/sub_space.hpp"
 
-namespace renormalization_group {
+namespace quantum_tensor_network {
+
+namespace tensor {
 
 class OpMatrix {
 public:
   typedef OpMatrix                                                                            this_type;
-  typedef mat_stoch_diag        :: SimpleMatrix                                               matrix_type;
-  typedef renormalization_group :: SubSpace                                                   space_type;
+  typedef matrix :: Matrix                                                                    matrix_type;
+  typedef quantum_number :: SubSpace                                                          space_type;
   typedef std :: pair< std :: pair< space_type, space_type >, matrix_type >                   sub_matrix_type;
   typedef std :: vector< std :: pair< std :: pair< space_type, space_type >, matrix_type > >  store_type;
 
@@ -473,6 +475,8 @@ protected:
 
 }; // end of class OpMatrix
 
-} // end of namespace renormalization_group
+} // end of namespace tensor
+
+} // end of namespace quantum_tensor_network
 
 #endif

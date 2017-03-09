@@ -3,9 +3,11 @@
 
 #include <iostream>
 #include <utility>
-#include "./quantum_number.hpp"
+#include "quantum_tensor_network/quantum_number/quantum_number.hpp"
 
-namespace renormalization_group {
+namespace quantum_tensor_network {
+
+namespace quantum_number {
 
 class SubSpace : public QuantumNumber {
 public:
@@ -86,6 +88,8 @@ bool operator< ( std :: pair< SubSpace, int > obj_a, std :: pair< SubSpace, int 
 
 SubSpace undefined_space( -9999, -9999, -9999 );
 
-} // end of namespace renormalization_group
+} // end of quantum_number
+
+} // end of namespace quantum_tensor_network
 
 #endif

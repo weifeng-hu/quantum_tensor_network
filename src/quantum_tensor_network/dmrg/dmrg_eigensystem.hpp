@@ -4,7 +4,9 @@
 #include <vector>
 #include <utilities>
 
-namespace renormalization_group {
+namespace quantum_tensor_network {
+
+namespace dmrg {
 
 class DMRG_EigenSystem {
 public:
@@ -28,6 +30,8 @@ private:
 
 }; // end of class DMRG_EigenSystem
 
-}  // end of namespace renormalization_group
+}  // end of namespace dmrg
+
+}  // end of namespace quantum_tensor_network
 
 #endif

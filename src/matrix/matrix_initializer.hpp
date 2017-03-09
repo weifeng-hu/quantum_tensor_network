@@ -15,7 +15,7 @@ public:
   ~MatrixInitializer() {}
 
 public:
-  void random_symmetric_tridiagonal( SimpleMatrix& matrixA ) {
+  void random_symmetric_tridiagonal( Matrix& matrixA ) {
     try {
       size_t nrow = matrixA.nrow();
       size_t ncol = matrixA.ncol();

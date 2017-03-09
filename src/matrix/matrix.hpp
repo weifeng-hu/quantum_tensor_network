@@ -12,27 +12,29 @@
 
 namespace matrix {
 
-class SimpleMatrix {
-  typedef SimpleMatrix this_type;
+class Matrix {
 public:
-  SimpleMatrix() { 
+  typedef Matrix this_type;
+
+public:
+  Matrix() { 
     this->store_.resize(0);
     this->nrow_ = 0;
     this->ncol_ = 0;
   }
-  SimpleMatrix( const std :: vector<double>& store, size_t nrow, size_t ncol ) {
+  Matrix( const std :: vector<double>& store, size_t nrow, size_t ncol ) {
     this->nrow_ = nrow;
     this->ncol_ = ncol;
     if( store.size() != ( nrow * ncol ) ) {
-      std :: cout << "unmatching data size vs nrow and ncol in SimpleMatrix " << std :: endl;
+      std :: cout << "unmatching data size vs nrow and ncol in Matrix " << std :: endl;
       abort();
     }
     this->store_ = store;
   }
-  ~SimpleMatrix() {}
+  ~Matrix() {}
 
 public:
-  std :: pair< SimpleMatrix, std :: vector<double> > diagonalize() {}
+  std :: pair< Matrix, std :: vector<double> > diagonalize() {}
 
   void resize( size_t nrow, size_t ncol ) {
     this->nrow_ = nrow;
@@ -51,7 +53,7 @@ public:
     { return this->store_.at( irow * ncol_ + icol ); }
   double& operator() ( size_t irow, size_t icol )
     { return this->store_.at( irow * ncol_ + icol ); }
-  SimpleMatrix& operator*= ( double n ) {
+  Matrix& operator*= ( double n ) {
     for( size_t i = 0; i < this->nrow_; i++ ) {
       for( size_t j = 0; j < this->ncol_; j++ ) {
         (*this)(i,j) *= n;
@@ -61,8 +63,8 @@ public:
   }
 
   friend
-    SimpleMatrix operator* ( SimpleMatrix& mat_a, SimpleMatrix& mat_b ) {
-      SimpleMatrix retval;
+    Matrix operator* ( Matrix& mat_a, Matrix& mat_b ) {
+      Matrix retval;
       size_t ncol_a = mat_a.ncol();
       size_t nrow_a = mat_a.nrow();
       size_t ncol_b = mat_b.ncol();
@@ -88,13 +90,13 @@ public:
     }
 
   friend
-    SimpleMatrix operator+ ( SimpleMatrix& mat_a, SimpleMatrix& mat_b ) {
-      SimpleMatrix retval = mat_a;
+    Matrix operator+ ( Matrix& mat_a, Matrix& mat_b ) {
+      Matrix retval = mat_a;
       retval += mat_b;
       return retval;
     }
 
-  SimpleMatrix& operator+= ( const SimpleMatrix& rhs ) {
+  Matrix& operator+= ( const Matrix& rhs ) {
     if( this->nrow_ == 0 & this->ncol_ == 0 ) {
       this->nrow_ = rhs.nrow();
       this->ncol_ = rhs.ncol();
@@ -121,31 +123,31 @@ public:
     return *this;
   }
 
-  SimpleMatrix inverse() {
-    SimpleMatrix retval;
+  Matrix inverse() {
+    Matrix retval;
     if( this->ncol_ == this->nrow_ ) {
-      retval = SimpleMatrix( *this );
+      retval = Matrix( *this );
       syminverse_( retval.set_store().data(), (const int*)(&(this->ncol_)) );
     }
     else if( this->ncol_ > this->nrow_ ) {
       /// compute right inverse A^t ( A A^t )^-1
-      SimpleMatrix At   = this->transpose();
-      SimpleMatrix A_At = (*this) * At;
-      SimpleMatrix A_At_inv = A_At.inverse();
+      Matrix At   = this->transpose();
+      Matrix A_At = (*this) * At;
+      Matrix A_At_inv = A_At.inverse();
       retval = At * A_At_inv;
     }
     else {
      //// compute left inverse (A^t A)^-1 A^t
-      SimpleMatrix At = this->transpose();
-      SimpleMatrix At_A = At * (*this);
-      SimpleMatrix At_A_inv = At_A.inverse();
+      Matrix At = this->transpose();
+      Matrix At_A = At * (*this);
+      Matrix At_A_inv = At_A.inverse();
       retval = At_A_inv * At;
     }
     return retval;
   }
 
-  SimpleMatrix transpose() {
-    SimpleMatrix retval;
+  Matrix transpose() {
+    Matrix retval;
 
     retval.resize( this->ncol_, this->nrow_ );
     for( size_t i = 0; i < this->nrow_; i++ ) {
@@ -259,7 +261,7 @@ private:
   std :: vector< double > store_;
   size_t nrow_, ncol_;
 
-}; // end of class SimpleMatrix
+}; // end of class Matrix
 
 }  // end of namespace matrix
 

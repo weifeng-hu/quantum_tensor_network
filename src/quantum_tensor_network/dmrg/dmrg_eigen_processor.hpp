@@ -1,10 +1,12 @@
 #ifndef DMRG_EIGEN_PROCESSOR_HPP
 #define DMRG_EIGEN_PROCESSOR_HPP
 
-#include "./block.hpp"
-#include "./dmrg_eigensystem.hpp"
+#include "quantum_tensor_network/lattice/block.hpp"
+#include "quantum_tensor_network/dmrg/dmrg_eigensystem.hpp"
 
-namespace renormalization_group {
+namespace quantum_tensor_network {
+
+namespace dmrg {
 
 class DMRG_EigenProcessor {
 public:
@@ -132,6 +134,8 @@ private:
 
 }; // end of class DMRG_EigenProcessor
 
-} // end of namespace renormalization_group
+} // end of namespace dmrg
+
+} // end of namespace quantum_tensor_network
 
 #endif

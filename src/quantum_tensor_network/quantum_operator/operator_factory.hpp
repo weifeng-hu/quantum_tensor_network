@@ -1,11 +1,13 @@
 #ifndef OP_FACTORY_HPP
 #define OP_FACTORY_HPP
 
-#include "./quantum_number.hpp"
-#include "./operator.hpp"
-#include "./operator_operations.hpp"
+#include "quantum_tensor_network/quantum_number/quantum_number.hpp"
+#include "quantum_tensor_network/quantum_operator/operator.hpp"
+#include "quantum_tensor_network/quantum_operator/operator_operations.hpp"
 
-namespace renormalization_group {
+namespace quantum_tensor_network {
+
+namespace quantum_operator {
 
 class OperatorFactory {
 public:
@@ -44,6 +46,8 @@ public:
 
 }; // end of class OperatorFactory
 
-} // end of namespace renormalization_group
+} // end of namespace quantum_operator
+
+} // end of namespace quantum_tensor_network
 
 #endif

@@ -2,11 +2,13 @@
 #define OPERATOR_HPP
 
 #include <unordered_map>
-#include "../mat_stoch_diag/simple_matrix.hpp"
-#include "./sub_space.hpp"
-#include "./operator_base.hpp"
+#include "matrix/matrix.hpp"
+#include "quantum_tensor_network/quantum_number/sub_space.hpp"
+#include "quantum_tensor_network/quantum_operator/operator_base.hpp"
 
-namespace renormalization_group {
+namespace quantum_tensor_network {
+
+namespace quantum_operator {
 
 enum OpType { c, c_dagger, i, p, num };
 
@@ -234,6 +236,8 @@ public:
 
 }; // end of Number Operator
 
-} // end of namespace renormalization_group
+} // end of namespace quantum_operator
+
+} // end of namespace quantum_tensor_network
 
 #endif
