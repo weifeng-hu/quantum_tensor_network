@@ -226,6 +226,11 @@ if( fabs((*this)( j, i) ) < 1.0e-5 ) {
     return retval;
   }
 
+  friend
+    double operator() ( this_type& obj_a, this_type& obj_b ) {
+      return obj_a.inner_product_with( obj_b );
+    }
+
   void orthogonalize_cols() {
 
     this_type new_mat;

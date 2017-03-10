@@ -198,7 +198,7 @@ public:
 
   } // end of function sort_qn()
 
-  // Matrix operations, *, +, x
+  // Matrix operations, *, +, x, dot
 public:
   // Operation * scalar
   this_type& operator*= ( const double& coeff ) {
@@ -390,6 +390,87 @@ public:
       return op_c;
 
     } // end of operator^ matrix x matrix, tensor product
+
+  friend
+    double operator() ( this_type& obj_a , this_type& obj_b ) {
+
+      double retval = 0.0e0;
+
+      if( obj_a.n_qn_row() != obj_b.n_qn_row() ) {
+        std :: cout << "dot product: two op matrices have different n_qn_row " << std :: endl;
+        std :: cout << " n_qn_row[A] = " << obj_a.n_qn_row() << std :: endl;
+        std :: cout << " n_qn_row[B] = " << obj_b.n_qn_row() << std :: endl;
+        abort();
+      }
+
+      if( obj_a.n_qn_col() != obj_b.n_qn_col() ) {
+        std :: cout << "dot product: two op matrices have different n_qn_col " << std :: endl;
+        std :: cout << " n_qn_col[A] = " << obj_a.n_qn_col() << std :: endl;
+        std :: cout << " n_qn_col[B] = " << obj_b.n_qn_col() << std :: endl;
+        abort();
+      }
+
+      for( int i_qn = 0; i_qn < obj_a.n_qn_row(); i_qn++ ) {
+        for( int j_qn = 0; j_qn < obj_a.n_qn_col(); j_qn++ ) {
+
+          sub_matrix_type& sub_op_a = obj_a( i_qn, j_qn );
+          sub_matrix_type& sub_op_b = obj_b( i_qn, j_qn );
+
+          const space_type& space_row_a = sub_op_a.first.first;
+          const space_type& space_row_b = sub_op_b.first.first;
+
+          const space_type& space_col_a = sub_op_a.first.second;
+          const space_type& space_col_b = sub_op_b.first.second;
+
+          if( space_row_a != space_row_b ) {
+            std :: cout << " sub spaces at " << i_qn << " " << j_qn << " have different quanta in row " << std :: endl;
+            std :: cout << " in A: " << space_row_a << std :: endl;
+            std :: cout << " in B: " << space_row_b << std :: endl;
+            abort();
+          } else {
+            if( space_row_a.dim() != space_row_b.dim() ) {
+              std :: cout << " sub spaces at " << i_qn << " " << j_qn << " have different dim in row " << std :: endl;
+              std :: cout << " in A: " << space_row_a.dim() << std :: endl;
+              std :: cout << " in B: " << space_row_b.dim() << std :: endl;
+              abort();
+            }
+          }
+
+          if( space_col_a != space_col_b ) {
+            std :: cout << " sub spaces at " << i_qn << " " << j_qn << " have different quanta in col " << std :: endl;
+            std :: cout << " in A: " << space_col_a << std :: endl;
+            std :: cout << " in B: " << space_col_b << std :: endl;
+            abort();
+          } else {
+            if( space_col_a.dim() != space_col_b.dim() ) {
+              std :: cout << " sub spaces at " << i_qn << " " << j_qn << " have different dim in col " << std :: endl;
+              std :: cout << " in A: " << space_col_a.dim() << std :: endl;
+              std :: cout << " in B: " << space_col_b.dim() << std :: endl;
+              abort();
+            }
+          }
+        }
+      }
+
+      for( int i_qn = 0; i_qn < obj_a.n_qn_row(); i_qn++ ) {
+        for( int j_qn = 0; j_qn < obj_a.n_qn_col(); j_qn++ ) {
+
+          sub_matrix_type& sub_op_a = obj_a( i_qn, j_qn );
+          sub_matrix_type& sub_op_b = obj_b( i_qn, j_qn );
+
+          const matrix_type& sub_matrix_a = sub_op_a.second;
+          const matrix_type& sub_matrix_b = sub_op_b.second;
+
+          if( sub_matrix_a.nrow() != 0 && sub_matrix_a.ncol() != 0 && sub_matrix_b.nrow() != 0 && sub_matrix_b.ncol() != 0 ) {
+            retval += ( sub_matrix_a, sub_matrix_b );
+          }
+
+        }
+      }
+
+      return retval;
+
+    }  // end of operator() dot product
 
 public:
   // Accessors & modifiers

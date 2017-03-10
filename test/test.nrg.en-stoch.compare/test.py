@@ -4,10 +4,7 @@ import calendar;
 import time;
 import datetime;
 
-#nsites = [ 6, 8, 10, 12];
-#nsites = [ 14, 16, 18, 20 ];
-#M      = [ 25, 50, 100, 200, 400 ];
-nsites = [ 8 ];
+nsites = [ 6, 12, 14 ];
 M      = [ 100, 200, 400];
 nroot  = 0;
 e = -2.0;
