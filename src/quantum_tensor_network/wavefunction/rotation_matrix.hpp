@@ -1,107 +1,55 @@
 #ifndef ROTATION_MATRIX_HPP
 #define ROTATION_MATRIX_HPP
 
-#include <unordered_map>
+//#include <unordered_map>
 #include <vector>
 #include <utility>
 #include "matrix/matrix.hpp"
 #include "quantum_tensor_network/quantum_number/sub_space.hpp"
-#include "quantum_tensor_network/quantum_operator/operator_base.hpp"
-#include "quantum_tensor_network/wavefunction/wavefunction.hpp"
+#include "quantum_tensor_network/tensor/op_matrix.hpp"
+#include "quantum_tensor_network/wavefunction/wavefunction_linear.hpp"
+#include "quantum_tensor_network/dmrg/density_matrix.hpp"
 
 namespace quantum_tensor_network {
 
 namespace wavefunction {
 
-class RotationMatrix {
+class RotationMatrix : public tensor :: OpMatrix {
 public:
-  typedef mat_stoch_diag :: SimpleMatrix matrix_type;
-  typedef SubSpace space_type;
-//  typedef std :: unordered_map < std :: pair < space_type, space_type>, matrix_type > store_type;
-  typedef std :: vector < std :: pair< std :: pair < space_type, space_type>, matrix_type > > store_type;
+  typedef RotationMatrix        this_type;
+  typedef WavefunctionLinear    column_type;
+  typedef dmrg :: DensityMatrix density_matrix_type;
 
 public:
-  RotationMatrix() { n_qn_row_ = 0; n_qn_col_ = 0; store_.resize(0); }
+  RotationMatrix() : OpMatrix() { }
   RotationMatrix( Iden iden ) {
-
-    resize( iden.n_qn_row(), iden.n_qn_col() );
+    this->resize( iden.n_qn_row(), iden.n_qn_col() );
     for( int i = 0; i < n_qn_row_; i++ ) {
       for( int j = 0; j < n_qn_col_; j++ ) {
         sub_matrix( i, j ) = std :: make_pair( std :: make_pair( iden.qn_row( i, j ), iden.qn_col( i, j ) ), iden.matrix( i, j ) );
       }
     }
-
   }
   ~RotationMatrix() {}
 
 public:
-  void resize( const int nrow, const int ncol ) {
-    n_qn_row_ = nrow;
-    n_qn_col_ = ncol;
-    this->store_.resize( nrow * ncol );
-  }
-
-  void resize( std :: vector< space_type > space_row, std :: vector<int> space_col ) {
-    int nrow = space_row.size();
-    int ncol = space_col.size();
-    n_qn_row_ = nrow;
-    n_qn_col_ = ncol;
-    for( int i = 0; i < nrow; i++ ) {
-      for( int j = 0; j < ncol; j++ ) {
-        qn_row( i, j ) = space_row[i];
-        qn_col( i, j ) = space_row[j];
-      }
-    }
-  }
-
-//  matrix_type& at( const space_type& qn_i, const space_type& qn_j ) {
-//
-//  }
-//  matrix_type& operator() ( const space_type& qn_i, const int space_type& qn_j ) {
-//
-//  }
-
-  std :: pair< std :: pair< space_type, space_type >, matrix_type >& sub_matrix( int i, int j ) {
-    return store_[ j * n_qn_row_ + i ];
-  }
-
-  matrix_type& operator() ( const int i, const int j ) {
-    return store_[ j * n_qn_row_ + i ].second;
-  }
-  matrix_type& at( const int i, const int j ) {
-    return store_.at( j * n_qn_row_ +  i ).second;
-  }
-
-  space_type& qn_row( const int i, const int j ) {
-    return store_.at( j * n_qn_row_ + i ).first.first;
-  }
-  space_type& qn_col( const int i, const int j ) {
-    return store_.at( j * n_qn_row_ + i ).first.second;
-  }
-
-  int n_qn_row() const
-    { return n_qn_row_; }
-  int n_qn_col() const
-    { return n_qn_col_; }
-
-  void push_back( Wavefunction& wf ) {
+  void push_back( const column_type& wf ) {
     if( n_qn_col_ == 0 ) {
       this->n_qn_row_ = wf.n_qn_row();
     } else {
-      if( check_space_row( wf ) == false ) {
+      if( check_space_new_col( wf ) == false ) {
         std :: cout << " new wavefunction differs this rotmat in hilbert space " << std :: endl;
         abort();
       }
     }
 
     for( int i = 0; i < n_qn_row_; i++ ) {
-      this->store_.push_back( std :: make_pair( std :: make_pair( wf.qn(i), wf.space() ), wf.matrix(i) ) );
+      this->store_.push_back( std :: make_pair( std :: make_pair( wf.qn(i), wf.space() ), wf.vector(i) ) );
     }
     this->n_qn_col_++;
-
   }
 
-  bool check_space_row( Wavefunction& wf ) {
+  bool check_space_new_col( const column_type& wf ) {
     std :: vector< space_type > space_wf = wf.qn_series();
 //    for( int i = 0; i < space_wf.size(); i++ ) {
 //      space_wf[i].print(); std :: cout << "|";
@@ -112,7 +60,7 @@ public:
 //    }
 //    std :: cout << std :: endl;
 //    std :: cout << std :: endl;
-    if( space_wf.size() != n_qn_row_ ) {
+    if( space_wf.n_qn_row() != n_qn_row_ ) {
       return false;
     }
     for( int i = 0; i < n_qn_row_; i++ ) {
@@ -130,187 +78,7 @@ public:
       }
     }
     return true;
-  }
-
-  void sort_qn() {
-    // sort the operator to be blocked structure w.r.t particle number
-    std :: vector< std :: pair< SubSpace, int > > seq;
-    std :: vector< SubSpace > qns = qn_series_col();
-    for( int i = 0; i < qns.size(); i++ ) { seq.push_back( std :: make_pair( qns[i], i ) ); }
-    std :: sort( seq.begin(), seq.end() );
-//    for( int i = 0; i < qns.size(); i++ ) { seq[i].first.print(); std :: cout << " " << seq[i].second << " " << std :: endl; }
-
-    RotationMatrix new_rotmat;
-    new_rotmat.resize( n_qn_row(), n_qn_col() );
-    for( int i = 0; i < n_qn_row(); i++ ) {
-      for( int j = 0; j < n_qn_col(); j++ ) {
-        new_rotmat.sub_matrix( i, j ) = std :: make_pair( std :: make_pair( qn_row( i, seq[j].second ), qn_col( i, seq[j].second ) ),
-                                                   at( i, seq[j].second ) );
-      }
-    }
-    (*this) = new_rotmat;
-
-    std :: vector< std :: vector< int > > qn_ind_groups;
-    qns = qn_series_col();
-    int j = 0;
-    std :: vector<int> x = {0};
-    for( int i = 1; i < qns.size(); i++ ) {
-      if( qns[j] == qns[i] ) {
-        x.push_back(i);
-      } else {
-        qn_ind_groups.push_back(x);
-        j = i;
-        x.resize(0);
-        x.push_back(j);
-      }
-    }
-    qn_ind_groups.push_back(x);
-
-//    for( int i = 0; i < qn_ind_groups.size(); i++ ) {
-//      for( int j = 0; j < qn_ind_groups[i].size() ; j++ ) {
-//        std :: cout << qn_ind_groups[i][j] << " ";
-//      }
-//      std :: cout << std :: endl;
-//    }
-
-//    this->full_matrix().print();
-
-    RotationMatrix merged_matrix;
-    merged_matrix.resize( n_qn_row(), qn_ind_groups.size() );
-
-    for( int i = 0; i < qn_ind_groups.size(); i++ ) {
-
-      std :: vector<int> group_i = qn_ind_groups[i];
-
-      space_type space_i = qns[group_i[0]];
-      int dim_i = 0;
-      for( int id = 0; id < group_i.size(); id++ ) { dim_i += qns[ group_i[id] ].dim(); }
-      space_i.set_dim() = dim_i;
-
-      for( int j = 0; j < n_qn_row(); j++ ) {
-
-        space_type space_j = qn_row( j, 0 );
-        int dim_j = space_j.dim();
-//        std :: cout << std :: flush << j << ": " << dim_j << " " << i << ": " << dim_i << std :: endl;
-
-        matrix_type new_mat_ij;
-        new_mat_ij.resize( dim_j, dim_i );
-        bool used = false;
-
-        for( int im = 0; im < group_i.size(); im++ ) {
-           int ind_i = group_i[im];
-           int ind_j = j;
-           matrix_type mat = at( ind_j, ind_i );
-           if( mat.nrow() != 0 ) {
-             used = true;
-             int im_start = 0;
-             for( int isub = 0; isub < im; isub++ ) { im_start += qns[ group_i[isub] ].dim(); }
-             int jm_start = 0;
-
-             for( int k = 0; k < mat.nrow(); k++ ) {
-               for( int l = 0; l < mat.ncol(); l++ ) {
-                 new_mat_ij( k, im_start + l ) = mat( k, l );
-               }
-             }
-           }
-        }
-//        new_mat_ij.print();
-        if( used == false ) new_mat_ij.resize(0, 0);
-        merged_matrix.sub_matrix( j, i ) = std :: make_pair( std :: make_pair( space_j, space_i ), new_mat_ij );
-      }
-    }
-    (*this) = merged_matrix;
-
-  }
-
-  int ndim_row() {
-    int dim = 0;
-    for( int i = 0; i < n_qn_row(); i++ ) { dim += this->sub_matrix(i,0).first.first.dim(); }
-    return dim;
-  }
-
-  int ndim_col() {
-    int dim = 0;
-    for( int i = 0; i < n_qn_col(); i++ ) { dim += this->sub_matrix(0,i).first.second.dim(); }
-    return dim;
-  }
-
-  matrix_type full_matrix() {
-    int dim_row = ndim_row();
-    int dim_col = ndim_col();
-    matrix_type retval;
-    retval.resize( dim_row, dim_col );
-
-    for( int i = 0; i < n_qn_row(); i++ ) {
-      for( int j = 0; j < n_qn_col(); j++ ) {
-        int nrow = sub_matrix(i,j).first.first.dim();
-        int ncol = sub_matrix(i,j).first.second.dim();
-        matrix_type mat_ij = this->at(i,j);
-        bool mat_valid = mat_ij.nrow() == 0 ? false : true;
-        for( int k = 0; k < nrow; k++ ) {
-          for( int l = 0; l < ncol; l++ ) {
-            int ind_i = ind_start_row(i) + k;
-            int ind_j = ind_start_col(j) + l;
-            retval( ind_i, ind_j ) = mat_valid ? mat_ij( k, l ) : 0.0e0;
-          }
-        }
-      }
-    }
-    return retval;
-  }
-
-  int ind_start_row( int i_qn ) {
-    int retval = 0;
-    if( i_qn >= n_qn_row() ) {
-      std :: cout << "row_start() i_qn > nrow " << std :: endl;
-      abort();
-    }
-    for( int i = 0; i < i_qn; i++ ) {
-      retval += sub_matrix( i, 0 ).first.first.dim();
-    }
-    return retval;
-  }
-
-  int ind_start_col( int i_qn ) {
-    int retval = 0;
-    if( i_qn >= n_qn_col() ) {
-      std :: cout << "row_start() i_qn > ncol " << std :: endl;
-      abort();
-    }
-    for( int i = 0; i < i_qn; i++ ) {
-      retval += sub_matrix( 0, i  ).first.second.dim();
-    }
-    return retval;
-  }
-
-  std :: vector< space_type > qn_series_row() {
-    std :: vector< space_type > qn_series;
-    for( int i = 0; i < n_qn_row_; i++ ) {
-      qn_series.push_back( qn_row( i, 0 ) );
-    }
-    return qn_series;
-  }
-
-  std :: vector< space_type > qn_series_col() {
-    std :: vector< space_type > qn_series;
-    for( int i = 0; i < n_qn_col_; i++ ) {
-      qn_series.push_back( qn_col( 0, i ) );
-    }
-    return qn_series;
-  }
-  void print() {
-    for( int i = 0; i < n_qn_row_ ; i++ ) {
-       for( int j = 0; j < n_qn_col_ ; j++ ) {
-//          if( (*this)(i,j).second.nrow() != 0 ) {
-          printf( "  qn row: " ); this->sub_matrix(i,j).first.first.print();
-          printf( "  qn col: " ); this->sub_matrix(i,j).first.second.print();
-          printf( "\n" );
-          (*this)(i,j).print();
-          printf( "\n" );
-//          }
-      }
-    }
-  }
+  } // end of function check_space_new_col()
 
   void orthogonalize() {
 
@@ -333,23 +101,120 @@ public:
       }
     }
 
+  } // end of function orthogonalize()
+
+  density_matrix_type compute_dm() {
+
+    density_matrix_type retval;
+
+    if( compute_left_dm_ ) {
+
+      retval.resize( nrow_, nrow_ );
+
+      for( int i = 0; i < ncol_; i++ ) {
+
+         OpMatrix vec_col_i;
+         std :: vector< space_type > qn_col_i = this->qns_col( 0, i );
+         std :: vector< space_type > qns_row_i = this->qn_row( i );
+         vec_col_i.resize( qns_row_j, qn_col_i );
+
+         for( int i = 0; i < vec_col_i.n_qn_row(); i++ ) {
+           vec_col_i.at( i, 0 ) = this->at( j, i );
+         }
+
+         OpMatrix vec_col_i_T;
+         vec_col_i_T.resize( qn_col_i, qns_row_j );
+         for( int i = 0; i < vec_col_i.n_qn_row(); i++ ) {
+           vec_col_i_T.at( i, 0 ) = this->at( i, j );
+         }
+
+         OpMatrix slice_i = vec_col_i * vec_col_i_T;
+
+         retval += slice_i;
+
+      }
+
+    } else {
+
+      retval.resize( ncol_, ncol_ );
+
+      for( int i = 0; i < nrow_; i++ ) {
+
+         OpMatrix vec_row_i;
+         std :: vector< space_type > qn_row_i = this->qns_row( i, 0 );
+         std :: vector< space_type > qns_col_i = this->qn_col( i );
+         vec_row_i.resize( qn_col, qns_row_i );
+
+         for( int i = 0; i < vec_row_i.n_qn_col(); i++ ) {
+           vec_row_i.at( i, 0 ) = this->at( j, i );
+         }
+
+         OpMatrix vec_row_i_T;
+         vec_row_i_T.resize( qns_row_i, qn_col );
+         for( int i = 0; i < vec_row_i.n_qn_col(); i++ ) {
+           vec_row_i_T.at( i, 0 ) = this->at( i, j );
+         }
+
+         OpMatrix slice_i = vec_row_i * vec_row_i_T;
+
+         retval += slice_i;
+
+      }
+
+    }
+
+    return retval;
+
+  } // end of compute_dm()
+
+  
+//  void shuffle( const int increment ) {
+//
+//    int start_site = this->i_site_;
+//    int end_site   = start_site + increment;
+//    int delta      = increment/( abs( increment ) );
+//
+//    int isite = start_site;
+//    while( true ) {
+//
+//      const int left = min( isite, isite + delta );
+//      const int right = max( isite, isite + delta );
+//      rotation_matrix_type left_rotation_matrix  = rotation_matrix_[ left ];
+//      rotation_matrix_type right_rotation_matrix = rotation_matrix_[ right ];
+//
+//      if( delta > 0 ) {
+//        *this = *this * left_rotation_matrix;
+//        *this = Transpose( Transpose( *this ) * Inverse( right_rotation_matrix ) );
+//      } else {
+//        *this = *this * Inverse( left_rotation_matrix );
+//        *this = Transpose( Transpose( *this ) * right_rotation_matrix );
+//      }
+//
+//      if( isite == end_site ) break;
+//      isite += delta;
+//    }
+//
+//  }
+
+  void decompose() {
+
   }
 
-  store_type& set_store()
-    { return this->store_; }
-
-  int& set_n_qn_row()
-    { return n_qn_row_; }
-  int& set_n_qn_col()
-    { return n_qn_col_; }
-
 public:
-  store_type store_;
-  int n_qn_row_, n_qn_col_;
+  int site_id_in() const
+    { return this->site_id_in_; }
+  int site_id_out() const
+    { return this->site_id_out_; }
+  int& set_site_id_in()
+    { return this->site_id_in_; }
+  int& set_site_id_out()
+    { return this->site_id_out_; }
+
+private:
+  int site_id_in_;
+  int site_id_out_;
 
 }; // end of OperatorBase
-
-std :: vector< RotationMatrix > global_rot_map_;
 
 } // end of namespace wavefunction
 

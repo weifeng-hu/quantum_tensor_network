@@ -28,9 +28,8 @@ public:
   ~WavefunctionLinear() {}
 
 public:
-  void resize( const int nrow ) {
-    this->resize(nrow, 1);
-  }
+  void resize( const int nrow ) 
+    { this->resize(nrow, 1); } // end of function resize() by size
   void resize( std :: vector< space_type > space_seq, const space_type wf_space = space_type( 0, 0, 1 )) {
     this->space_ = wf_space;
     this->resize( space_seq.size() );
@@ -38,7 +37,7 @@ public:
       this->set_qn( i ) = space_seq[i];
       ( *this )(i).first.second = wf_space;
     }
-  }
+  } // end of function resize() by space
 
   // Operators, op * wf, and wf + wf
 public:
@@ -54,7 +53,7 @@ public:
       QuantumNumber new_qn = op.delta_qn() + wf.qn();
       retval.set_space() = SubSpace( new_qn.n(), new_qn.s_z(), 1 );
       return retval;
-    }
+    } // end of friend operator*
 
   friend
     WavefunctionLinear operator+ ( WavefunctionLinear& wf_a, WavefunctionLinear& wf_b ) {
@@ -68,7 +67,7 @@ public:
       retval.set_space() = wf_a.space();
       return retval;
 
-    }
+    } // end of friend operator+
 
   // Accessors and Modifiers //
 public:
