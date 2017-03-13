@@ -64,12 +64,12 @@ public:
 
   // Quantum Number operations
 public:
-  space_type qn_row( const int i_qn, const size_t j_qn )
+  space_type qn_row( const int i_qn, const size_t j_qn ) const
     { return (*this)( i_qn, j_qn ).first.first; }
-  space_type qn_col( const int i_qn, const size_t j_qn )
+  space_type qn_col( const int i_qn, const size_t j_qn ) const
     { return (*this)( i_qn, j_qn ).first.second; }
 
-  std :: vector< space_type > qn_series_row( const int x = 0 ) {
+  std :: vector< space_type > qn_series_row( const int x = 0 ) const {
     std :: vector< space_type > retval;
     retval.resize(0);
     for( size_t i = 0; i < this->ncol_; i++ ) {
@@ -78,7 +78,7 @@ public:
     return retval;
   } // end of function qn_series_row()
 
-  std :: vector< space_type > qn_series_col( const int x = 0 ) {
+  std :: vector< space_type > qn_series_col( const int x = 0 ) const {
     std :: vector< space_type > retval;
     retval.resize(0);
     for( size_t i = 0; i < this->nrow_; i++ ) {

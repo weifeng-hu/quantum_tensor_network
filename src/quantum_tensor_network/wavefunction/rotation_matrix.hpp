@@ -167,7 +167,6 @@ public:
 
   } // end of compute_dm()
 
-  
 //  void shuffle( const int increment ) {
 //
 //    int start_site = this->i_site_;
@@ -196,23 +195,19 @@ public:
 //
 //  }
 
-  void decompose() {
-
-  }
-
 public:
-  int site_id_in() const
-    { return this->site_id_in_; }
-  int site_id_out() const
-    { return this->site_id_out_; }
-  int& set_site_id_in()
-    { return this->site_id_in_; }
-  int& set_site_id_out()
-    { return this->site_id_out_; }
+  int old_site() const
+    { return this->old_site_; }
+  int new_site() const
+    { return this->new_site_; }
+  int& set_old_site()
+    { return this->old_site_; }
+  int& set_new_site()
+    { return this->new_site_; }
 
 private:
-  int site_id_in_;
-  int site_id_out_;
+  int old_site_;
+  int new_site_;
 
 }; // end of OperatorBase
 
