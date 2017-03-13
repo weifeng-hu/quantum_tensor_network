@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <utility>
+#include <algorithm>
 #include "quantum_tensor_network/wavefunction/rotation_matrix.hpp"
 #include "quantum_tensor_network/wavefunction/wavefunction_linear.hpp"
 
@@ -14,11 +15,23 @@ class NRG_EigenSystem {
 public:
   typedef WavefunctionLinear eigenvector_type;
   typedef double             eigenvalue_type;
-  typedef std :: vector< eigenvector_type, double > store_type;
+  typedef std :: pair< eigenvector_type, eigenvalue_type > eigenpair_type;
+  typedef std :: vector< eigen_pair_type > store_type;
 
 public:
   NRG_EigenSystem() {}
   ~NRG_EigenSystem() {}
+
+public:
+  struct {
+    bool operator() ( const eigenpair_type& a, const eigenpair_type& b ) {
+      return a.second < b.second;
+    }
+  } customLess;
+
+  void sort_by_eigenvalue() {
+    std :: sort( this->store_.begin(), this->store_.end(), customLess );
+  }
 
 public:
   eigenvector_type eigen_vec( const int ind ) const

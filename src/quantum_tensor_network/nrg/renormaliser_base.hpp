@@ -25,9 +25,7 @@ public:
 
 public:
   RenormaliserBase() {}
-  RenormaliserBase( eigen_spectrum_type* eigen_spectrum_ptr,
-               StateSamplingMethod state_sampling_method, 
-               const int M, 
+  RenormaliserBase( const int M, 
                unsigned seed = 2017 ) :
     eigen_spectrum_ptr_ ( eigen_spectrum_ptr ),
     state_sampling_method_ ( state_sampling_method ),
@@ -40,6 +38,15 @@ public:
   virtual rotation_matrix_3d operator() ( const eigen_system_type& eigen_system ) = 0;
 
 private:
+  eigen_system_type sort_by_energy() {
+    eigen_system_type sorted_eigen_system = this->eigen_system_;
+    sorted_eigen_system.sort_by_energy();
+    return sorted_eigen_system;
+  }
+
+private:
+  eigen_system_type eigen_system_;
+  int M_;
 
 }; // end of class RenormaliserBase
 
