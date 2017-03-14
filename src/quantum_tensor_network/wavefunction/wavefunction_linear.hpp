@@ -94,6 +94,26 @@ public:
   space_type& set_space() 
     { return this->space_; }
 
+  friend 
+    bool operator< ( const this_type& lhs, const this_type& rhs ) {
+      return lhs.space() < rhs.space();
+    }
+
+  friend
+    bool operator>= ( const this_type& lhs, const this_type& rhs ) {
+      return lhs.space() >= rhs.space();
+    }
+
+  friend
+    bool operator<= ( const this_type& lhs, const this_type& rhs ) {
+      return lhs.space() <= rhs.space();
+    }
+
+  friend
+    bool operator> ( const this_type& lhs, const this_type& rhs ) {
+      return lhs.space() > rhs.space();
+    }
+
 private:
   space_type space_;
 

@@ -1,14 +1,14 @@
-#ifndef MAT_STOCH_DIAG_STOCH_SPACE
-#define MAT_STOCH_DIAG_STOCH_SPACE
+#ifndef STOCHASTIC_SPACE_HPP
+#define STOCHASTIC_SPACE_HPP
 
 #include <omp.h>
 #include <vector>
 #include <iostream>
 #include <random>
-#include "./stochastic_basis.hpp"
+#include "stochastic_eigen/stochastic_basis.hpp"
 #include "matrix/matrix.hpp"
 
-namespace mat_stoch_diag {
+namespace stochastic_eigen {
 
 class StochasticSpace {
 public:

@@ -1,7 +1,6 @@
 #ifndef RENORAMLISER_BASE_HPP
 #define RENORMALISER_BASE_HPP
 
-#include <map>
 #include "quantum_tensor_network/wavefunction/rotation_matrix.hpp"
 #include "quantum_tensor_network/wavefunction/rotation_matrix_3d.hpp"
 #include "quantum_tensor_network/nrg/nrg_eigen_system.hpp"
@@ -18,6 +17,7 @@ public:
   typedef wavefunction :: RotationMatrix rotation_matrix_2d_type;
   typedef wavefunction :: RotationMatrix3D rotation_matrix_3d_type;
   typedef NRG_EigenSystem eigen_system_type;
+  typedef eigen_system_type :: eigenvector_type eigenvector_type;
 
 public:
   RenormaliserBase() {}
@@ -25,12 +25,9 @@ public:
 
 public:
   RenormaliserBase() {}
-  RenormaliserBase( const int M, 
-               unsigned seed = 2017 ) :
-    eigen_spectrum_ptr_ ( eigen_spectrum_ptr ),
+  RenormaliserBase( const int M ) : 
     state_sampling_method_ ( state_sampling_method ),
     M_ ( M ),
-    seed_value_( seed )
     {} 
   virtual ~RenormaliserBase() {}
 

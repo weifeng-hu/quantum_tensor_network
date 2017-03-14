@@ -1,7 +1,7 @@
 import subprocess;
 import linecache;
 
-nsites = [ 8 ];
+nsites = [ 6 ];
 M      = [ 100, 200, 400 ];
 nroot  = 0;
 e      = -2.0;
