@@ -1,15 +1,9 @@
 #ifndef RENORMALISER_EN_HPP
 #define RENORMALISER_EN_HPP
 
-#include <stdio.h>
-#include "../mat_stoch_diag/simple_matrix.hpp"
-#include "../mat_stoch_diag/stochastic_basis_mixer.hpp"
-#include "./wavefunction.hpp"
-#include "./rotation_matrix.hpp"
+#include "quantum_tensor_network/nrg/renormaliser_base.hpp"
 
 namespace quantum_tensor_network {
-
-enum StateSamplingMethod { UNSET, NORMAL, STOCH_MIX };
 
 namespace nrg { 
 
@@ -19,15 +13,7 @@ public:
 
 public:
   RenormaliserEn() {}
-  RenormaliserEn( eigen_spectrum_type* eigen_spectrum_ptr,
-               StateSamplingMethod state_sampling_method, 
-               const int M, 
-               unsigned seed = 2017 ) :
-    eigen_spectrum_ptr_ ( eigen_spectrum_ptr ),
-    state_sampling_method_ ( state_sampling_method ),
-    M_ ( M ),
-    seed_value_( seed )
-    {} 
+  RenormaliserEn( const int M ) : base_type( M ) {}
   ~RenormaliserEn() {}
 
 public:
@@ -60,20 +46,10 @@ public:
 
   } // end of operator()
 
-}; // end of class Accelerator
+  std :: string renormaliser_name() const
+    { return std :: string( "Renormaliser Energy" ); }
 
-std :: string state_sampling_method_name( const StateSamplingMethod method ) {
-
-  switch( method ) {
-    case( NORMAL ) :
-      return std :: string( "standard" );
-    case( STOCH_MIX ):
-      return std :: string( "stochastic mixture" );
-    default:
-      return std :: string( "unknown" );
-  }
-
-}
+}; // end of class RenormaliserEn
 
 } // end of namespace nrg
 

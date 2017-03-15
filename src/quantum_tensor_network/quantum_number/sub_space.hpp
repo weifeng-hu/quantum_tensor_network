@@ -76,11 +76,6 @@ public:
 
 }; // end of struct SubSpace
 
-std :: vector< SubSpace > site_space = { SubSpace(0, 0, 1),
-                                         SubSpace(1, 1, 1),
-                                         SubSpace(1, -1, 1),
-                                         SubSpace(2, 0, 1) };
-
 
 bool operator< ( std :: pair< SubSpace, int > obj_a, std :: pair< SubSpace, int > obj_b ) {
   return (obj_a.first < obj_b.first);

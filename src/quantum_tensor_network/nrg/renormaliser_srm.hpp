@@ -13,6 +13,19 @@ public:
   typedef RenormaliserSRM this_type;
 
 public:
+  RenormaliserSRM() : 
+    RenormaliserBase(), 
+    seed_value_ ( 2017 ), en_percent_( 0.5e0 )
+    {}
+  RenormaliserSRM( const unsigned seed, const double en_percent ) :
+    seed_value_ ( seed ),
+    en_percent_ ( en_percent_ ) {}
+  ~RenormaliserSRM() {}
+
+public:
+  std :: string renormaliser_name() const
+    { return std :: string( "Stochastic Residual Space Mixing Renormaliser" ); }
+
   rotation_matrix_3d_type operator() ( const eigen_system_type& eigen_system ) {
 
     rotation_matrix_2d_type new_rotmat;
@@ -75,9 +88,19 @@ public:
 
   } // end of operator()
 
+public:
+  unsigned& set_seed_value()
+    { return this->seed_value_; }
+  unsigned seed_value() const
+    { return this->seed_value_; }
+  double& set_en_percent()
+    { return this->en_percent_; }
+  double en_percent() const
+    { return this->en_percent_; }
+
 private:
-  unsigned seed_value_;
-  double en_percent_;
+  unsigned  seed_value_;
+  double    en_percent_;
 
 }; // end of class RenormaliserSRM
 
