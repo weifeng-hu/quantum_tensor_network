@@ -1,5 +1,5 @@
-#ifndef DMRG_ACCERLATOR_HPP
-#define DMRG_ACCERLATOR_HPP
+#ifndef DMRG_RENORMALISER_SV_HPP
+#define DMRG_RENORMALISER_SV_HPP
 
 #include "quantum_tensor_network/wavefunction/rotation_matrix.hpp"
 

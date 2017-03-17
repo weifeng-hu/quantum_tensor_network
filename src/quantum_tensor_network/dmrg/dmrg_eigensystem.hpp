@@ -1,8 +1,10 @@
-#ifndef DMRG_EIGEN_SYSTEM_HPP
-#define DMRG_EIGEN_SYSTEM_HPP
+#ifndef DMRG_EIGENSYSTEM_HPP
+#define DMRG_EIGENSYSTEM_HPP
 
 #include <vector>
 #include <utilities>
+#include "quantum_tensor_network/wavefunction/wavefunction_mps.hpp"
+#include "quantum_tensor_network/dmrg/density_matrix.hpp"
 
 namespace quantum_tensor_network {
 
@@ -11,7 +13,7 @@ namespace dmrg {
 class DMRG_EigenSystem {
 public:
   typedef double                                                          energy_type;
-  typedef WavefunctionDMRG                                                wavefunction_type;
+  typedef wavefunction :: nonlinear_wavefunction_1d_type                  wavefunction_type;
   typedef std :: vector< std :: pair< energy_type, wavefunction_type > >  store_type;
   typedef DensityMatrix                                                   density_matrix_type;
 

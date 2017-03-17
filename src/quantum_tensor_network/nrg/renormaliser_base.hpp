@@ -1,7 +1,8 @@
-#ifndef RENORAMLISER_BASE_HPP
-#define RENORMALISER_BASE_HPP
+#ifndef NRG_RENORAMLISER_BASE_HPP
+#define NRG_RENORMALISER_BASE_HPP
 
 #include <string>
+#include <tuple>
 #include "quantum_tensor_network/lattice/quanta_flow.hpp"
 #include "quantum_tensor_network/wavefunction/rotation_matrix.hpp"
 #include "quantum_tensor_network/wavefunction/rotation_matrix_3d.hpp"

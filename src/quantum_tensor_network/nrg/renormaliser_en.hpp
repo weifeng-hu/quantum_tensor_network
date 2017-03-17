@@ -1,5 +1,5 @@
-#ifndef RENORMALISER_EN_HPP
-#define RENORMALISER_EN_HPP
+#ifndef NRG_RENORMALISER_EN_HPP
+#define NRG_RENORMALISER_EN_HPP
 
 #include "quantum_tensor_network/nrg/renormaliser_base.hpp"
 

@@ -16,6 +16,10 @@ public:
 
 public:
   this_type() {}
+  this_type( inflow_quanta_type inflow_aux, inflow_quanta_type inflow_phys, outflow_quanta_type outflow_aux ) :
+    aux_inflow_quanta_ ( inflow_aux ),
+    aux_outflow_quanta_ ( outflow_aux ),
+    phys_inflow_quanta_ ( inflow_phys ) {}
   ~this_type() {}
 
 private:
