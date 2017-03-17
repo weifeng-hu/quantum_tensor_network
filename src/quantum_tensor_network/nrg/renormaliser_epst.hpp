@@ -80,7 +80,7 @@ public:
         for( size_t j = 0; j < keys.size(); j++ ) {
           new_eigenvector = new_eigenvector + (double) keys[j] * ordered_space[ ind_group[i][j] ];
         }
-        new_eigenvector *= 1.0/keys.size();
+        new_eigenvector *= 1.0/sqrt((double)keys.size());
         new_rotmat.push_back( new_eigenvector );
         number_of_basis++;
         if( number_of_basis == truncated_size ) break;

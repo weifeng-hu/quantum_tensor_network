@@ -17,19 +17,6 @@ public:
   ~RenormaliserEn() {}
 
 public:
-  RotationMatrix perform() {
-    switch( this->state_sampling_method_ ) {
-      case( NORMAL ) :
-        return this->energy_truncation();
-      case( STOCH_MIX ) :
-        return this->stochastic_equal_prob_residual();
-      default:
-        std :: cout << "unknown state sampling method " << std :: endl;
-        abort();
-    }
-  }
-
-public:
   rotation_matrix_3d_type operator() ( const eigen_system_type& eigen_system ) {
 
     rotation_matrix_2d_type new_rotmat;

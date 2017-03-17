@@ -399,6 +399,9 @@ protected:
 
   bool compact_stochastic_mode_;
 
+  this_type* left_child_;
+  this_type* right_child_;  
+
 }; // end of class HamiltonianBase
 
 std :: string hamiltonian_name( const HamType hamiltonian_type )

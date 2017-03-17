@@ -7,30 +7,33 @@ namespace quantum_tensor_network {
 
 namespace dmrg {
 
+// Renormaliser Singular Value order
 class RenormaliserSVOrder {
 public:
+  typedef DMRG_EigenSystem eigen_system_type;
   typedef RotationMatrix rotation_matrix_type;
 
 public:
-  rotation_matrix_type perform() {
-    rotation_matrix_type new_rotmat;
-    std :: multimap< double, Wavefunction> sorted_eigen_spectrum = this->sort_energy();
-    typedef std :: multimap< double, Wavefunction > :: reverse_iterator map_iter;
-    RotationMatrix new_rotmat;
+  rotation_matrix_3d_type operator() ( const eigen_system_type& eigen_system ) {
 
-    int nwf = 0;
-    for( map_iter it = sorted_eigen_spectrum.begin(); it != sorted_eigen_spectrum.end(); ++it ) {
-//      it->second.space().print();
-      if( nwf < M_ )new_rotmat.push_back( it->second );
-      nwf++;
-    }
-    new_rotmat.sort_qn();
-    return new_rotmat;
+    this->eigen_system_ = eigen_system;
+    density_matrix_type density_matrix = eigen_system.compute_dm();
+
+    op_matrix_eigen_processor_type eigen_processor;
+    op_matrix_eigen_system_type op_matrix_eigen_system = eigen_processor( density_matrix );
+
+    op_matrix_eigen_system.erase( this->M_, op_matrix_eigen_system.size() );
+
+    rotation_matrix_2d_type rotmat  = op_matrix_eigen_system.export_rotmat();
+
+    rotation_matrix_3d_type retval = reshape_from_2d( rotmat, site_space );
+
+    return retval;
 
   }
 
 public:
-  eigen_spectrum_type eigen_spectrum_ptr;
+  eigen_system_type eigen_system_;
 
 }; // end of class RenormaliserSVOrder
 

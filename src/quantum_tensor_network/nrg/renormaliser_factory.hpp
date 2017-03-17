@@ -1,9 +1,9 @@
-#ifndef RENORMALISER_FACTORY_HPP
-#define RENORMALISER_FACTORY_HPP
+#ifndef NRG_RENORMALISER_FACTORY_HPP
+#define NRG_RENORMALISER_FACTORY_HPP
 
-#include "quantum_tensor_network/renormaliser_en.hpp"
-#include "quantum_tensor_network/renormaliser_srm.hpp"
-#include "quantum_tensor_network/renormaliser_epst.hpp"
+#include "quantum_tensor_network/nrg/renormaliser_en.hpp"
+#include "quantum_tensor_network/nrg/renormaliser_srm.hpp"
+#include "quantum_tensor_network/nrg/renormaliser_epst.hpp"
 
 namespace quantum_tensor_network {
 
@@ -15,7 +15,7 @@ class RenormaliserFactory {
 public:
   typedef RenormaliserFactory  this_type;
   typedef RenormaliserBase     product_base_type;
-  typedef StateSamplingMethod  method_type;
+  typedef StateSamplingMethod  renormalise_method_type;
 
 public:
   this_type() {}
@@ -36,7 +36,7 @@ public:
         product_ptr = new RenormaliserEPST();
         break;
       default:
-        std :: cout << "Unknown Renormaliser" << std :: endl;
+        std :: cout << "Unknown Renormaliser type" << std :: endl;
         abort(); 
         break;
     }
@@ -44,7 +44,6 @@ public:
     return product_ptr;
 
   } // end of function get_renormaliser()
-
 
 }; // end of class RenormaliserFactory
 

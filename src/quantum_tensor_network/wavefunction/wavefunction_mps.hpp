@@ -17,7 +17,7 @@ public:
   typedef RotationMatrix2D                         rotation_matrix_2d_type;
   typedef rotation_matrix_3d_type :: LQ_pair_type  LQ_pair_type;
   typedef rotation_matrix_3d_type :: QR_pair_type  QR_pair_type;
-  typedef std :: vector< rotation_matrix_type >    store_type;
+  typedef std :: vector< rotation_matrix_3d_type >    store_type;
 
 public:
   MatrixProductStates() {}

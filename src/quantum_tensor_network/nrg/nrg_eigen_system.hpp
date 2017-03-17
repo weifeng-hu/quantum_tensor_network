@@ -4,8 +4,7 @@
 #include <vector>
 #include <utility>
 #include <algorithm>
-#include "quantum_tensor_network/wavefunction/rotation_matrix.hpp"
-#include "quantum_tensor_network/wavefunction/wavefunction_linear.hpp"
+#include "quantum_tensor_network/wavefunction/wavefunction.hpp"
 
 namespace quantum_tensor_network {
 
@@ -13,15 +12,18 @@ namespace nrg {
 
 class NRG_EigenSystem {
 public:
-  typedef WavefunctionLinear eigenvector_type;
-  typedef double             eigenvalue_type;
-  typedef std :: pair< eigenvector_type, eigenvalue_type > eigenpair_type;
-  typedef std :: vector< eigen_pair_type > store_type;
-  typedef std :: vector< eigenvector_type > eigenspace_type;
+  typedef NRG_EigenSystem                                   this_type;
+  typedef wavefunction :: linear_wavefunction_type          eigenvector_type;
+  typedef wavefunction :: rotation_matrix_2d_type           rotation_matrix_type;
+  typedef double                                            eigenvalue_type;
+  typedef std :: pair< eigenvector_type, eigenvalue_type >  eigenpair_type;
+  typedef std :: vector< eigenpair_type >                   store_type;
+  typedef std :: vector< eigenvector_type >                 eigenspace_type;
+  typedef std :: vector< eigenvalue_type >                  eigenspectrum_type;
 
 public:
-  NRG_EigenSystem() {}
-  ~NRG_EigenSystem() {}
+  this_type() {}
+  ~this_type() {}
 
 public:
   struct {
@@ -47,13 +49,13 @@ public:
 public:
   size_t size() const
     { return this->store_.size(); }
-  eigenvector_type eigen_vec( const int ind ) const
+  eigenvector_type eigenvec( const int ind ) const
     { return this->store_.at(ind).first; }
-  eigenvector_type& set_eigen_vec( const int ind )
+  eigenvector_type& set_eigenvec( const int ind )
     { return this->store_.at(ind).first; }
-  eigenvalue_type& eigen_val( const int ind ) const
+  eigenvalue_type& eigenval( const int ind ) const
     { return this->store_.at(ind).second; }
-  eigenvalue_type& set_eigen_val( const int ind )
+  eigenvalue_type& set_eigenval( const int ind )
     { return this->store_.at(ind).second; }
   void push_back( const eigenvector_type& new_vec, const eigenvalue_type& new_val )
     { this->store_.push_back( make_pair( new_vec, new_val ) ); }
@@ -66,7 +68,7 @@ public:
     return this->store_.erase( this->store_.begin() + first, this->store_.begin() + last );
   }
 
-  rotation_matrix_2d_type export_rotmat() {
+  rotation_matrix_type export_rotmat() {
 
   }
 
