@@ -12,10 +12,12 @@ namespace dmrg {
 
 class DMRG_EigenSystem {
 public:
-  typedef double                                                          energy_type;
-  typedef wavefunction :: nonlinear_wavefunction_1d_type                  wavefunction_type;
-  typedef std :: vector< std :: pair< energy_type, wavefunction_type > >  store_type;
-  typedef DensityMatrix                                                   density_matrix_type;
+  typedef double                                              eigenvalue_type;
+  typedef wavefunction :: rotation_matrix_3d_type             eigenvector_type;
+  typedef std :: pair< eigenvalue_type, eigenvector_type >    eigenpair_type;
+  typedef std :: vector< eigenpair_type >                     store_type;
+  typedef std :: vector< eigenvalue_type >                    eigenspectrum_type;
+  typedef DensityMatrix                                       density_matrix_type;
 
 public:
   density_matrix_type compute_dm( const int root_id ) {

@@ -7,8 +7,8 @@ namespace quantum_tensor_network {
 
 namespace dmrg {
 
-// Renormaliser Singular Value order
-class RenormaliserSVOrder {
+// Renormaliser Singular Value (of Density Matrix) 
+class RenormaliserSV {
 public:
   typedef DMRG_EigenSystem eigen_system_type;
   typedef RotationMatrix rotation_matrix_type;
@@ -35,7 +35,7 @@ public:
 public:
   eigen_system_type eigen_system_;
 
-}; // end of class RenormaliserSVOrder
+}; // end of class RenormaliserSV
 
 } // end of namespace dmrg
 
