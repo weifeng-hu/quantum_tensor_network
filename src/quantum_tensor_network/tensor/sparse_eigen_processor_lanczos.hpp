@@ -1,5 +1,5 @@
-#ifndef SPARSE_EIGEN_PROCESSOR_HPP
-#define SPARSE_EIGEN_PROCESSOR_HPP
+#ifndef SPARSE_EIGEN_PROCESSOR_LANCZOS_HPP
+#define SPARSE_EIGEN_PROCESSOR_LANCZOS_HPP
 
 namespace quantum_tensor_network {
 
@@ -8,7 +8,7 @@ namespace tensor {
 class SparseEigenProcessor {
 
 public:
-  eigen_system_2d_type diagonalise() {
+  eigen_system_2d_type operator() ( decomposer_type* decomposer_ptr ) {
 
     dmrg_eigensystem_type eigen_pairs;
     eigen_pairs.resize( nroot );
@@ -23,7 +23,7 @@ public:
       wavefunction_type v_j = h_x_vec/beta_j_1
       v_buf[iter] = v_j;
 
-      wavefunction_type h_x_vec = hv_decomposition( left_block, right_block, v_j );
+      wavefunction_type h_x_vec = (*decomposer_ptr)();
 
       if( iter >= 2 ) {
         double beta_j_1 = beta[iter-1];

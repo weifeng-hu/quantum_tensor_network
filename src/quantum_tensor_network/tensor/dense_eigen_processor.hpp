@@ -1,5 +1,5 @@
-#ifndef OP_MATRIX_EIGEN_PROCESSOR
-#define OP_MATRIX_EIGEN_PROCESSOR
+#ifndef DENSE_EIGEN_PROCESSOR
+#define DENSE_EIGEN_PROCESSOR
 
 namespace quantum_tensor_network {
 

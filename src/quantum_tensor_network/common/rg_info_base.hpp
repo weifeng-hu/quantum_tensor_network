@@ -1,5 +1,5 @@
-#ifndef RENORMALIZATION_GROUP_HPP
-#define RENORMALIZATION_GROUP_HPP
+#ifndef RG_INFO_BASE_HPP
+#define RG_INFO_BASE_HPP
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,23 +7,15 @@
 #include <utility>
 #include <iostream>
 #include <string>
-#include "./integral.hpp"
-#include "./hamiltonian_base.hpp"
-//#include "./rotation_matrix.hpp"
-#include "./accelerator.hpp"
-#include "./block.hpp"
 
-namespace renormalization_group {
+namespace quantum_tensor_network {
 
-class RenormalizationGroup {
+class RG_Info_Base {
 public:
-  typedef Integral                integral_type;
-  typedef Block                   block_type;
-  typedef HamiltonianBase         hamiltonian_class;
-  typedef std :: vector< std :: pair< double, SubSpace > > eigen_spectrum_type;
+  typedef RG_Info_Base  this_type;
 
 public:
-  RenormalizationGroup() :
+  this_type() :
     n_site_ (0),
     site_lower_bound_ ( std :: numeric_limits<int> :: min() ),
     site_upper_bound_ ( std :: numeric_limits<int> :: max() ),
@@ -38,7 +30,7 @@ public:
     this->eigen_values_.resize(10);
   }
 
-  RenormalizationGroup( const size_t n_site_value,
+  this_type( const size_t n_site_value,
        const size_t M_value = 10,
        const HamType hamiltonian = HUBBARD,
        const StateSamplingMethod sampling_method = NORMAL,
@@ -64,10 +56,9 @@ public:
     this->eigen_values_.resize( n_root );
   }
 
-  virtual ~RenormalizationGroup() {}
+  virtual ~this_type() {}
 
 public:
-  virtual void run() {};
   virtual void print_info_specific() {};
   void print_info() {
 
@@ -163,8 +154,8 @@ protected:
   int                  increment_;
   unsigned             seed_;
 
-}; // end of RenormalizationGroup
+}; // end of class RG_Info_Base
 
-} // end of namespace renormalization_group
+} // end of namespace quantum_tensor_network
 
 #endif

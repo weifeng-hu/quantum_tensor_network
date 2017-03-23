@@ -401,6 +401,7 @@ protected:
 
   this_type* left_child_;
   this_type* right_child_;  
+  decomposer_base_type* decomposer_ptr_;
 
 }; // end of class HamiltonianBase
 

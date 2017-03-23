@@ -2,17 +2,21 @@
 #define TISE_SOLVER_LINEAR_HPP
 
 #include "quantum_tensor_network/gradient/tise_solver_base.hpp"
+#include "quantum_tensor_network/gradient/solutions_type.hpp"
+#include "quantum_tensor_network/hamiltonian/hamiltonian.hpp"
 
 namespace quantum_tensor_network {
 
 namespace gradient {
 
 class TISE_SolverLinear : public TISE_SolverBase {
+public:
+  typedef TISE_SolverLinear this_type;
 
 public:
-  eigen_system_linear_type operator() ( const hamiltonian_type& hamiltonian ) {
+  linear_eigensystem_type operator() ( const hamiltonian_type& hamiltonian ) {
 
-    eigen_system_linear_type retval;
+    eigensystem_linear_type retval;
 
 //    eigen_processor_type eigen_processor;
 //    retval = eigen_processor( hamiltonian );

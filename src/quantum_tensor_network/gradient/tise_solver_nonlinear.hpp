@@ -1,71 +1,43 @@
-#ifndef DMRG_EIGEN_PROCESSOR_HPP
-#define DMRG_EIGEN_PROCESSOR_HPP
+#ifndef TISE_SOLVER_NONLINEAR_HPP
+#define TISE_SOLVER_NONLINEAR_HPP
 
-#include "quantum_tensor_network/lattice/block.hpp"
-#include "quantum_tensor_network/dmrg/dmrg_eigensystem.hpp"
+#include <vector>
+#include <utility>
+//#include "quantum_tensor_network/lattice/block.hpp"
+//#include "quantum_tensor_network/dmrg/dmrg_eigensystem.hpp"
+#include "quantum_tensor_network/gradient/tise_solver_base.hpp"
+#include "quantum_tensor_network/gradient/solution_types.hpp"
 
 namespace quantum_tensor_network {
 
-namespace dmrg {
+namespace gradient {
 
-class DMRG_EigenProcessor {
+class TISE_SolverNonlinear : public TISE_SolverBase {
 public:
-  typedef Block block_type;
-  typedef DMRG_Eigensystem dmrg_eigensystem_type;
-
-public:
-  DMRG_EigenProcessor() {}
-  ~DMRG_EigenProcessor() {}
+  typedef TISE_SolverNonlinear                    this_type;
+  typedef hamltonian :: hamiltonian_base_type     hessian_type;
+  typedef dmrg :: DMRG_Eigensystem                solution_type;
+  typedef solution_type :: eigenvector_type       eigenvector_type;
 
 public:
-  dmrg_eigensystem_type diagonalise( const block_type& left_block, const block_type& right_block ) {
+  this_type() {}
+  ~this_type() {}
 
-    SparseEigenProcessor<> eigen_processor; 
+public:
+  solution_type operator() ( const hessian& hessian_type, const decomposer_type* decomposer, const eigenvector_type& guess ) {
 
-  }
+    solution_type retval;
 
-  wavefunction_type hv_decomposition( const block_type& left_block, const block_type& right_block, wavefunction_type& v) {
-
-     wavefunction_type retval;
-     retval.resize( v.qns_row(), v.qns_col() );
-
-     // HL * W
-     hamiltonian_type& hl = left_block.hamiltonian()
-     retval += hl * v;
-
-     // HR W
-     hamiltonian_type& hr = right_block.hamiltonian()
-     retval += hr * Transpose(v);
-
-     // interacting term:
-     // neighbouring c^dagger_i * c_i+1
-     op_type* c_dagger_left_end = new CUp( left_block.end_index() );
-     c_dagger_left_end.get_current_rep();
-     op_type* c_right_begin = new CDw ( right_block.begin_index() );
-     c_right_begin.get_current_rep();
-
-     retval += integral( left_block.end_index(), right_block.begin_index() ) * c_dagger_left_end * ( c_right_begin * Transpose( v ) );
-
-     // interacting term
-     // conjugated term
-     // c^dagger_i+1 * c_i
-     op_type* c_dagger_right_begin = new CUp ( right_block.start_index() );
-     c_dagger_right_begin.get_current_rep();
-     op_type* c_right_begin = new CDw ( left_block.end_index() );
-     c_left_end.get_current_rep();
-
-     retval += integral( right_block.begin_index(), left_block.end_index() ) * c_dagger_right_begin * Transpose( ( c_left_end * v ) );
-
-     return retval;
+    return retval;
 
   }
 
 private:
 
 
-}; // end of class DMRG_EigenProcessor
+}; // end of class TISE_SolverNonlinear
 
-} // end of namespace dmrg
+} // end of namespace gradient
 
 } // end of namespace quantum_tensor_network
 

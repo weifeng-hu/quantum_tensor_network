@@ -53,10 +53,9 @@ public:
       hessian_to_A    = gradient_to_A.dL_by_dA( target_A );
     }
 
-    gradient_solver_type gradient_solver;
     gradient_solver_type :: hessian_type   hessian = hessian_to_A.contract(); // includes Hi-1 + Hi + Hi-1xHi
     gradient_solver_type :: gradient_type  gradient = gradient_to_A.contract();
-    gradient_solver_type :: retval_type    retval = gradient_solver( hessian, gradient ); 
+    gradient_solver_type :: retval_type    retval = (*gradient_solver_ptr_)( hessian, gradient ); 
 
     // Renormalise
     A_type new_rotation_matrix_3d = 

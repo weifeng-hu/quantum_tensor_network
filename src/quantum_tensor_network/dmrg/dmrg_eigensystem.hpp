@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <utilities>
-#include "quantum_tensor_network/wavefunction/wavefunction_mps.hpp"
+#include "quantum_tensor_network/tensor/tensor.hpp"
 #include "quantum_tensor_network/dmrg/density_matrix.hpp"
 
 namespace quantum_tensor_network {
@@ -13,7 +13,7 @@ namespace dmrg {
 class DMRG_EigenSystem {
 public:
   typedef double                                              eigenvalue_type;
-  typedef wavefunction :: rotation_matrix_3d_type             eigenvector_type;
+  typedef tensor :: op_tensor_3d_type                         eigenvector_type;
   typedef std :: pair< eigenvalue_type, eigenvector_type >    eigenpair_type;
   typedef std :: vector< eigenpair_type >                     store_type;
   typedef std :: vector< eigenvalue_type >                    eigenspectrum_type;
