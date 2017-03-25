@@ -12,6 +12,7 @@ namespace gradient {
 class TISE_SolverLinear : public TISE_SolverBase {
 public:
   typedef TISE_SolverLinear this_type;
+  typedef linear_eigensystem_type return_type;
 
 public:
   linear_eigensystem_type operator() ( const hamiltonian_type& hamiltonian ) {

@@ -8,7 +8,7 @@ namespace quantum_tensor_network {
 
 namespace dmrg {
 
-enum StateSamplingMethod { UNSET, SV };
+enum Renormaliser_ID { UNSET, SV };
 
 class RenormaliserFactory {
 public:

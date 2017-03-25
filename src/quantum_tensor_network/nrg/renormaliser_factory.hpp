@@ -9,20 +9,20 @@ namespace quantum_tensor_network {
 
 namespace nrg {
 
-enum StateSamplingMethod { UNSET, EN, SRM, EPST };
+enum Renormaliser_ID { UNSET, EN, SRM, EPST };
 
 class RenormaliserFactory {
 public:
   typedef RenormaliserFactory  this_type;
   typedef RenormaliserBase     product_base_type;
-  typedef StateSamplingMethod  renormalise_method_type;
+  typedef Renormaliser_ID      renormalise_method_type;
 
 public:
   this_type() {}
   ~this_type() {}
 
 public:
-  product_base_type* get_renormaliser( const method_type method = UNSET ) {
+  product_base_type* get_renormaliser( const renormalise_method_type method = UNSET ) {
 
     product_base_type* product_ptr;
     switch( method ) {

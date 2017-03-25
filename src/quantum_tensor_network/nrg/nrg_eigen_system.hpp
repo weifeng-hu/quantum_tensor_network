@@ -70,6 +70,14 @@ public:
 
   rotation_matrix_type export_rotmat() {
 
+    rotation_matrix_type retval;
+    return retval;
+
+  }
+
+  eigenspectrum_type export_eigenspectrum() {
+    eigenspectrum_type retval;
+    return retval;
   }
 
   eigenspace_type export_eigenspace() {

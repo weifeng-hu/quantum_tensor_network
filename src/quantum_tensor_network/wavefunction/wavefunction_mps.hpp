@@ -12,6 +12,7 @@ namespace wavefunction {
 
 class MatrixProductStates {
 public:
+  typedef MatrixProductStates                      this_type;
   typedef Shape1D                                  shape_type;
   typedef RotationMatrix3D                         rotation_matrix_3d_type;
   typedef RotationMatrix2D                         rotation_matrix_2d_type;
@@ -20,8 +21,8 @@ public:
   typedef std :: vector< rotation_matrix_3d_type >    store_type;
 
 public:
-  MatrixProductStates() {}
-  ~MatrixProductStates() {}
+  this_type() {}
+  ~this_type() {}
 
 public:
   this_type& operator>>= ( const int delta_i ) {
@@ -53,6 +54,13 @@ public:
     return *this;
 
   } // end of operator <<= 
+
+  friend 
+    this_type operator+ ( const this_type& this_obj, const rotation_matrix_3d_type& rotmat ) {
+      this_type retval = this_obj;
+      // implement the details
+      return retval;
+    }
 
 private:
   store_type store_;
