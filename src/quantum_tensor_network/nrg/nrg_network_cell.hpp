@@ -12,6 +12,7 @@ namespace nrg {
 class NRG_NetworkCell {
 public:
   typedef NRG_NetworkCell                                       this_type;
+  typedef NRG_Info                                              config_type;
   typedef NRG_NetworkData                                       data_type;
   typedef data_type :: node_type                                node_type;
   typedef RenormaliserFactory                                   renormaliser_factory_type;
@@ -28,10 +29,9 @@ public:
 
 public:
   this_type() {}
-  this_type( const renormalise_method_type method ) {
-    this->set_renormalise_method( method );
-    renormaliser_factory_type renormaliser_factory;
-    this->renormaliser_ptr_ = renormaliser_factory.get_renormaliser( method );
+  this_type( const config_type& config_obj ) {
+    this->initialise_gradient_solver();
+    this->initialise_renormaliser( config_obj );
   }
   ~this_type() {}
 
@@ -42,6 +42,8 @@ public:
 
     // set input: MPS, H old, new site
     // build the lagrangian and do gradient
+    output.set_progressor().set_stage_begin();
+
     L_type lagrangian( input_data_obj.hamiltonian(), input_data_obj.wavefunction() );
     dL_by_dA_type gradient_to_A; 
     d2L_by_dA2 hessian_to_A;
@@ -53,39 +55,54 @@ public:
       hessian_to_A    = gradient_to_A.dL_by_dA( target_A );
     }
 
+    output.set_progressor().set_stage_contracting();
     gradient_solver_type :: hessian_type   hessian  = hessian_to_A.contract(); // includes Hi-1 + Hi + Hi-1 x Hi
     gradient_solver_type :: gradient_type  gradient = gradient_to_A.contract();
-    gradient_solver_type :: return_type    solution = (*gradient_solver_ptr_)( hessian, gradient );
 
+    output.set_progressor().set_stage_solving();
+    gradient_solver_type :: solution_type  solution = this->gradient_solver_( hessian, gradient );
+
+    output.set_progressor().set_stage_renormalising();
     // Renormalise
     A_type new_rotation_matrix_3d = 
       (*this->reormaliser_ptr_)( solution.export_rotmat() );
 
    /* This is a functional programming way to write the whole wavefunction operation flow*/
-   // retval.set_wavefunction() = wavefunction_type ( input_data_obj.wavefunction() + ( (*this->renormaliser_ptr_)
+   // output.set_wavefunction() = wavefunction_type ( input_data_obj.wavefunction() + ( (*this->renormaliser_ptr_)
    //            ( (this->gradient_solver_)( 
-   //             L_type( input_data_obj.hamiltonian(), input_data_obj.wavefunction() ).dL_by_dA( input_data_obj.get_A_tensor( input_data_obj.get_input_site() ) ).dL_by_dA( input_data_obj.get_A_tensor( input_data_obj.get_input_site() ) )
-   //             L_type( input_data_obj.hamiltonian(), input_data_obj.wavefunction() ).dL_by_dA( input_data_obj.get_A_tensor( input_data_obj.get_input_site() ) )
+   //             L_type( input_data_obj.hamiltonian(), input_data_obj.wavefunction() ).dL_by_dA( input_data_obj.get_A_tensor( input_data_obj.get_input_site() ) ).dL_by_dA( input_data_obj.get_A_tensor( input_data_obj.get_input_site() ) ).contract(),
+   //             L_type( input_data_obj.hamiltonian(), input_data_obj.wavefunction() ).dL_by_dA( input_data_obj.get_A_tensor( input_data_obj.get_input_site() ) ).contract()
    //            ) ) ) );
 
-    retval.set_wavefunction() = wavefunction_type( input_data_obj.wavefunction() + ( new_rotation_matrix_3d ) );
-    retval.set_hamiltonian()  = this->renormaliser_ptr_->renormalise( hessian_to_A, new_rotation_matrix_3d );
-    retval.set_energy_data()  = solution.export_eigenspectrum();
-    retval.set_current_node() = input_data_obj.next_node();
-    retval.set_next_node()    = node_type( this->renormaliser_ptr_->export_quanta_flux() );
+    output.set_wavefunction() = wavefunction_type( input_data_obj.wavefunction() + ( new_rotation_matrix_3d ) );
+    output.set_hamiltonian()  = this->renormaliser_ptr_->renormalise( hessian_to_A, new_rotation_matrix_3d );
+    output.set_energy_data()  = solution.export_eigenspectrum();
+    output.set_current_node() = input_data_obj.next_node();
+    output.set_next_node()    = node_type( this->renormaliser_ptr_->export_quanta_flux() );
 
-    return retval;
+    output.set_progressor().set_stage_done();
+
+    return output;
 
   } // end of function run()
 
 public:
-  void set_renormalise_method( const renormalise_method_type& method )
-    { this->method_ = method; }
+  void initialise_gradient_solver() {
+
+  }
+  void initialise_renormaliser( const config_type& config_obj ) {
+    renormaliser_factory_type renormaliser_factory;
+    this->renormaliser_ptr_ = renormaliser_factory.get_renormaliser( config_obj.renormalise_mode() );
+    this->renormaliser_ptr_->set_M() = config_obj.M();
+    if( config_obj.renormalise_mode() == nrg :: SRM || config_obj.renormalise_mode() == nrg :: EPST ) {
+      this->renormaliser_ptr->set_en_percent() = config_obj.en_percent();
+      this->renormaliser_ptr->set_seed() = config_obj.seed();
+    }
+  }
 
 private:
   renormaliser_base_type* renormaliser_ptr_;
   gradient_solver_type    gradient_solver_;
-  renormalise_method_type method_;
 
 }; // end of class NRG_NetworkCell
 

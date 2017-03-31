@@ -56,6 +56,11 @@ public:
   } // end of print_info_specific()
 
 public:
+  renormaliser_id_type renormalise_mode() const 
+    { return this->renormalise_mode_; }
+  double en_percent() const 
+    { return this->en_percent_; }
+
   void set_renormalise_mode( const renormaliser_id_type& renormaliser_id )
     { this->renormalise_mode_ = renormaliser_id; }
   void set_seed( unsigned value )
@@ -64,6 +69,7 @@ public:
 private:
   renormaliser_id_type   renormalise_mode_;
   unsigned               seed_;
+  double                 en_percent_;
 
 }; // end of class NRG_Info
 

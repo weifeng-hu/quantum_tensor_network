@@ -1,5 +1,5 @@
-#ifndef NRG_EIGEN_SYSTEM_HPP
-#define NRG_EIGEN_SYSTEM_HPP
+#ifndef TISE_SOLUTION_LINEAR_HPP
+#define TISE_SOLUTION_LINEAR_HPP
 
 #include <vector>
 #include <utility>
@@ -8,43 +8,47 @@
 
 namespace quantum_tensor_network {
 
-namespace nrg {
+namespace gradient {
 
-class NRG_EigenSystem {
+class TISE_SolutionLinear {
 public:
-  typedef NRG_EigenSystem                                   this_type;
+  typedef TISE_SolutionLinear                               this_type;
   typedef wavefunction :: linear_wavefunction_type          eigenvector_type;
   typedef wavefunction :: rotation_matrix_2d_type           rotation_matrix_type;
+
   typedef double                                            eigenvalue_type;
   typedef std :: pair< eigenvector_type, eigenvalue_type >  eigenpair_type;
-  typedef std :: vector< eigenpair_type >                   store_type;
-  typedef std :: vector< eigenvector_type >                 eigenspace_type;
-  typedef std :: vector< eigenvalue_type >                  eigenspectrum_type;
+  typedef std :: pair< space_type, std :: vector< eigenpair_type > >  degenerate_eigensystem_type;
+
+  typedef std :: vector< degenerate_eigensystem_type >      store_type;
+
+  typedef std :: vector< std :: pair< space_type, std :: vector< eigenvalue_type > > >  eigenspectrum_type;
+  typedef std :: vector< std :: pair< space_type, std :: vector< eigenvector_type > > > eigenspace_type;
 
 public:
   this_type() {}
   ~this_type() {}
 
 public:
-  struct {
-    bool operator() ( const eigenpair_type& a, const eigenpair_type& b ) {
-      return a.second < b.second;
-    }
-  } EnLess;
-
-  struct {
-    bool operator() ( const eigenpair_type& a, const eigenpair_type& b ) {
-      return a.first < b.first;
-    }
-  } QnLess;
-
-  void sort_by_eigenvalue() {
-    std :: sort( this->store_.begin(), this->store_.end(), EnLess );
-  }
-
-  void sort_by_space() {
-    std :: sort( this->store_.begin(), this->store_.end(), QnLess );
-  }
+//  struct {
+//    bool operator() ( const eigenpair_type& a, const eigenpair_type& b ) {
+//      return a.second < b.second;
+//    }
+//  } EnLess;
+//
+//  struct {
+//    bool operator() ( const eigenpair_type& a, const eigenpair_type& b ) {
+//      return a.first < b.first;
+//    }
+//  } QnLess;
+//
+//  void sort_by_eigenvalue() {
+//    std :: sort( this->store_.begin(), this->store_.end(), EnLess );
+//  }
+//
+//  void sort_by_space() {
+//    std :: sort( this->store_.begin(), this->store_.end(), QnLess );
+//  }
 
 public:
   size_t size() const
@@ -93,7 +97,7 @@ public:
 private:
   store_type store_;
 
-}; // end of class NRG_EigenSystem
+}; // end of class TISE_LinearSolution
 
 } // end of namespace nrg
 
