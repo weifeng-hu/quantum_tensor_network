@@ -1,8 +1,11 @@
 #ifndef NRG_NETWORK_CELL_HPP
 #define NRG_NETWORK_CELL_HPP
 
-#include "quantum_tensor_network/nrg/renormalise_factory.hpp"
+#include <utility>
+#include "quantum_tensor_network/nrg/nrg_info.hpp"
+#include "quantum_tensor_network/nrg/renormaliser_factory.hpp"
 #include "quantum_tensor_network/nrg/nrg_network_data.hpp"
+#include "quantum_tensor_network/tensor_functional/tensor_functional.hpp"
 #include "quantum_tensor_network/gradient/gradient_solvers.hpp"
 
 namespace quantum_tensor_network {
@@ -28,12 +31,12 @@ public:
   typedef gradient :: linear_eigen_solver_type          gradient_solver_type;
 
 public:
-  this_type() {}
-  this_type( const config_type& config_obj ) {
+  NRG_NetworkCell() {}
+  NRG_NetworkCell( const config_type& config_obj ) {
     this->initialise_gradient_solver();
     this->initialise_renormaliser( config_obj );
   }
-  ~this_type() {}
+  ~NRG_NetworkCell() {}
 
 public:
   data_type operator() ( const data_type& input_data_obj ) {
@@ -42,30 +45,30 @@ public:
 
     // set input: MPS, H old, new site
     // build the lagrangian and do gradient
-    output.set_progressor().set_stage_begin();
+    output.set_progressor().set_stage_start();
 
     L_type lagrangian( input_data_obj.hamiltonian(), input_data_obj.wavefunction() );
     dL_by_dA_type gradient_to_A; 
-    d2L_by_dA2 hessian_to_A;
+    d2L_by_dA2_type hessian_to_A;
     {
-      site_type target_site = input_data_obj.get_input_site();
-      lagrangian.attach_new_hamiltonian_term( hamiltonian_base( target_site ) );
+      node_type target_site = input_data_obj.get_input_site();
+//      lagrangian.attach_new_hamiltonian_term( L_type :: hamiltonian_type( target_site ) );
+      lagrangian.attach_new_hamiltonian_term( L_type :: hamiltonian_type(  ) );
       A_type target_A = input_data_obj.get_A_tensor( target_site );
-      gradient_to_A   = lagrangian.dL_by_dA( target_A );
-      hessian_to_A    = gradient_to_A.dL_by_dA( target_A );
+      gradient_to_A   = static_cast< dL_by_dA_type& >(lagrangian.dF_by_dA( target_A ));
+      hessian_to_A    = static_cast< d2L_by_dA2_type&> ( gradient_to_A.dF_by_dAc( target_A ) );
     }
 
     output.set_progressor().set_stage_contracting();
-    gradient_solver_type :: hessian_type   hessian  = hessian_to_A.contract(); // includes Hi-1 + Hi + Hi-1 x Hi
-    gradient_solver_type :: gradient_type  gradient = gradient_to_A.contract();
+    gradient_solver_type :: hessian_type   hessian; // = hessian_to_A.contract(); // includes Hi-1 + Hi + Hi-1 x Hi
+    gradient_solver_type :: gradient_type  gradient; //= gradient_to_A.contract();
 
-    output.set_progressor().set_stage_solving();
     gradient_solver_type :: solution_type  solution = this->gradient_solver_( hessian, gradient );
 
     output.set_progressor().set_stage_renormalising();
     // Renormalise
-    A_type new_rotation_matrix_3d = 
-      (*this->reormaliser_ptr_)( solution.export_rotmat() );
+    A_type new_rotation_matrix_3d =
+      this->renormaliser_ptr_->operator()( solution );
 
    /* This is a functional programming way to write the whole wavefunction operation flow*/
    // output.set_wavefunction() = wavefunction_type ( input_data_obj.wavefunction() + ( (*this->renormaliser_ptr_)
@@ -75,7 +78,8 @@ public:
    //            ) ) ) );
 
     output.set_wavefunction() = wavefunction_type( input_data_obj.wavefunction() + ( new_rotation_matrix_3d ) );
-    output.set_hamiltonian()  = this->renormaliser_ptr_->renormalise( hessian_to_A, new_rotation_matrix_3d );
+//    gradient_solver_type :: hessian_type :: base_type x = this->renormaliser_ptr_->renormalise( hessian, new_rotation_matrix_3d );
+    output.set_hamiltonian()  = std :: move( this->renormaliser_ptr_->renormalise( hessian, new_rotation_matrix_3d ) );
     output.set_energy_data()  = solution.export_eigenspectrum();
     output.set_current_node() = input_data_obj.next_node();
     output.set_next_node()    = node_type( this->renormaliser_ptr_->export_quanta_flux() );
@@ -95,8 +99,8 @@ public:
     this->renormaliser_ptr_ = renormaliser_factory.get_renormaliser( config_obj.renormalise_mode() );
     this->renormaliser_ptr_->set_M() = config_obj.M();
     if( config_obj.renormalise_mode() == nrg :: SRM || config_obj.renormalise_mode() == nrg :: EPST ) {
-      this->renormaliser_ptr->set_en_percent() = config_obj.en_percent();
-      this->renormaliser_ptr->set_seed() = config_obj.seed();
+      this->renormaliser_ptr_->set_en_percent() = config_obj.en_percent();
+      this->renormaliser_ptr_->set_seed() = config_obj.seed();
     }
   }
 

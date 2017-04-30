@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include "../quantum_number.hpp"
 

@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 #include <vector>
-#include "simple_matrix.hpp"
+#include "matrix/matrix.hpp"
 
 namespace matrix {
 

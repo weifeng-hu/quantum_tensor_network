@@ -13,37 +13,41 @@ namespace quantum_tensor_network {
 
 namespace dmrg {
 
-class DMRG_Network_Layer {
+class DMRG_NetworkLayer {
 public:
-  typedef DMRG_Network_Layer           this_type;
-  typedef DMRG_Network_Cell            cell_type;
+  typedef DMRG_NetworkLayer           this_type;
+  typedef DMRG_NetworkCell            cell_type;
+  typedef DMRG_NetworkData            data_type;
   typedef std :: vector< cell_type >   structure_type;
 
 public:
-  this_type() {}
-  ~this_type() {} 
+  DMRG_NetworkLayer() {}
+  ~DMRG_NetworkLayer() {} 
 
 public:
   void run() {
-    (*this)>> ;
-    (*this)<< ;
+    (*this)>> 1;
+    (*this)<< 1;
   }
 
 public:
-  void operator>> () {
+  this_type& operator>> ( int x ) {
     for( cell_type cell : this->structure_ ) {
       data_type output_data = cell( input_data );
       data_type input_data = output_data;
     }
+    return *this;
   }
-  void operator<< () {}
+  this_type& operator<< ( int x ) {
     for( int i = structure_.size() - 1; i >= 0 ; i-- ) {
-      data_type output_data = cell( input_data );
+      data_type output_data = structure_[i]( input_data );
       data_type input_data = output_data;
     }
+    return *this;
   }
 
 private:
+data_type input_data;
   structure_type structure_;
 
 }; // end of class DMRG

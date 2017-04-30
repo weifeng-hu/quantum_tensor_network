@@ -7,7 +7,7 @@
 #include <vector>
 #include <string>
 #include "quantum_tensor_network/common/rg_info_base.hpp"
-#include "quantum_tensor_network/nrg/renormaliser_factory.hpp"
+#include "quantum_tensor_network/nrg/renormaliser_id.hpp"
 
 namespace quantum_tensor_network {
 
@@ -20,13 +20,13 @@ public:
   typedef Renormaliser_ID renormaliser_id_type;
 
 public:
-  this_type() :
+  NRG_Info() :
     base_type(),
-    seed_value_( 2017 ),
-    renormaliser_id_ ( false )
+    seed_( 2017 ),
+    renormalise_mode_ ( nrg :: EN )
   {}
 
-  this_type( const size_t n_site_value, 
+  NRG_Info( const size_t n_site_value, 
              const size_t M_value                    = 10,
              const size_t nroot_value                = 10,
              const double on_site_hopping_value      = -5.0e0, 
@@ -34,7 +34,7 @@ public:
              const double on_site_coulomb_value      = 8.0e0,
              const hamiltonian_id_type hamiltonian_id_value = hamiltonian :: HUBBARD,
 	     const unsigned seed_value  = 2017, 
-             const renormaliser_id_type renormalise_mode = nrg :: EN,
+             const renormaliser_id_type renormalise_mode = nrg :: EN
        ) : 
    base_type( n_site_value, 
               M_value,
@@ -42,17 +42,17 @@ public:
               on_site_hopping_value,
               neighbour_hopping_value,
               on_site_coulomb_value,
-              hamiltonian_id_value )
-   seed_value_ ( 2017 ),
+              hamiltonian_id_value ), 
+   seed_ ( 2017 ),
    renormalise_mode_ ( renormalise_mode )
    {}
 
-  ~this_type() {}
+  ~NRG_Info() {}
 
 public:
   void print_specific_info( std :: ostream& os ) {
     os << "[ Numerical Renormalisation Group ]" << std :: endl;
-    if( renormaliser_mode_ != nrg :: EN ) os << "seed: " << this->seed_ << std :: endl;
+    if( renormalise_mode_ != nrg :: EN ) os << "seed: " << this->seed_ << std :: endl;
   } // end of print_info_specific()
 
 public:
@@ -60,11 +60,13 @@ public:
     { return this->renormalise_mode_; }
   double en_percent() const 
     { return this->en_percent_; }
+  unsigned seed() const
+    { return this->seed_; }
 
   void set_renormalise_mode( const renormaliser_id_type& renormaliser_id )
     { this->renormalise_mode_ = renormaliser_id; }
   void set_seed( unsigned value )
-    { return this->seed_ = value; }
+    { this->seed_ = value; }
 
 private:
   renormaliser_id_type   renormalise_mode_;

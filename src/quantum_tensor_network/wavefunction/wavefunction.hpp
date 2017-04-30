@@ -10,7 +10,7 @@ namespace quantum_tensor_network {
 namespace wavefunction {
 
   typedef WavefunctionLinear linear_wavefunction_type;
-  typedef WavefunctionMPS    nonlinear_wavefunction_1d_type;
+  typedef MatrixProductStates    nonlinear_wavefunction_1d_type;
   typedef RotationMatrix     rotation_matrix_2d_type;
   typedef RotationMatrix3D   rotation_matrix_3d_type;
 

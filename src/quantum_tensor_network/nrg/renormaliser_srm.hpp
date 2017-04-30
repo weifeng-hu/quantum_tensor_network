@@ -1,6 +1,8 @@
 #ifndef NRG_RENORMALISER_SRM_HPP
 #define NRG_RENORMALISER_SRM_HPP
 
+#include "stochastic_eigen/stochastic_space.hpp"
+#include "quantum_tensor_network/quantum_number/site_space.hpp"
 #include "quantum_tensor_network/nrg/renormaliser_base.hpp"
 
 namespace quantum_tensor_network {
@@ -31,24 +33,24 @@ public:
     rotation_matrix_2d_type new_rotmat;
 
     this->eigen_system_ = eigen_system;
-    this->eigen_system_.sort_by_energy();
+//    this->eigen_system_.sort_by_energy();
 
     int n_en = this->M_ * this->en_percent_;
 
     for( int i = 0; i < n_en; i++ ) {
-      new_rotmat.push_back( this->eigen_system_.eigen_vec(i) );
+//      new_rotmat.push_back( this->eigen_system_.eigenvec(i) );
     }
-    this->eigen_system_.erase( 0, n_en );
+//    this->eigen_system_.erase( 0, n_en );
 
     // start of stochastic mixing, see algorithm in mat_stoch_Diag :: equal_prob_residual_space()
-    this->eigen_system_.sort_by_space();
+//    this->eigen_system_.sort_by_space();
     eigen_system_type :: eigenspace_type ordered_space = this->eigen_system_.export_eigenspace();
 
     std :: vector< std :: vector <int> > ind_group;
     std :: vector<int> x = { 0 };
     int j = 0;
     for( int i = 1; i < ordered_space.size(); i++ ) {
-      if( ordered_space[i].space() == ordered_space[j].space() ) {
+      if( ordered_space[i].first == ordered_space[j].first ) {
         x.push_back(i);
       } else {
         ind_group.push_back(x);
@@ -73,7 +75,7 @@ public:
         eigenvector_type new_eigenvector;
         stochastic_eigen :: StochasticBasis new_coeff = new_coeffs(j);
         for( int k = 0; k < sub_space_size; k++ ) {
-          new_eigenvector = new_eigenvector + ordered_space[ ind_group[i][k] ] * new_coeff(k);
+//          new_eigenvector = new_eigenvector + ( ordered_space[ ind_group[i][k] ] ).second  * new_coeff(k);
         }
         new_rotmat.push_back( new_eigenvector );
         if( new_rotmat.n_qn_col() >= this->M_ ) break;
@@ -82,9 +84,9 @@ public:
     }
 //    new_rotmat.sort_qn();
 
-    rotation_matrix_3d_type retval = reshape_from_2d( new_rotmat, site_space );
+//    rotation_matrix_3d_type retval = static_cast< rotation_matrix_3d_type > ( wavefunction :: RotationMatrix3D :: reshape_from_2d( new_rotmat, quantum_number :: site_space ) );
 
-    return retval;
+    return new_rotmat;
 
   } // end of operator()
 

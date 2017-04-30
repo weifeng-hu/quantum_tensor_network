@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include "matrix/matrix.hpp"
 #include "quantum_tensor_network/quantum_number/sub_space.hpp"
+#include "quantum_tensor_network/quantum_number/site_space.hpp"
 #include "quantum_tensor_network/quantum_operator/operator_base.hpp"
 
 namespace quantum_tensor_network {
@@ -11,6 +12,8 @@ namespace quantum_tensor_network {
 namespace quantum_operator {
 
 enum OpType { c, c_dagger, i, p, num };
+
+using namespace quantum_number ;
 
 class CUp : public OperatorBase {
 public:

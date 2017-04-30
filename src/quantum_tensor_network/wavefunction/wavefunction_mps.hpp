@@ -3,8 +3,10 @@
 
 #include <vector>
 #include <iostream>
-#include "shape/shape_1d.hpp"
+#include "quantum_tensor_network/shape/shape_1d.hpp"
+#include "quantum_tensor_network/lattice/site.hpp"
 #include "quantum_tensor_network/wavefunction/rotation_matrix.hpp"
+#include "quantum_tensor_network/wavefunction/rotation_matrix_3d.hpp"
 
 namespace quantum_tensor_network {
 
@@ -13,25 +15,25 @@ namespace wavefunction {
 class MatrixProductStates {
 public:
   typedef MatrixProductStates                      this_type;
-  typedef Shape1D                                  shape_type;
+  typedef shape :: Shape1D                                  shape_type;
   typedef RotationMatrix3D                         rotation_matrix_3d_type;
-  typedef RotationMatrix2D                         rotation_matrix_2d_type;
+  typedef RotationMatrix                         rotation_matrix_2d_type;
   typedef rotation_matrix_3d_type :: LQ_pair_type  LQ_pair_type;
   typedef rotation_matrix_3d_type :: QR_pair_type  QR_pair_type;
   typedef std :: vector< rotation_matrix_3d_type >    store_type;
 
 public:
-  this_type() {}
-  ~this_type() {}
+  MatrixProductStates() {}
+  ~MatrixProductStates() {}
 
 public:
-  this_type& operator>>= ( const int delta_i ) {
+  this_type& operator>>= ( int delta_i ) {
 
     int current_ind = this->ind_c_;
-    while( delta_i >= 0 && current_id < store_.size() ) {
+    while( delta_i >= 0 && current_ind < store_.size() ) {
       LQ_pair_type LQ = store_[current_ind].lq_decompose();
       store_[ current_ind ] = LQ.first;
-      store_[ current_ind + 1 ] = LQ.second * store_[current_ind + 1];
+//      store_[ current_ind + 1 ] = LQ.second * store_[current_ind + 1];
       current_ind++;
       delta_i--;
     }
@@ -40,13 +42,13 @@ public:
 
   } // end of operator >>=
 
-  this_type& operator<<= ( const int delta_i ) {
+  this_type& operator<<= ( int delta_i ) {
 
     int current_ind = this->ind_c_;
-    while( delta_i >= 0 && current_id >= 0 ) {
+    while( delta_i >= 0 && current_ind >= 0 ) {
       QR_pair_type QR = store_[current_ind].qr_decompose();
       store_[ current_ind ] = QR.first;
-      store_[ current_ind - 1 ] = store_[ current_ind - 1 ] * QR.first;
+//      store_[ current_ind - 1 ] = store_[ current_ind - 1 ] * QR.first;
       current_ind--;
       delta_i--;
     }
@@ -61,6 +63,14 @@ public:
       // implement the details
       return retval;
     }
+
+  tensor :: OpTensor3D get_C_tensor( lattice :: Site site ) {
+    tensor :: OpTensor3D retval;
+    return retval;
+  }
+
+  tensor :: OpTensor3D& set_tensor( int i )
+    { return store_[i]; }
 
 private:
   store_type store_;

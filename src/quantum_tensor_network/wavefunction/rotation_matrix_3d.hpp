@@ -2,6 +2,7 @@
 #define ROTATION_MATRIX_3D_HPP
 
 #include <utility>
+#include "quantum_tensor_network/quantum_number/site_space.hpp"
 #include "quantum_tensor_network/tensor/op_tensor_3d.hpp"
 #include "quantum_tensor_network/wavefunction/rotation_matrix.hpp"
 
@@ -11,16 +12,16 @@ namespace wavefunction {
 
 class RotationMatrix3D : public tensor :: OpTensor3D {
 public:
-  typedef RotationMatrix3D rotation_matrix_3d_type;
   typedef RotationMatrix   rotation_matrix_2d_type;
+  typedef RotationMatrix3D rotation_matrix_3d_type;
   typedef std :: pair< rotation_matrix_3d_type, rotation_matrix_2d_type > LQ_pair_type;
   typedef std :: pair< rotation_matrix_2d_type, rotation_matrix_3d_type > QR_pair_type;
 
 public:
   RotationMatrix3D() : tensor :: OpTensor3D() {}
-  RotationMatrix3D( const rotation_matrix_2d_type& rot_mat_2d ) {
-    *this = rotation_matrix_3d_type :: reshape_from_2d( rot_mat_2d );
-    this->old_site_aux_ = rot_mat_2d.old_site():
+  RotationMatrix3D( rotation_matrix_2d_type& rot_mat_2d ) {
+//    *this = static_cast< wavefunction :: RotationMatrix3D > ( reshape_from_2d( rot_mat_2d , quantum_number :: site_space ) );
+    this->old_site_aux_ = rot_mat_2d.old_site();
     this->new_site_phy_ = rot_mat_2d.new_site();
     this->new_site_aux_ = rot_mat_2d.new_site();
   }

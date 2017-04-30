@@ -10,6 +10,7 @@ namespace tensor_functional {
 
 class EnergyGradient : public OperatorFunctionalBase, public tensor :: DecomposerBase {
 
+
 }; // end of class EnergyGradient
 
 } // end of namespace tensor_functional

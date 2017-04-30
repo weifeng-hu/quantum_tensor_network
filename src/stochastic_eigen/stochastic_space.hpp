@@ -10,6 +10,8 @@
 
 namespace stochastic_eigen {
 
+using namespace matrix;
+
 class StochasticSpace {
 public:
   StochasticSpace() {
@@ -111,7 +113,7 @@ public:
     *this = new_space_final;
   }
 
-  void push_back( mat_stoch_diag :: StochasticBasis new_basis ) {
+  void push_back( stochastic_eigen :: StochasticBasis new_basis ) {
     this->store_.push_back( new_basis );
   }
 
@@ -147,7 +149,7 @@ public:
   }
 
 private:
-  std :: vector< mat_stoch_diag :: StochasticBasis > store_;
+  std :: vector< stochastic_eigen :: StochasticBasis > store_;
   std :: default_random_engine generator;
 
 }; // end of class StochasticSpace

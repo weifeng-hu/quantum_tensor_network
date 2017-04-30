@@ -8,7 +8,7 @@
 #include "quantum_tensor_network/quantum_number/sub_space.hpp"
 #include "quantum_tensor_network/tensor/op_matrix.hpp"
 #include "quantum_tensor_network/wavefunction/wavefunction_linear.hpp"
-#include "quantum_tensor_network/dmrg/density_matrix.hpp"
+//#include "quantum_tensor_network/dmrg/density_matrix.hpp"
 
 namespace quantum_tensor_network {
 
@@ -18,22 +18,22 @@ class RotationMatrix : public tensor :: OpMatrix {
 public:
   typedef RotationMatrix        this_type;
   typedef WavefunctionLinear    column_type;
-  typedef dmrg :: DensityMatrix density_matrix_type;
+//  typedef dmrg :: DensityMatrix density_matrix_type;
 
 public:
   RotationMatrix() : OpMatrix() { }
-  RotationMatrix( Iden iden ) {
-    this->resize( iden.n_qn_row(), iden.n_qn_col() );
-    for( int i = 0; i < n_qn_row_; i++ ) {
-      for( int j = 0; j < n_qn_col_; j++ ) {
-        sub_matrix( i, j ) = std :: make_pair( std :: make_pair( iden.qn_row( i, j ), iden.qn_col( i, j ) ), iden.matrix( i, j ) );
-      }
-    }
-  }
+//  RotationMatrix( Iden iden ) {
+//    this->resize( iden.n_qn_row(), iden.n_qn_col() );
+//    for( int i = 0; i < n_qn_row_; i++ ) {
+//      for( int j = 0; j < n_qn_col_; j++ ) {
+//        sub_matrix( i, j ) = std :: make_pair( std :: make_pair( iden.qn_row( i, j ), iden.qn_col( i, j ) ), iden.matrix( i, j ) );
+//      }
+//    }
+//  }
   ~RotationMatrix() {}
 
 public:
-  void push_back( const column_type& wf ) {
+  void push_back( column_type& wf ) {
     if( n_qn_col_ == 0 ) {
       this->n_qn_row_ = wf.n_qn_row();
     } else {
@@ -49,7 +49,7 @@ public:
     this->n_qn_col_++;
   }
 
-  bool check_space_new_col( const column_type& wf ) {
+  bool check_space_new_col( column_type& wf ) {
     std :: vector< space_type > space_wf = wf.qn_series();
 //    for( int i = 0; i < space_wf.size(); i++ ) {
 //      space_wf[i].print(); std :: cout << "|";
@@ -60,7 +60,7 @@ public:
 //    }
 //    std :: cout << std :: endl;
 //    std :: cout << std :: endl;
-    if( space_wf.n_qn_row() != n_qn_row_ ) {
+    if( space_wf.size() != n_qn_row_ ) {
       return false;
     }
     for( int i = 0; i < n_qn_row_; i++ ) {
@@ -85,7 +85,7 @@ public:
     for( int i = 0; i < n_qn_col_; i++ ) {
       int count_filled = 0;
       for( int j = 0; j < n_qn_row_; j++ ) {
-        matrix_type mat_ji = at( j, i );
+        matrix_type mat_ji = matrix( j, i );
         if( mat_ji.nrow() == 0 ) {
           continue;
         } else {
@@ -97,75 +97,75 @@ public:
             count_filled++;
           }
         }
-        at( j, i ) = mat_ji;
+        matrix( j, i ) = mat_ji;
       }
     }
 
   } // end of function orthogonalize()
 
-  density_matrix_type compute_dm() {
-
-    density_matrix_type retval;
-
-    if( compute_left_dm_ ) {
-
-      retval.resize( nrow_, nrow_ );
-
-      for( int i = 0; i < ncol_; i++ ) {
-
-         OpMatrix vec_col_i;
-         std :: vector< space_type > qn_col_i = this->qns_col( 0, i );
-         std :: vector< space_type > qns_row_i = this->qn_row( i );
-         vec_col_i.resize( qns_row_j, qn_col_i );
-
-         for( int i = 0; i < vec_col_i.n_qn_row(); i++ ) {
-           vec_col_i.at( i, 0 ) = this->at( j, i );
-         }
-
-         OpMatrix vec_col_i_T;
-         vec_col_i_T.resize( qn_col_i, qns_row_j );
-         for( int i = 0; i < vec_col_i.n_qn_row(); i++ ) {
-           vec_col_i_T.at( i, 0 ) = this->at( i, j );
-         }
-
-         OpMatrix slice_i = vec_col_i * vec_col_i_T;
-
-         retval += slice_i;
-
-      }
-
-    } else {
-
-      retval.resize( ncol_, ncol_ );
-
-      for( int i = 0; i < nrow_; i++ ) {
-
-         OpMatrix vec_row_i;
-         std :: vector< space_type > qn_row_i = this->qns_row( i, 0 );
-         std :: vector< space_type > qns_col_i = this->qn_col( i );
-         vec_row_i.resize( qn_col, qns_row_i );
-
-         for( int i = 0; i < vec_row_i.n_qn_col(); i++ ) {
-           vec_row_i.at( i, 0 ) = this->at( j, i );
-         }
-
-         OpMatrix vec_row_i_T;
-         vec_row_i_T.resize( qns_row_i, qn_col );
-         for( int i = 0; i < vec_row_i.n_qn_col(); i++ ) {
-           vec_row_i_T.at( i, 0 ) = this->at( i, j );
-         }
-
-         OpMatrix slice_i = vec_row_i * vec_row_i_T;
-
-         retval += slice_i;
-
-      }
-
-    }
-
-    return retval;
-
-  } // end of compute_dm()
+//  density_matrix_type compute_dm() {
+//
+//    density_matrix_type retval;
+//
+//    if( compute_left_dm_ ) {
+//
+//      retval.resize( nrow_, nrow_ );
+//
+//      for( int i = 0; i < ncol_; i++ ) {
+//
+//         OpMatrix vec_col_i;
+//         std :: vector< space_type > qn_col_i = this->qns_col( 0, i );
+//         std :: vector< space_type > qns_row_i = this->qn_row( i );
+//         vec_col_i.resize( qns_row_j, qn_col_i );
+//
+//         for( int i = 0; i < vec_col_i.n_qn_row(); i++ ) {
+//           vec_col_i.at( i, 0 ) = this->at( j, i );
+//         }
+//
+//         OpMatrix vec_col_i_T;
+//         vec_col_i_T.resize( qn_col_i, qns_row_j );
+//         for( int i = 0; i < vec_col_i.n_qn_row(); i++ ) {
+//           vec_col_i_T.at( i, 0 ) = this->at( i, j );
+//         }
+//
+//         OpMatrix slice_i = vec_col_i * vec_col_i_T;
+//
+//         retval += slice_i;
+//
+//      }
+//
+//    } else {
+//
+//      retval.resize( ncol_, ncol_ );
+//
+//      for( int i = 0; i < nrow_; i++ ) {
+//
+//         OpMatrix vec_row_i;
+//         std :: vector< space_type > qn_row_i = this->qns_row( i, 0 );
+//         std :: vector< space_type > qns_col_i = this->qn_col( i );
+//         vec_row_i.resize( qn_col, qns_row_i );
+//
+//         for( int i = 0; i < vec_row_i.n_qn_col(); i++ ) {
+//           vec_row_i.at( i, 0 ) = this->at( j, i );
+//         }
+//
+//         OpMatrix vec_row_i_T;
+//         vec_row_i_T.resize( qns_row_i, qn_col );
+//         for( int i = 0; i < vec_row_i.n_qn_col(); i++ ) {
+//           vec_row_i_T.at( i, 0 ) = this->at( i, j );
+//         }
+//
+//         OpMatrix slice_i = vec_row_i * vec_row_i_T;
+//
+//         retval += slice_i;
+//
+//      }
+//
+//    }
+//
+//    return retval;
+//
+//  } // end of compute_dm()
 
 //  void shuffle( const int increment ) {
 //

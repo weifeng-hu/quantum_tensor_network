@@ -4,7 +4,7 @@
 #include <vector>
 #include <cstdlib>
 
-namespace random {
+//namespace random {
 
 class RandomGenerator {
 public: 
@@ -34,6 +34,6 @@ private:
 
 }; // end of class RandomGenerator
 
-} // end of namespace random
+//} // end of namespace random
 
 #endif

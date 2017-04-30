@@ -15,22 +15,22 @@ namespace gradient {
 class TISE_SolverNonlinear : public TISE_SolverBase {
 public:
   typedef TISE_SolverNonlinear                    this_type;
-  typedef hamltonian :: hamiltonian_base_type     hessian_type;
-  typedef dmrg :: DMRG_Eigensystem                solution_type;
-  typedef solution_type :: eigenvector_type       eigenvector_type;
+  typedef hamiltonian :: hamiltonian_base_type     hessian_type;
+  typedef gradient :: TISE_SolutionTensor                solution_type;
+//  typedef solution_type :: eigenvector_type       eigenvector_type;
 
 public:
-  this_type() {}
-  ~this_type() {}
+  TISE_SolverNonlinear() {}
+  ~TISE_SolverNonlinear() {}
 
 public:
-  solution_type operator() ( const hessian& hessian_type, const decomposer_type* decomposer, const eigenvector_type& guess ) {
-
-    solution_type retval;
-
-    return retval;
-
-  }
+//  solution_type operator() ( const hessian& hessian_type, const decomposer_type* decomposer, const eigenvector_type& guess ) {
+//
+//    solution_type retval;
+//
+//    return retval;
+//
+//  }
 
 private:
 

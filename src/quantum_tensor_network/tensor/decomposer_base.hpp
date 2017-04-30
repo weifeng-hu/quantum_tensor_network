@@ -5,6 +5,9 @@ namespace quantum_tensor_network {
 
 namespace tensor {
 
+class DecomposerBase {
+
+};
 
 } // end of namespace tensor
 

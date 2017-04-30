@@ -3,10 +3,10 @@
 
 #include <algorithm>
 #include <utility>
-#include "./operator_base.hpp"
-#include "./operator.hpp"
-#include "./rotation_matrix.hpp"
-#include "../mat_stoch_diag/matrix_operations.hpp"
+#include "quantum_tensor_network/quantum_operator/operator_base.hpp"
+#include "quantum_tensor_network/quantum_operator/operator.hpp"
+#include "quantum_tensor_network/wavefunction/rotation_matrix.hpp"
+#include "matrix/matrix_operations.hpp"
 
 namespace renormalization_group {
 

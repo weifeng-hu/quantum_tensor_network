@@ -36,7 +36,7 @@ public:
   }
 
   friend
-    this_type operator+ ( this_type& lhs, this_type& rhs ) {
+    this_type operator+ ( this_type lhs, this_type rhs ) {
       this_type retval = lhs;
       retval += rhs;
       return retval;
@@ -53,7 +53,7 @@ public:
         retval.push_back( lhs + rhs_group[i] );
       }
       return retval;
-  }
+    }
 
   this_type& operator- () {
     this->n_   = -this->n_;

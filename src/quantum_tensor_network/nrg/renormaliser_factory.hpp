@@ -1,6 +1,7 @@
 #ifndef NRG_RENORMALISER_FACTORY_HPP
 #define NRG_RENORMALISER_FACTORY_HPP
 
+#include "quantum_tensor_network/nrg/renormaliser_id.hpp"
 #include "quantum_tensor_network/nrg/renormaliser_en.hpp"
 #include "quantum_tensor_network/nrg/renormaliser_srm.hpp"
 #include "quantum_tensor_network/nrg/renormaliser_epst.hpp"
@@ -9,8 +10,6 @@ namespace quantum_tensor_network {
 
 namespace nrg {
 
-enum Renormaliser_ID { UNSET, EN, SRM, EPST };
-
 class RenormaliserFactory {
 public:
   typedef RenormaliserFactory  this_type;
@@ -18,8 +17,8 @@ public:
   typedef Renormaliser_ID      renormalise_method_type;
 
 public:
-  this_type() {}
-  ~this_type() {}
+  RenormaliserFactory() {}
+  ~RenormaliserFactory() {}
 
 public:
   product_base_type* get_renormaliser( const renormalise_method_type method = UNSET ) {

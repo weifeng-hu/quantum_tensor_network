@@ -1,11 +1,13 @@
 # GNUMakefile
 # General makefile for c, c++ and fortran (joint) code
 
+QTN_SRC = $(HOME)/Development/5000.quantum_tensor_network/src
+
 # Compiler settings
 cc		= gcc
 cflags		= -g
 copt		= -O0
-cinclude	= -I./
+cinclude	= -I $(QTN_SRC)
 csrcs		=
 cobjs		= $(srcs:.c=.o)
 clibs		=
@@ -13,7 +15,7 @@ clibs		=
 cxx		= g++
 cxxflags	= -g -std=c++11
 cxxopt		= -O0
-cxxinclude	= -I./
+cxxinclude	= -I $(QTN_SRC)
 cxxsrcs		= main.cpp
 cxxobjs		= $(cxxsrcs:.cpp=.o)
 cxxlibs		=
@@ -21,13 +23,13 @@ cxxlibs		=
 fc		= gfortran
 fflags		= -g
 fopt		= -O0
-finclude	= -I./
+finclude	= -I $(QTN_SRC)
 fsrcs		= 
 fobjs		= $(fsrcs:.f=.o)
 flibs		=
 
 # Target binary info
-target		= test_integral
+target		= test.nrg_network_cell
 target_flags	= 
 target_opt	= -O0
 target_objs	= $(cobjs) $(cxxobjs) $(fobjs)
@@ -39,5 +41,5 @@ $(target):	$(target_objs)
 clean:
 	rm *.o; rm $(target)
 
-main.o:	main.cpp ../*.hpp
+main.o:	main.cpp
 	$(cxx) -c $(cxxflags) $(cxxopt) $(cxxinclude) main.cpp

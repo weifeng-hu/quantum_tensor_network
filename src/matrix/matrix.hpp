@@ -8,7 +8,7 @@
 #include <utility>
 #include <stdlib.h>
 #include <stdio.h>
-#include "blas_interface.h"
+#include "matrix/blas_interface.h"
 
 namespace matrix {
 
@@ -227,7 +227,7 @@ if( fabs((*this)( j, i) ) < 1.0e-5 ) {
   }
 
   friend
-    double operator() ( this_type& obj_a, this_type& obj_b ) {
+    double operator| ( this_type& obj_a, this_type& obj_b ) {
       return obj_a.inner_product_with( obj_b );
     }
 

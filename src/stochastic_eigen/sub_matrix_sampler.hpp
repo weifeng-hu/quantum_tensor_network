@@ -4,13 +4,13 @@
 #include <chrono>
 #include <vector>
 #include <random>
-#include "simple_matrix.hpp"
+#include "matrix/matrix.hpp"
 
 namespace stochastic_eigen {
 
 class SubMatrixSampler {
 public:
-  typedef mat_stoch_diag :: Matrix matrix_type;
+  typedef stochastic_eigen :: Matrix matrix_type;
   typedef matrix_type* matrix_pointer;
 
 public:

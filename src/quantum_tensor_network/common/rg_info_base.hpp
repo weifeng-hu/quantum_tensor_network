@@ -7,7 +7,8 @@
 #include <utility>
 #include <iostream>
 #include <string>
-#include "quantum_tensor_network/hamiltonian/hamiltonian.hpp"
+#include "quantum_tensor_network/hamiltonian/integral.hpp"
+#include "quantum_tensor_network/hamiltonian/hamiltonian_id.hpp"
 
 namespace quantum_tensor_network {
 
@@ -15,9 +16,10 @@ class RG_Info_Base {
 public:
   typedef RG_Info_Base  this_type;
   typedef hamiltonian :: hamiltonian_id_type hamiltonian_id_type;
+  typedef hamiltonian :: Integral            integral_type;
 
 public:
-  this_type() :
+  RG_Info_Base() :
     n_site_ (0),
     site_lower_bound_ ( std :: numeric_limits<int> :: min() ),
     site_upper_bound_ ( std :: numeric_limits<int> :: max() ),
@@ -26,9 +28,9 @@ public:
     on_site_hopping_ ( 0.0e0 ),
     neighbour_hopping_ ( 0.0e0 ),
     on_site_coulomb_ ( 0.0e0 ),
-    hamiltonian_type_id_ ( HUBBARD ) {}
+    hamiltonian_id_ ( hamiltonian :: HUBBARD ) {}
 
-  this_type( const size_t n_site_value,
+  RG_Info_Base( const size_t n_site_value,
              const size_t M_value = 10,
              const size_t nroot_value = 10,
              const double on_site_hopping_value = -5.0e0,
@@ -49,10 +51,10 @@ public:
     this->set_on_site_coulomb   ( this->on_site_coulomb_   );
   }
 
-  virtual ~this_type() {}
+  virtual ~RG_Info_Base() {}
 
 public:
-  virtual void print_specific_info( std :: ostream& os ) {};
+  virtual void print_specific_info( std :: ostream& os ) const {};
 
   friend 
     std :: ostream& operator<< ( std :: ostream& os, const this_type& this_obj ) {
@@ -65,7 +67,7 @@ public:
       os << "site indices: " << std :: endl;
       os << std :: endl;
 
-      this_obj.print_info_specific( std :: ostream& os );
+      this_obj.print_specific_info( os );
 
   } // end of print_info()
 
@@ -80,6 +82,8 @@ public:
     { return this->M_; }
   double on_site_hopping() const
     { return this->on_site_hopping_; }
+  double on_site_coulomb() const
+    { return this->on_site_coulomb_; }
   double neighbour_hopping() const
     { return this->neighbour_hopping_; }
 

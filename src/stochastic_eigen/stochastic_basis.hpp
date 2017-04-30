@@ -8,7 +8,7 @@
 #include <random>
 #include <iomanip>
 #include <chrono>
-#include "matrix/simple_matrix.hpp"
+#include "matrix/matrix.hpp"
 #include "random/random_generator.hpp"
 
 namespace stochastic_eigen {
@@ -36,7 +36,7 @@ public:
     }
     this->normalise();
   }
-  StochasticBasis( const Matrix& vec ) {
+  StochasticBasis( const matrix :: Matrix& vec ) {
     this->store_ = vec.set_store();
   }
   ~StochasticBasis() {}

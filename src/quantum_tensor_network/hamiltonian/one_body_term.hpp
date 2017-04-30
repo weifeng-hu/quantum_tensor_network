@@ -7,7 +7,7 @@
 #include <cmath>
 #include "quantum_tensor_network/hamiltonian/op_term_info.hpp"
 #include "quantum_tensor_network/quantum_number/quantum_number.hpp"
-#include "quantum_tensor_network/quanutm_operator/operator.hpp"
+#include "quantum_tensor_network/quantum_operator/operator.hpp"
 
 namespace quantum_tensor_network {
 

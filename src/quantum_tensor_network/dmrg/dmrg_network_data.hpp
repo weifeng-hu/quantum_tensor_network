@@ -17,8 +17,26 @@ public:
   typedef hamiltonian :: hamiltonian_base_type            hamiltonian_type;
 
 public:
-  this_type() {}
-  ~this_type() {}
+  DMRG_NetworkData() {}
+  ~DMRG_NetworkData() {}
+
+public:
+  node_type get_input_site() const 
+   { return this_node_; }
+  wavefunction_type mps() const
+   { return this->mps_; }
+  hamiltonian_type hamiltonian() const
+   { return this->hamiltonian_; }
+  node_type next_node() const
+   { return this->next_node_; }
+
+  wavefunction_type& set_wavefunction()
+    { return mps_; }
+  node_type set_this_node()
+    { return this->this_node_; }
+  node_type set_next_node()
+    { return this->next_node_; }
+
 
 private:
   wavefunction_type mps_;

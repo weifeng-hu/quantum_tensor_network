@@ -5,6 +5,7 @@
 #include <vector>
 #include <utility>
 #include <iostream>
+#include <algorithm>
 #include "matrix/matrix.hpp"
 #include "matrix/matrix_operations.hpp"
 #include "quantum_tensor_network/quantum_number/sub_space.hpp"
@@ -22,13 +23,13 @@ public:
   typedef std :: vector< std :: pair< std :: pair< space_type, space_type >, matrix_type > >  store_type;
 
 public:
-  OpMatrix() : nrow_(0), ncol_(0) { store_.resize(0); }
+  OpMatrix() : n_qn_row_(0), n_qn_col_(0) { store_.resize(0); }
   virtual ~OpMatrix() {}
 
 public:
   void resize( const size_t nrow, const size_t ncol ) {
-    this->nrow_ = nrow;
-    this->ncol_ = ncol;
+    this->n_qn_row_ = nrow;
+    this->n_qn_col_ = ncol;
     this->store_.resize( nrow * ncol );
     for( int i = 0; i < nrow * ncol; i++ ) { store_[i].second.resize(0,0); }
   } // end of function resize()
@@ -46,13 +47,14 @@ public:
 
   // I/O
 public:
-  std :: ostream& operator<<( std :: ostream& os, const this_type& obj ) {
-    this->print();
-    return os;
-  }
+  friend 
+    std :: ostream& operator<<( std :: ostream& os, this_type& obj ) {
+      obj.print();
+      return os;
+    }
   void print() {
-    for( int i = 0; i < nrow_ ; i++ ) {
-      for( int j = 0; j < ncol_ ; j++ ) {
+    for( int i = 0; i < n_qn_row_ ; i++ ) {
+      for( int j = 0; j < n_qn_col_ ; j++ ) {
           printf( "  qn row: " ); (*this)(i,j).first.first.print();
           printf( "  qn col: " ); (*this)(i,j).first.second.print();
           printf( "\n" );
@@ -64,24 +66,24 @@ public:
 
   // Quantum Number operations
 public:
-  space_type qn_row( const int i_qn, const size_t j_qn ) const
+  space_type qn_row( const int i_qn, const size_t j_qn ) 
     { return (*this)( i_qn, j_qn ).first.first; }
-  space_type qn_col( const int i_qn, const size_t j_qn ) const
+  space_type qn_col( const int i_qn, const size_t j_qn ) 
     { return (*this)( i_qn, j_qn ).first.second; }
 
-  std :: vector< space_type > qn_series_row( const int x = 0 ) const {
+  std :: vector< space_type > qn_series_row( const int x = 0 ) {
     std :: vector< space_type > retval;
     retval.resize(0);
-    for( size_t i = 0; i < this->ncol_; i++ ) {
+    for( size_t i = 0; i < this->n_qn_col_; i++ ) {
       retval.push_back( (*this)( x, i ).first.second );
     }
     return retval;
   } // end of function qn_series_row()
 
-  std :: vector< space_type > qn_series_col( const int x = 0 ) const {
+  std :: vector< space_type > qn_series_col( const int x = 0 ) {
     std :: vector< space_type > retval;
     retval.resize(0);
-    for( size_t i = 0; i < this->nrow_; i++ ) {
+    for( size_t i = 0; i < this->n_qn_row_; i++ ) {
       retval.push_back( (*this)( i, x ).first.first );
     }
     return retval;
@@ -92,8 +94,8 @@ public:
     this_type op_matrix_ = *this;
 
     // sort the operator to be blocked structure w.r.t particle number
-    std :: vector< std :: pair< SubSpace, int > > seq;
-    std :: vector< SubSpace > qns = qn_series_row();
+    std :: vector< std :: pair< space_type, int > > seq;
+    std :: vector< space_type > qns = qn_series_row();
     for( int i = 0; i < qns.size(); i++ ) { seq.push_back( std :: make_pair( qns[i], i ) ); }
     std :: sort( seq.begin(), seq.end() );
 //    for( int i = 0; i < qns.size(); i++ ) { seq[i].first.print(); std :: cout << " " << seq[i].second << " " << std :: endl; }
@@ -213,14 +215,14 @@ public:
   } // end of operator*=
 
   friend
-    this_type operator* ( const double& coeff, const this_type& op_mat ) {
+    this_type operator* ( const double& coeff, this_type& op_mat ) {
       this_type retval = op_mat;
-      op_mat *= coeff;
+      retval *= coeff;
       return retval;
     } // end of operator*
 
   friend
-    this_type operator* ( const this_type& op_mat, const double& coeff ) {
+    this_type operator* ( this_type& op_mat, const double& coeff ) {
       this_type retval = coeff * op_mat;
       return retval;
     } // end of operator*
@@ -250,7 +252,7 @@ public:
              space_type qn_k_ref = op_b( k_qn, j_qn ).first.first;
             if( ( qn_k != qn_k_ref ) | ( qn_k.dim() != qn_k.dim() ) ) {
               std :: cout << "error: two qn not equal for k when multiplying same site operators" << std :: endl;
-              cout << i_qn << " " << j_qn << " " << k_qn << endl;
+              std :: cout << i_qn << " " << j_qn << " " << k_qn << std :: endl;
               qn_k.print(); std :: cout << std :: flush << " | ";
               qn_k_ref.print();
               std :: cout << std :: flush;
@@ -348,15 +350,15 @@ public:
       for( size_t i = 0; i < n_qn_row_b; i++ ) {
         for( size_t j = 0; j < n_qn_col_b; j++ ) {
   
-          const space_type qn_i_b = op_b.set_qn_pair( i, j ).first;
-          const space_type qn_j_b = op_b.set_qn_pair( i, j ).second;
+          space_type qn_i_b = op_b.set_qn_pair( i, j ).first;
+          space_type qn_j_b = op_b.set_qn_pair( i, j ).second;
           matrix_type mat_ij = op_b.matrix( i, j );
   
           for( size_t k = 0; k < n_qn_row_a; k++ ) {
             for( size_t l = 0; l < n_qn_col_a; l++ ) {
   
-              const space_type qn_k_a = op_a.set_qn_pair( k, l ).first;
-              const space_type qn_l_a = op_a.set_qn_pair( k, l ).second;
+              space_type qn_k_a = op_a.set_qn_pair( k, l ).first;
+              space_type qn_l_a = op_a.set_qn_pair( k, l ).second;
               matrix_type mat_kl = op_a.matrix( k, l );
   
               space_type qn_row = qn_i_b + qn_k_a;
@@ -392,7 +394,7 @@ public:
     } // end of operator^ matrix x matrix, tensor product
 
   friend
-    double operator() ( this_type& obj_a , this_type& obj_b ) {
+    double operator| ( this_type& obj_a , this_type& obj_b ) {
 
       double retval = 0.0e0;
 
@@ -458,11 +460,11 @@ public:
           sub_matrix_type& sub_op_a = obj_a( i_qn, j_qn );
           sub_matrix_type& sub_op_b = obj_b( i_qn, j_qn );
 
-          const matrix_type& sub_matrix_a = sub_op_a.second;
-          const matrix_type& sub_matrix_b = sub_op_b.second;
+          matrix_type& sub_matrix_a = sub_op_a.second;
+          matrix_type& sub_matrix_b = sub_op_b.second;
 
           if( sub_matrix_a.nrow() != 0 && sub_matrix_a.ncol() != 0 && sub_matrix_b.nrow() != 0 && sub_matrix_b.ncol() != 0 ) {
-            retval += ( sub_matrix_a, sub_matrix_b );
+            retval += ( sub_matrix_a | sub_matrix_b );
           }
 
         }
@@ -474,10 +476,10 @@ public:
 
 public:
   // Accessors & modifiers
-  sub_matrix_type& operator() ( const size_t i_qn, const size_t j_qn )
-    { return this->store_[ i_qn * this->ncol_ + j_qn ]; }
+  sub_matrix_type& operator() ( const int i_qn, const int j_qn )
+    { return this->store_[ i_qn * this->n_qn_col_ + j_qn ]; }
   sub_matrix_type& at( const size_t i_qn, const size_t j_qn )
-    { return this->store_.at( i_qn * this->ncol_ + j_qn ); }
+    { return this->store_.at( i_qn * this->n_qn_col_ + j_qn ); }
   std :: pair< space_type, space_type>& set_qn_pair( size_t i_qn, size_t j_qn )
     { return (*this)( i_qn, j_qn ).first; }
 
@@ -485,24 +487,24 @@ public:
     { return (*this)( i_qn, j_qn ).second; }
   store_type& store() 
     { return this->store_; }
-  size_t n_qn_row() const
+  size_t n_qn_row()
     { return this->n_qn_row_; }
-  size_t n_qn_col() const
+  size_t n_qn_col()
     { return this->n_qn_col_; }
 
   // Full matrix operations
-  size_t ndim_row() const {
+  size_t ndim_row() {
     size_t dim = 0;
     for( int i = 0; i < n_qn_row(); i++ ) { dim += this->at(i,0).first.first.dim(); }
     return dim;
   }
-  size_t ndim_col() const {
+  size_t ndim_col() {
     size_t dim = 0;
     for( int i = 0; i < n_qn_col(); i++ ) { dim += this->at(0,i).first.second.dim(); }
     return dim;
   }
 
-  size_t ind_start_row( int i_qn ) const {
+  size_t ind_start_row( int i_qn ) {
     size_t retval = 0;
     if( i_qn >= n_qn_row() ) {
       std :: cout << "row_start() i_qn > size " << std :: endl;
@@ -514,7 +516,7 @@ public:
     return retval;
   }
 
-  size_t ind_start_col( int i_qn ) const {
+  size_t ind_start_col( int i_qn ) {
     size_t retval = 0;
     if( i_qn >= n_qn_col() ) {
       std :: cout << "row_start() i_qn > size " << std :: endl;
@@ -526,7 +528,7 @@ public:
     return retval;
   }
 
-  matrix_type full_matrix() const {
+  matrix_type full_matrix() {
     int dim_row = this->ndim_row();
     int dim_col = this->ndim_col();
     matrix_type retval;

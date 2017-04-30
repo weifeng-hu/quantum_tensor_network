@@ -1,11 +1,14 @@
 #ifndef LATTICE_LEG_HPP
 #define LATTICE_LEG_HPP
 
+#include <vector>
+#include "quantum_tensor_network/quantum_number/sub_space.hpp"
+
 namespace quantum_tensor_network {
 
 namespace lattice {
 
-class Leg : public std :: vector< space_type > {
+class Leg : public std :: vector< quantum_number :: SubSpace > {
 
 
 

@@ -1,6 +1,8 @@
 #ifndef NRG_RENORMALISER_EPST_HPP
 #define NRG_RENORMALISER_EPST_HPP
 
+#include "stochastic_eigen/sub_matrix_sampler.hpp"
+#include "quantum_tensor_network/quantum_number/site_space.hpp"
 #include "quantum_tensor_network/nrg/renormaliser_base.hpp"
 
 namespace quantum_tensor_network {
@@ -32,24 +34,24 @@ public:
     rotation_matrix_2d_type new_rotmat;
 
     this->eigen_system_ = eigen_system;
-    this->eigen_system_.sort_by_energy();
+//    this->eigen_system_.sort_by_energy();
 
     int n_en = this->M_ * this->en_percent_;
 
     for( int i = 0; i < n_en; i++ ) {
-      new_rotmat.push_back( this->eigen_system_.eigen_vec(i) );
+//      new_rotmat.push_back( this->eigen_system_.eigen_vec(i) );
     }
-    this->eigen_system_.erase( 0, n_en );
+//    this->eigen_system_.erase( 0, n_en );
 
     // start of stochastic mixing, see algorithm in mat_stoch_Diag :: equal_prob_residual_space()
-    this->eigen_system_.sort_by_space();
+//    this->eigen_system_.sort_by_space();
     eigen_system_type :: eigenspace_type ordered_space = this->eigen_system_.export_eigenspace();
 
     std :: vector< std :: vector <int> > ind_group;
     std :: vector<int> x = { 0 };
     int j = 0;
     for( int i = 1; i < ordered_space.size(); i++ ) {
-      if( ordered_space[i].space() == ordered_space[j].space() ) {
+      if( ordered_space[i].first == ordered_space[j].first ) {
         x.push_back(i);
       } else {
         ind_group.push_back(x);
@@ -64,7 +66,7 @@ public:
     unsigned seed_val = this->seed_value_;
 
     // start of equal prob stoch space
-    SubMatrixSampler sampler( nullptr );
+    stochastic_eigen :: SubMatrixSampler sampler( nullptr );
     for( int i = 0; i < ind_group.size(); i++ ) {
       int sub_space_size = ind_group[i].size();
       int truncated_size = (int) ( (double) (ind_group[i].size()) / (double)(ordered_space.size()) * (double)(n_need_vector) );
@@ -78,7 +80,7 @@ public:
         keys.resize( sub_space_size );
         keys = sampler.get_choice_key( sub_space_size, truncated_size );
         for( size_t j = 0; j < keys.size(); j++ ) {
-          new_eigenvector = new_eigenvector + (double) keys[j] * ordered_space[ ind_group[i][j] ];
+//          new_eigenvector = new_eigenvector + (double) keys[j] * ordered_space[ ind_group[i][j] ];
         }
         new_eigenvector *= 1.0/sqrt((double)keys.size());
         new_rotmat.push_back( new_eigenvector );
@@ -87,7 +89,7 @@ public:
       }
     }
 
-    rotation_matrix_3d_type retval = reshape_from_2d( new_rotmat, site_space );
+//    rotation_matrix_3d_type retval = reshape_from_2d( new_rotmat, quantum_number :: site_space );
 
     return new_rotmat;
 

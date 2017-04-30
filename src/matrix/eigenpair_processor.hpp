@@ -6,8 +6,8 @@
 #include <vector>
 #include <iostream>
 #include <algorithm>
-#include "./simple_matrix.hpp"
-#include "./blas_interface.h"
+#include "matrix/matrix.hpp"
+#include "matrix/blas_interface.h"
 
 namespace matrix {
 

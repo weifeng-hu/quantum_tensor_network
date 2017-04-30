@@ -22,12 +22,6 @@ public:
   }
 
   friend
-    std :: ostream& operator<< ( std :: ostream& os, const this_type& obj ) {
-      obj.print();
-      return os;
-    }
-
-  friend
     SubSpace operator+ ( SubSpace& lhs, SubSpace& rhs ) {
       QuantumNumber x( lhs.n(), lhs.s_z() );
       QuantumNumber y( rhs.n(), rhs.s_z() );
@@ -49,6 +43,12 @@ public:
 //    bool operator== (const  SubSpace& lhs, const SubSpace& rhs ) {
 //      return ( lhs.n() == rhs.n() ) & ( lhs.s_z() == rhs.s_z() );
 //    }
+
+  SubSpace& operator- () {
+    this->n_   = -this->n_;
+    this->s_z_ = -this->s_z_; 
+    return *this;
+  }
 
   friend
     bool operator!= ( const SubSpace& lhs, const SubSpace& rhs ) {

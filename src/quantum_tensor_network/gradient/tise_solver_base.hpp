@@ -13,8 +13,8 @@ public:
   typedef TISE_SolverBase     this_type;
 
 public:
-  this_type() {}
-  ~this_type() {}
+  TISE_SolverBase() {}
+  ~TISE_SolverBase() {}
 
 public:
 
