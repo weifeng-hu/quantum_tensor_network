@@ -1,5 +1,5 @@
-#ifndef RG_INFO_BASE_HPP
-#define RG_INFO_BASE_HPP
+#ifndef COMMON_RG_INFO_BASE_HPP
+#define COMMON_RG_INFO_BASE_HPP
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,38 +14,40 @@ namespace quantum_tensor_network {
 
 class RG_Info_Base {
 public:
-  typedef RG_Info_Base  this_type;
-  typedef hamiltonian :: hamiltonian_id_type hamiltonian_id_type;
-  typedef hamiltonian :: Integral            integral_type;
+  typedef RG_Info_Base                         this_type;
+  typedef hamiltonian :: hamiltonian_id_type   hamiltonian_id_type;
+  typedef hamiltonian :: Integral              integral_type;
 
 public:
   RG_Info_Base() :
-    n_site_ (0),
+    n_site_           (0),
     site_lower_bound_ ( std :: numeric_limits<int> :: min() ),
     site_upper_bound_ ( std :: numeric_limits<int> :: max() ),
-    M_ (0),
-    nroot_ (0),
-    on_site_hopping_ ( 0.0e0 ),
+    M_                (0),
+    nroot_            (0),
+    on_site_hopping_  ( 0.0e0 ),
     neighbour_hopping_ ( 0.0e0 ),
-    on_site_coulomb_ ( 0.0e0 ),
-    hamiltonian_id_ ( hamiltonian :: HUBBARD ) {}
+    on_site_coulomb_   ( 0.0e0 ),
+    hamiltonian_id_  ( hamiltonian :: HUBBARD )
+  {}
 
-  RG_Info_Base( const size_t n_site_value,
-             const size_t M_value = 10,
-             const size_t nroot_value = 10,
-             const double on_site_hopping_value = -5.0e0,
-             const double neighbour_hopping_value = 1.0e0,
-             const double on_site_coulomb_value = 8.0e0,
-             const hamiltonian_id_type hamiltonian_id_value = hamiltonian :: HUBBARD
+  RG_Info_Base( const size_t n_site_value ,
+                const size_t M_value = 10,
+                const size_t nroot_value = 10,
+                const double on_site_hopping_value   = -5.0e0,
+                const double neighbour_hopping_value = 1.0e0,
+                const double on_site_coulomb_value   = 8.0e0,
+                const hamiltonian_id_type hamiltonian_id_value = hamiltonian :: HUBBARD
     ) : 
-    n_site_ ( n_site_value ),
-    M_      ( M_value ),
-    on_site_hopping_ ( on_site_hopping_value ),
+    n_site_            ( n_site_value ),
+    M_                 ( M_value ),
+    on_site_hopping_   ( on_site_hopping_value ),
     neighbour_hopping_ ( neighbour_hopping_value ),
-    on_site_coulomb_ ( on_site_coulomb_value ),
-    hamiltonian_id_ ( hamiltonian_id_value )
+    on_site_coulomb_   ( on_site_coulomb_value ),
+    hamiltonian_id_    ( hamiltonian_id_value )
   {
-    this->integral_.resize( n_site_ );
+    this->set_n_site            ( this->n_site_ );
+    this->integral_.resize      ( this->n_site_ );
     this->set_on_site_hopping   ( this->on_site_hopping_   );
     this->set_neighbour_hopping ( this->neighbour_hopping_ );
     this->set_on_site_coulomb   ( this->on_site_coulomb_   );
@@ -92,13 +94,10 @@ public:
     this->site_lower_bound_ = 0;
     this->site_upper_bound_ = value - 1;
   }
-
   size_t& set_M()
     { return this->M_; }
-
   integral_type* integral_ptr()
     { return &(this->integral_); }
-
   void set_on_site_hopping( const double on_site_hopping )
     { this->integral_.set_on_site_hopping( on_site_hopping ); }
   void set_neighbour_hopping( const double neighbour_hopping )

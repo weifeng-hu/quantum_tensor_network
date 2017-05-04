@@ -1,5 +1,5 @@
-#ifndef MAT_STOCH_DIAG_SIMPLE_MATRIX
-#define MAT_STOCH_DIAG_SIMPLE_MATRIX
+#ifndef MATRIX_MATRIX_HPP
+#define MATRIX_MATRIX_HPP
 
 #include <cmath>
 #include <vector>

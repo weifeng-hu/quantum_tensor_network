@@ -1,5 +1,5 @@
-#ifndef HAMILTONIAN_ID_HPP
-#define HAMILTONIAN_ID_HPP
+#ifndef HAMILTONIAN_HAMILTONIAN_ID_HPP
+#define HAMILTONIAN_HAMILTONIAN_ID_HPP
 
 namespace quantum_tensor_network {
 
