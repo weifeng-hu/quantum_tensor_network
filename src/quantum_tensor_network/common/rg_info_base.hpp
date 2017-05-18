@@ -56,20 +56,21 @@ public:
   virtual ~RG_Info_Base() {}
 
 public:
-  virtual void print_specific_info( std :: ostream& os ) const {};
+  virtual void print_specific_info( std :: ostream& os ) const { };
 
   friend 
-    std :: ostream& operator<< ( std :: ostream& os, const this_type& this_obj ) {
-
-      os << "nsites:\t\t\t\t"     << this_obj.n_site() << std :: endl;
-      os << "M:\t\t\t\t"          << this_obj.M()      << std :: endl;
-      os << "on-site hopping:\t"  << this_obj.on_site_hopping()      << "   a.u." << std :: endl;
-      os << "nearest neighhour hopping:\t" << this_obj.neighbour_hopping()  << "   a.u." << std :: endl;
-      os << "on-site coulomb\t" << this_obj.on_site_coulomb() << "   a.u." << std :: endl;
-      os << "site indices: " << std :: endl;
-      os << std :: endl;
+    std :: ostream& operator<< ( std :: ostream& os, this_type& this_obj ) {
+      os << "[ Renormalisation Group Base Info ] " << std :: endl;
+      os << "   nsites:\t\t\t\t"                << this_obj.n_site()             << std :: endl;
+      os << "   site bounds:\t\t\t\t"           << this_obj.site_lower_bound()   << " ~ " << this_obj.site_upper_bound() << std :: endl;
+      os << "   M:\t\t\t\t\t"                   << this_obj.M()                  << std :: endl;
+      os << "   on-site hopping:\t\t\t"         << this_obj.on_site_hopping()    << "\ta.u." << std :: endl;
+      os << "   nearest neighhour hopping:\t\t" << this_obj.neighbour_hopping()  << "\ta.u." << std :: endl;
+      os << "   on-site coulomb\t\t\t"          << this_obj.on_site_coulomb()    << "\ta.u." << std :: endl;
 
       this_obj.print_specific_info( os );
+
+      return os;
 
   } // end of print_info()
 
